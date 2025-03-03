@@ -1,10 +1,10 @@
 package com.m4zek.backend.model;
 
 import com.m4zek.backend.model.projection.CategoryReadModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "Categories")
 public class Category {
@@ -14,6 +14,9 @@ public class Category {
     private int id;
 
     private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Company> companies = new ArrayList<>();
 
     public Category() {}
 
@@ -26,6 +29,7 @@ public class Category {
         return CategoryReadModel.builder()
                 .id(this.id)
                 .name(this.name)
+                .numberOfCompanies(this.companies.size())
                 .build();
     }
 

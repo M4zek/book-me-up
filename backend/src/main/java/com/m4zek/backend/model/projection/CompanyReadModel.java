@@ -1,17 +1,19 @@
 package com.m4zek.backend.model.projection;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class CategoryReadModel {
+public class CompanyReadModel {
+
     private int id;
     private String name;
-    private int numberOfCompanies;
+    private String description;
+    private byte[] logo;
+    private AddressReadModel address;
+    private CategoryReadModel category;
+
 }

@@ -2,10 +2,7 @@ package com.m4zek.backend.model;
 
 import com.m4zek.backend.model.projection.AddressReadModel;
 import com.m4zek.backend.model.projection.AddressWriteModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity(name = "addresses")
 public class Address extends BaseEntity{
@@ -21,6 +18,10 @@ public class Address extends BaseEntity{
     private String street;
 
     private String buildingNumber;
+
+    @OneToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     public Address(){}
 
@@ -57,15 +58,8 @@ public class Address extends BaseEntity{
             this.buildingNumber = addressWriteModel.getBuildingNumber();
     }
 
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", street='" + street + '\'' +
-                ", buildingNumber='" + buildingNumber + '\'' +
-                '}';
+    public void assignCompany(Company company) {
+        this.company = company;
     }
+
 }
