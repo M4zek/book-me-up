@@ -4,6 +4,9 @@ package com.m4zek.backend.model;
 import com.m4zek.backend.model.projection.CompanyReadModel;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "companies")
 public class Company {
 
@@ -24,6 +27,10 @@ public class Company {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<PortfolioImage> portfolioImages = new ArrayList<>();
+
 
     public Company() {}
 
@@ -51,6 +58,10 @@ public class Company {
 
     public void assignCategory(Category newCategory) {
         this.category = newCategory;
+    }
+
+    public void assignPortfolioImages(PortfolioImage newPortfolioImage) {
+        this.portfolioImages.add(newPortfolioImage);
     }
 
     public CompanyReadModel toReadModel() {

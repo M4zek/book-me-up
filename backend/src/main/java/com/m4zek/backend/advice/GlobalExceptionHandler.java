@@ -1,9 +1,6 @@
 package com.m4zek.backend.advice;
 
-import com.m4zek.backend.exception.AddressNotFoundException;
-import com.m4zek.backend.exception.CategoryExistsException;
-import com.m4zek.backend.exception.CategoryNotFoundException;
-import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,6 +49,28 @@ class GlobalExceptionHandler {
     @ExceptionHandler(CompanyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleCompanyNotFound(CompanyNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ExceptionHandler(ImageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleImageException(ImageException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ExceptionHandler(ImageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleImageNotFound(ImageNotFoundException e, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
