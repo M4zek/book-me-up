@@ -31,6 +31,9 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<PortfolioImage> portfolioImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<CompanyHours> companyHoursList = new ArrayList<>();
+
 
     public Company() {}
 
