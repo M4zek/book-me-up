@@ -4,6 +4,7 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.model.projection.CompanyOfferReadModel;
 import com.m4zek.backend.model.projection.CompanyOfferWriteModel;
 import com.m4zek.backend.service.CompanyOfferService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class CompanyOfferController {
     }
 
     @PostMapping("/{companyId}")
-    public ResponseEntity<CompanyOfferReadModel> createCompanyOffer(@RequestBody CompanyOfferWriteModel companyOffer, @PathVariable int companyId) {
+    public ResponseEntity<CompanyOfferReadModel> createCompanyOffer(@RequestBody @Valid CompanyOfferWriteModel companyOffer, @PathVariable int companyId) {
 
         CompanyOfferReadModel companyOfferReadModel = this.companyOfferService.createNewOffer(companyOffer, companyId);
 

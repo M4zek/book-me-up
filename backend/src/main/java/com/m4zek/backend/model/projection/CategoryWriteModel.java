@@ -1,6 +1,7 @@
 package com.m4zek.backend.model.projection;
 
 import com.m4zek.backend.model.Category;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class CategoryWriteModel {
+
+    @NotBlank(message = "Category name must not be empty")
     private String name;
 
     public Category toEntity() {

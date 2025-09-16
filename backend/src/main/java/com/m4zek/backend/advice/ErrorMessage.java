@@ -8,7 +8,7 @@ import java.util.Date;
 public record ErrorMessage(
         int statusCode,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timestamp,
-        String message,
+        Object message,
         String description) {
 
 }

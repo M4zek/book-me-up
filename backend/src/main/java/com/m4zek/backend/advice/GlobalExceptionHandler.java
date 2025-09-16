@@ -1,15 +1,20 @@
 package com.m4zek.backend.advice;
 
 import com.m4zek.backend.exception.*;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
+import java.util.List;
 
 @RestControllerAdvice
+@ControllerAdvice
 class GlobalExceptionHandler {
 
 
@@ -90,4 +95,41 @@ class GlobalExceptionHandler {
         );
     }
 
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleVariableNotValidException(ConstraintViolationException e, WebRequest request){
+        List<String> errors = e.getConstraintViolations()
+                .stream()
+                .map(violation -> {
+                    String fieldName = violation.getPropertyPath()
+                            .toString()
+                            .substring(violation.getPropertyPath().toString().lastIndexOf('.') + 1);
+                    return fieldName + ": " + violation.getMessage();
+                })
+                .toList();
+
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                errors,
+                request.getDescription(false)
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorMessage handleArgumentNotValidException(MethodArgumentNotValidException e, WebRequest request) {
+        List<String> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
+
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                errors,
+                request.getDescription(false)
+        );
+    }
 }

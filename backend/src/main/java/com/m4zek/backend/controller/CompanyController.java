@@ -4,16 +4,19 @@ import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.projection.CompanyReadModel;
 import com.m4zek.backend.model.projection.CompanyWriteModel;
 import com.m4zek.backend.service.CompanyService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/companies")
+@Validated
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -24,7 +27,7 @@ public class CompanyController {
 
     @PostMapping
     public ResponseEntity<CompanyReadModel> createNewCompany(
-            @RequestBody CompanyWriteModel companyWriteModel)
+            @RequestBody @Valid CompanyWriteModel companyWriteModel)
     {
         Company company = companyService.saveCompany(companyWriteModel);
         int companyId = company.toReadModel().getId();
@@ -50,7 +53,7 @@ public class CompanyController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<CompanyReadModel> updateCompany(@PathVariable int id,
-                                                          @RequestBody CompanyWriteModel companyWriteModel) {
+                                                          @RequestBody @Valid CompanyWriteModel companyWriteModel) {
         Company company = this.companyService.updateCompany(id, companyWriteModel);
         return ResponseEntity.ok(company.toReadModel());
     }

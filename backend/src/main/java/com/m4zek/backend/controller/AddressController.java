@@ -4,15 +4,18 @@ import com.m4zek.backend.model.Address;
 import com.m4zek.backend.model.projection.AddressReadModel;
 import com.m4zek.backend.model.projection.AddressWriteModel;
 import com.m4zek.backend.service.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-
+@Validated
 @RestController
 @RequestMapping("api/v1/addresses")
 public class AddressController {
+
 
     private final AddressService addressService;
 
@@ -23,7 +26,7 @@ public class AddressController {
 
 
     @PostMapping
-    public ResponseEntity<AddressReadModel> addAddress(@RequestBody AddressWriteModel addressWriteModel)
+    public ResponseEntity<AddressReadModel> addAddress(@RequestBody @Valid AddressWriteModel addressWriteModel)
     {
         Address responseEntity =  this.addressService.createNewAddress(addressWriteModel);
         int addressId = responseEntity.toReadModel().getId();
@@ -34,7 +37,7 @@ public class AddressController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateAddress(@PathVariable("id") int id,
-                                           @RequestBody AddressWriteModel addressWriteModel)
+                                           @RequestBody @Valid AddressWriteModel addressWriteModel)
     {
         AddressReadModel responseEntity = this.addressService.updateAddress(id, addressWriteModel).toReadModel();
         return ResponseEntity.ok(responseEntity);
