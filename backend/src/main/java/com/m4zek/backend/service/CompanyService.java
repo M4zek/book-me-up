@@ -2,13 +2,12 @@ package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.Company;
+import com.m4zek.backend.exception.UserNotFoundException;
+import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.projection.CompanyReadModel;
 import com.m4zek.backend.model.projection.CompanyWriteModel;
-import com.m4zek.backend.repository.CategoryRepository;
-import com.m4zek.backend.repository.CompanyRepository;
+import com.m4zek.backend.model.projection.UserReadModel;
+import com.m4zek.backend.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +22,16 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
+    private final CompanyUserRoleRepository companyUserRoleRepository;
+    private final CompanyRoleRepository companyRoleRepository;
+    private final UserRepository userRepository;
 
-    public CompanyService(CompanyRepository companyRepository, CategoryRepository categoryRepository) {
+    public CompanyService(CompanyRepository companyRepository, CategoryRepository categoryRepository, CompanyUserRoleRepository companyUserRoleRepository, CompanyRoleRepository companyRoleRepository, UserRepository userRepository) {
         this.companyRepository = companyRepository;
         this.categoryRepository = categoryRepository;
+        this.companyUserRoleRepository = companyUserRoleRepository;
+        this.companyRoleRepository = companyRoleRepository;
+        this.userRepository = userRepository;
     }
 
     public Company saveCompany(CompanyWriteModel companyWriteModel) {
@@ -45,7 +50,11 @@ public class CompanyService {
         );
 
         address.assignCompany(newCompany);
-        return companyRepository.save(newCompany);
+        newCompany = this.companyRepository.save(newCompany);
+
+        this.assignOwnerToCompany(companyWriteModel.getOwner_id(), newCompany);
+
+        return newCompany;
     }
 
     public CompanyReadModel readCompany(int companyId){
@@ -77,6 +86,17 @@ public class CompanyService {
         return company;
     }
 
+    /*
+        TODO Create a separate DTO EmployeeReadModel to return
+            information about employees and their roles in the company?
+     */
+    public List<UserReadModel> readAllCompanyEmployees(int companyId) {
+        List<CompanyUserRole> companyUserRoles = this.companyUserRoleRepository.findAllByCompanyId(companyId);
+
+        return companyUserRoles.stream()
+                .map(item -> item.getUsers().toUserReadModel()).toList();
+    }
+
 
     public Page<CompanyReadModel> readAllCompanies(Pageable pageable) {
         Page<Company> companies = companyRepository.findAll(pageable);
@@ -85,6 +105,8 @@ public class CompanyService {
                 .toList();
         return new PageImpl<>(companyReadModels, pageable, companies.getTotalElements());
     }
+
+
 
     public void deleteCompany(int companyId) {
         Company companyToDelete = getCompany(companyId);
@@ -103,4 +125,18 @@ public class CompanyService {
                 () -> new CategoryNotFoundException("Category with given name not found")
         );
     }
+
+    private void assignOwnerToCompany(int user_id, Company company) {
+        User user = userRepository.findById(user_id)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        CompanyRole ownerCompanyRole = this.companyRoleRepository.findByName("COMPANY_OWNER")
+                .orElseThrow(() -> new CompanyNotFoundException("Company role not found"));
+
+
+        CompanyUserRole ownerRole = new CompanyUserRole(user, company, ownerCompanyRole);
+        this.companyUserRoleRepository.save(ownerRole);
+    }
+
+
 }

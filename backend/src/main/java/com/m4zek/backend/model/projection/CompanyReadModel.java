@@ -15,5 +15,6 @@ public class CompanyReadModel {
     private byte[] logo;
     private AddressReadModel address;
     private CategoryReadModel category;
+    private UserReadModel owner;
 
 }

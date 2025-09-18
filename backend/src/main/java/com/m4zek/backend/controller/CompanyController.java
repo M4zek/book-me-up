@@ -3,7 +3,9 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.projection.CompanyReadModel;
 import com.m4zek.backend.model.projection.CompanyWriteModel;
+import com.m4zek.backend.model.projection.UserReadModel;
 import com.m4zek.backend.service.CompanyService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -26,6 +29,7 @@ public class CompanyController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<CompanyReadModel> createNewCompany(
             @RequestBody @Valid CompanyWriteModel companyWriteModel)
     {
@@ -58,4 +62,9 @@ public class CompanyController {
         return ResponseEntity.ok(company.toReadModel());
     }
 
+    @GetMapping("/employees/{companyId}")
+    public ResponseEntity<List<UserReadModel>> readCompanyEmployee(@PathVariable int companyId) {
+        List<UserReadModel> employees = this.companyService.readAllCompanyEmployees(companyId);
+        return ResponseEntity.ok(employees);
+    }
 }

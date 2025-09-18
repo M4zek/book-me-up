@@ -1,8 +1,7 @@
 package com.m4zek.backend.model;
 
+import com.m4zek.backend.model.projection.UserReadModel;
 import jakarta.persistence.*;
-
-import java.util.Set;
 
 @Entity(name = "users")
 public class User extends BaseEntity {
@@ -25,6 +24,10 @@ public class User extends BaseEntity {
         this.addressEmail = addressEmail;
         this.password = password;
         this.userData = userData;
+    }
+
+    public UserReadModel toUserReadModel() {
+        return userData.toUserReadModel(this.id, this.addressEmail);
     }
 
 }

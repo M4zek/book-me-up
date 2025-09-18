@@ -5,7 +5,9 @@ import com.m4zek.backend.model.projection.CompanyReadModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "companies")
 public class Company {
@@ -37,6 +39,8 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyOffer> companyOffers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CompanyUserRole> users = new HashSet<>();
 
     public Company() {}
 
@@ -79,6 +83,13 @@ public class Company {
                 .logo(this.logo)
                 .address(address.toReadModel())
                 .category(category.toReadModel())
+                .owner(
+                   this.users.stream()
+                            .filter(item -> item.getRole().getName().equals("COMPANY_OWNER"))
+                            .findFirst()
+                            .map(item -> item.getUsers().toUserReadModel())
+                            .orElse(null)
+                )
                 .build();
     }
 }

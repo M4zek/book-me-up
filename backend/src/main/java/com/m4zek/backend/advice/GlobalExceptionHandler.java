@@ -17,6 +17,16 @@ import java.util.List;
 @ControllerAdvice
 class GlobalExceptionHandler {
 
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleUserNotFound(UserNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
 
     @ExceptionHandler(AddressNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

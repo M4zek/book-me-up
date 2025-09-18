@@ -1,5 +1,6 @@
 package com.m4zek.backend.model;
 
+import com.m4zek.backend.model.projection.UserReadModel;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -29,6 +30,28 @@ public class UserData extends BaseEntity {
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
         this.photo = photo;
+    }
+
+    public UserReadModel toUserReadModel(int userId, String email) {
+        return UserReadModel.builder()
+                .id(userId)
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .phoneNumber(phoneNumber)
+                .birthdate(dateOfBirth.toString())
+                .avatar(photo)
+                .build();
+    }
+
+    public UserReadModel toUserReadModel() {
+        return UserReadModel.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .phoneNumber(phoneNumber)
+                .birthdate(dateOfBirth.toString())
+                .avatar(photo)
+                .build();
     }
 
 }
