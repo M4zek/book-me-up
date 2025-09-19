@@ -46,27 +46,3 @@ public class UserWriteModel {
     }
 
 }
-
-
-//@ExceptionHandler(EmailExistsException.class)
-//@ResponseStatus(HttpStatus.CONFLICT)
-//public ErrorMessage handleEmailException(EmailExistsException e, WebRequest request) {
-//    return new ErrorMessage(
-//            HttpStatus.CONFLICT.value(),
-//            new Date(),
-//            e.getMessage(),
-//            request.getDescription(true)
-//    );
-//}
-//
-//
-//@ExceptionHandler(UserNotFoundException.class)
-//@ResponseStatus(HttpStatus.NOT_FOUND)
-//public ErrorMessage handleUserNotFound(UserNotFoundException e, WebRequest request) {
-//    return new ErrorMessage(
-//            HttpStatus.NOT_FOUND.value(),
-//            new Date(),
-//            e.getMessage(),
-//            request.getDescription(true)
-//    );
-//}

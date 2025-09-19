@@ -4,6 +4,9 @@ package com.m4zek.backend.model;
 import com.m4zek.backend.model.projection.CompanyOfferReadModel;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "company_offers")
 public class CompanyOffer extends BaseEntity {
 
@@ -19,6 +22,9 @@ public class CompanyOffer extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
+    List<Review> reviews = new ArrayList<>();
 
     public CompanyOffer() {}
 

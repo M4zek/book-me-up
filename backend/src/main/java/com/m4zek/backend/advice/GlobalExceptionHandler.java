@@ -61,6 +61,17 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ReviewExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleReviewExists(ReviewExistsException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(CompanyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleCompanyNotFound(CompanyNotFoundException e, WebRequest request) {

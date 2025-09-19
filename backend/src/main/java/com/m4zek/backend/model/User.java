@@ -3,6 +3,9 @@ package com.m4zek.backend.model;
 import com.m4zek.backend.model.projection.UserReadModel;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "users")
 public class User extends BaseEntity {
 
@@ -17,6 +20,9 @@ public class User extends BaseEntity {
     @JoinColumn(name = "userDataId")
     private UserData userData;
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
     public User() {}
 
