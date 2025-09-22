@@ -26,6 +26,9 @@ public class CompanyOffer extends BaseEntity {
     @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
     List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
+    List<Reservation> reservations = new ArrayList<>();
+
     public CompanyOffer() {}
 
     public CompanyOffer(String name, String description, double price, int duration, Company company) {

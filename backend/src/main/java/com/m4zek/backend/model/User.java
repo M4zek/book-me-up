@@ -24,6 +24,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservations = new ArrayList<>();
+
     public User() {}
 
     public User(String addressEmail, String password, UserData userData) {

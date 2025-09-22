@@ -83,6 +83,28 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ReservationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleReservationNotFound(ReservationNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ExceptionHandler(ReservationExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleReservationExists(ReservationExistsException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(ImageException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleImageException(ImageException e, WebRequest request) {
