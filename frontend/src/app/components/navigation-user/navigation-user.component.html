@@ -1,0 +1,63 @@
+<div class="nav-container">
+    <p class="title-paragraph">Book me up</p>
+
+    <div class="nav-item-container">
+
+        <div class="nav-search-container">
+            <div class="search-input-container">
+                <img [src]="search_icon" alt="search" class="input-icon"/>
+                <input type="text" placeholder="Search for offer or company" class="input-search">
+            </div>
+            <div class="search-input-container">
+                <img [src]="localization_icon" alt="search" class="input-icon"/>
+                <input type="text" placeholder="Where?" class="input-search">
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <img [src]="home_icon"/>
+            <p>Home</p>
+        </div>
+        <div class="nav-item">
+            <img [src]="company_icon"/>
+            <p>Companies</p>
+        </div>
+    </div>
+
+    <div class="nav-user-menu">
+        <img [src]="user_avatar" alt="User Icon" class="user-avatar"/>
+        <p [textContent]="user_name" class="user-name-paragraph"></p>
+        <img [src]="drop_down_icon" (click)="toggleMenu()" alt="Drop down" class="drop-down-icon"/>
+    </div>
+
+
+    <ul class="dropdown-menu" *ngIf="menuOpen">
+        <li>
+            <div class="nav-icon-container">
+                <img [src]="calendar_icon"/>
+            </div>
+            <p>My appointments</p>
+        </li>
+        <li>
+            <div class="nav-icon-container">
+                <img [src]="company_icon"/>
+            </div>
+            <p>My Companies</p>
+        </li>
+        <li>
+            <div class="nav-icon-container">
+                <img [src]="messages_icon"/>
+            </div>
+            <p>Messages</p>
+        </li>
+        <li><h1 class="white-line"></h1></li>
+        <li>
+            <div class="nav-icon-container">
+                <img [src]="settings_icon"/>
+            </div>
+            <p>Settings</p>
+        </li>
+        <li><h1 class="white-line"></h1></li>
+        <li>Logout</li>
+    </ul>
+</div>

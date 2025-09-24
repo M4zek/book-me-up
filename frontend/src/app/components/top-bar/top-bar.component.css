@@ -1,0 +1,61 @@
+.top-bar-container{
+    background-color: var(--dark);
+    padding: 2px 10px;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+.top-bar-search-container{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px;
+}
+
+.search-input-container{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.top-bar-sing-in-create-account{
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.sign-in-paragraph{
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    color: white;
+}
+
+.input-icon{
+    width: auto;
+    height: auto;
+    scale: 1.35;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.input-search{
+    height: 28px;
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+}
+
+.input-search:focus{
+    outline: none;
+}
+
+.title-paragraph{
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    color: white;
+}
