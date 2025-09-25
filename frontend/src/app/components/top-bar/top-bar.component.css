@@ -47,6 +47,7 @@
     background-color: transparent;
     border: none;
     font-size: 12px;
+    margin-right: 10px;
 }
 
 .input-search:focus{

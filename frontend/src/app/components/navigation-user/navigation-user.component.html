@@ -7,19 +7,23 @@
             <div class="search-input-container">
                 <img [src]="search_icon" alt="search" class="input-icon"/>
                 <input type="text" placeholder="Search for offer or company" class="input-search">
+                <img [src]="confirm_icon" alt="confirm" class="input-icon"/>
+                <img [src]="reject_icon" alt="reject" class="input-icon"/>
             </div>
             <div class="search-input-container">
                 <img [src]="localization_icon" alt="search" class="input-icon"/>
-                <input type="text" placeholder="Where?" class="input-search">
+                <input type="text" placeholder="Where?" class="input-search"/>
+                <img [src]="confirm_icon" alt="confirm" class="input-icon"/>
+                <img [src]="reject_icon" alt="reject" class="input-icon"/>
             </div>
         </div>
 
         <div class="nav-item">
-            <img [src]="home_icon"/>
+            <img [src]="home_icon" alt="Home"/>
             <p>Home</p>
         </div>
         <div class="nav-item">
-            <img [src]="company_icon"/>
+            <img [src]="company_icon" alt="Company"/>
             <p>Companies</p>
         </div>
     </div>
@@ -27,33 +31,33 @@
     <div class="nav-user-menu">
         <img [src]="user_avatar" alt="User Icon" class="user-avatar"/>
         <p [textContent]="user_name" class="user-name-paragraph"></p>
-        <img [src]="drop_down_icon" (click)="toggleMenu()" alt="Drop down" class="drop-down-icon"/>
+        <img [ngClass]="{ 'up': menuOpen }" [src]="drop_down_icon" (click)="toggleMenu()" alt="Drop down" class="drop-down-icon"/>
     </div>
 
 
     <ul class="dropdown-menu" *ngIf="menuOpen">
         <li>
             <div class="nav-icon-container">
-                <img [src]="calendar_icon"/>
+                <img [src]="calendar_icon" alt="My appointments"/>
             </div>
             <p>My appointments</p>
         </li>
         <li>
             <div class="nav-icon-container">
-                <img [src]="company_icon"/>
+                <img [src]="company_icon" alt="My companies"/>
             </div>
             <p>My Companies</p>
         </li>
         <li>
             <div class="nav-icon-container">
-                <img [src]="messages_icon"/>
+                <img [src]="messages_icon" alt="Messages"/>
             </div>
             <p>Messages</p>
         </li>
         <li><h1 class="white-line"></h1></li>
         <li>
             <div class="nav-icon-container">
-                <img [src]="settings_icon"/>
+                <img [src]="settings_icon" alt="Settings"/>
             </div>
             <p>Settings</p>
         </li>

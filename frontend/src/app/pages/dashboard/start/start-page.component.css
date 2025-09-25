@@ -5,9 +5,115 @@
 }
 
 .main-start-container{
+    display: flex;
+    flex-flow: column;
+    justify-items: center;
     margin-top: 20px;
     width: 75%;
     align-self: center;
-    height: 500px;
-    background-color: var(--white-10);
+    margin-bottom: 20px;
+    background-color: var(--black-25);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+@media (min-width: 1920px) {
+    .main-start-container{
+        max-width: 1920px;
+    }
+}
+
+.start-welcome-text{
+    text-align: center;
+    color: var(--white);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.search-input-container{
+    align-self: center;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 50%;
+}
+
+.input-icon{
+    width: auto;
+    height: auto;
+    scale: 1.35;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.input-search{
+    width: 100%;
+    height: 28px;
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+}
+
+.input-search:focus{
+    outline: none;
+}
+
+.recommended-list-container{
+    margin-top: 25px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.recommended-paragraph{
+    font: bold italic 1.2rem Georgia, serif;
+    color: var(--white);
+    margin: 0;
+}
+
+.info-title-paragraph{
+    font: bold italic 1.2rem Georgia, serif;
+    color: var(--white);
+}
+
+.info-content-paragraph{
+    font: 1rem Arial, serif;
+    color: var(--white);
+    line-height: 1.8;
+    text-align: justify;
+    width: auto;
+    padding-right: 20px;
+}
+
+.information-container{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+    .information-container{
+        flex-flow: column;
+        justify-content: center;
+    }
+    .info-content-paragraph{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .information-container > .img-info-1{
+        width: 100%;
+    }
+}
+
+.application-info-container{
+    display: flex;
+    flex-flow: column;
+    padding: 10px;
+}
+
+.img-info-1{
+    width: 40vh;
+    border-radius: 5px;
 }

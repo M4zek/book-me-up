@@ -11,29 +11,21 @@
             </li>
             <li class="category-item">
                 <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">932</p>
+                <p class="category-company-amount">1321</p>
+            </li>
+        </ul>
+        <img class="drop-down-icon" [ngClass]="{ 'up': isDropdownOpen }" [src]="drop_down_icon" alt="More" (click)="toggleDropdown()" />
+    </div>
+    <div class="category-other-container-dropdown" [ngClass]="{ 'show': isDropdownOpen }">
+        <ul class="category-list">
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">3231</p>
             </li>
             <li class="category-item">
                 <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">643</p>
+                <p class="category-company-amount">1321</p>
             </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">432</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">333</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">222</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">121</p>
-            </li>
-            <li class="category-item">More</li>
         </ul>
     </div>
 </div>

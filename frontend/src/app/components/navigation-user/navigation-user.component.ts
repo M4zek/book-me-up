@@ -1,10 +1,11 @@
 import {Component, HostListener} from '@angular/core';
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-navigation-user',
   imports: [
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './navigation-user.component.html',
   styleUrl: './navigation-user.component.css'
@@ -20,6 +21,8 @@ export class NavigationUserComponent {
   company_icon: string = 'icons/company_icon.svg';
   calendar_icon: string = 'icons/calendar_stroke_icon.svg';
   home_icon: string = 'icons/home_icon.svg';
+  confirm_icon: string = 'icons/confirm_icon.svg';
+  reject_icon: string = 'icons/reject_icon.svg';
 
   menuOpen: boolean = false;
 

@@ -1,15 +1,20 @@
 .category-container{
     width: 100%;
-    background-color: var(--dark);
+    background-color: transparent;
     height: auto;
     display: flex;
+    flex-flow: column;
     justify-content: center;
+    border-bottom: 2px solid var(--white);
 }
 
 .category-list-container{
-    width: 80%;
+    position: relative;
+    width: 100%;
     height: auto;
     overflow: hidden;
+    justify-content: center;
+    display: flex;
 }
 
 
@@ -22,9 +27,9 @@
 .category-list{
     list-style: none;
     display: flex;
-    flex-flow: row;
-    gap: 4%;
+    gap: 30px;
     justify-content: center;
+    align-items: center;
 }
 
 .category-item{
@@ -43,9 +48,49 @@
 
 .category-item > .category-company-amount{
     font-size: 12px;
+    user-select: none;
+}
+
+.category-item > .category-name-paragraph{
+    font-size: 14px;
+    user-select: none;
 }
 
 .category-item:hover{
     color: var(--pink);
     transition: .35s;
+}
+
+
+.category-other-container-dropdown{
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    list-style: none;
+    gap: 30px;
+    margin-bottom: 10px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+.category-other-container-dropdown.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.drop-down-icon{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+}
+
+.drop-down-icon.up{
+    rotate: 180deg;
+    transition: .2s ease-in-out;
 }

@@ -1,0 +1,56 @@
+.main-list-container{
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+    margin: 10px 0 10px 0;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    position: relative;
+}
+
+
+.list-row-container{
+    width: 96%;
+    overflow: hidden;
+}
+
+.row-items-container{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    gap: 15px;
+    transition: transform 0.5s ease;
+}
+
+.list-button-container{
+    position: absolute;
+    width: calc(100% + 30px);
+    top: calc(50% - 15px);
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.circle{
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .3s ease-in-out;
+}
+.circle img{
+    width: 20px;
+    height: 20px;
+}
+
+.circle:hover{
+    background-color: var(--light-blue-85);
+    transition: .3s ease-in-out;
+}
+
+
