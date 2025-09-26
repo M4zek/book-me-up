@@ -11,7 +11,7 @@ import {NgClass, NgIf} from "@angular/common";
   styleUrl: './navigation-user.component.css'
 })
 export class NavigationUserComponent {
-  user_avatar: string = 'icons/user_icon.png';
+  user_avatar: string = 'images/user_default_avatar.png';
   user_name: string = 'John Doe';
   drop_down_icon: string = 'icons/drop_down_arrow.png';
   search_icon: string = 'icons/search_icon.svg';

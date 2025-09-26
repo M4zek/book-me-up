@@ -1,5 +1,6 @@
 :root{
     --dark: #010A0F;
+    --dark-purple: #11091f;
     --black-10: rgba(0, 0, 0, 0.1);
     --black-25: rgba(0, 0, 0, 0.25);
     --black-50: rgba(0, 0, 0, 0.5);
@@ -16,6 +17,7 @@
 
 
     --pink: #C80037;
+    --pink_10: rgba(200, 0, 55, 0.1);
     --red-15: #BC0003;
 
     --light-blue: #00BBFF;

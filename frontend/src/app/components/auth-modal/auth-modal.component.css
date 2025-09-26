@@ -1,0 +1,228 @@
+.modal-backdrop {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0, 0, 0, 0.5);
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     z-index: 1000;
+ }
+
+.modal-content {
+    background-color: var(--dark);
+    border-radius: 8px;
+    width: 50%;
+    max-width: 500px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    flex-flow: column;
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.head-container{
+    background-color: var(--white-10);
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+}
+
+.title-container{
+    width: 100%;
+    border: none;
+    transition: .2s ease-in-out;
+}
+
+.title-container:hover {
+    border-bottom: 2px solid var(--light-blue-50);
+    transition: .2s ease-in-out;
+}
+
+.title-container p{
+    font: 700 1rem "Roboto", sans-serif;
+    color: var(--white);
+    user-select: none;
+}
+
+.title-container.sign-in {
+    border-bottom: 3px solid var(--pink);
+}
+
+.title-container.register {
+    border-bottom: 3px solid var(--pink);
+}
+
+.main-container{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.wrapper{
+    display: flex;
+    flex-flow: row;
+}
+
+.content-container {
+    top: 100px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex-flow: column;
+    gap: 10px;
+    margin: 20px 0 10px 0;
+    background-image: var(--white-10);
+    opacity: 1;
+    transform: translateX(100%);
+    overflow: hidden;
+    transition: transform 1.5s ease-in-out,
+        opacity .5s ease-in-out,
+        max-height 1.5s ease;
+    max-height: 1000px;
+}
+
+
+.content-container.sign-in-on {
+    opacity: 1;
+    transform: translateX(0%);
+    width: 100%;
+    max-height: 1000px;
+}
+
+.content-container.sign-in-off {
+    opacity: 1;
+    transform: translateX(-150%);
+    width: 0;
+    max-height: 0;
+    z-index: -999;
+}
+
+.content-container.register-on {
+    opacity: 1;
+    transform: translateX(0%);
+    width: 100%;
+    max-height: 1000px;
+}
+
+.content-container.register-off {
+    opacity: 1;
+    transform: translateX(150%);
+    width: 0;
+    max-height: 0;
+    z-index: -999;
+}
+
+.content-container p{
+    font: 700 .7rem "Roboto", sans-serif;
+    color: white;
+    padding: 0;
+    margin: 0 0 10px 0;
+    text-wrap: nowrap;
+}
+
+.input-container{
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--white);
+    width: 80%;
+    height: 40px;
+}
+
+.input-field{
+    height: 28px;
+    background-color: transparent;
+    border: none;
+    font: 700 1rem "Roboto", sans-serif;
+    width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+    color: var(--white);
+}
+
+.input-field::placeholder{
+    font: 700 1rem "Roboto", sans-serif;
+    color: var(--white-25);
+}
+
+.input-field:focus{
+    outline: none;
+}
+
+.input-icon{
+    width: 17px;
+    height: auto;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.password-icon{
+    width: 25px;
+    height: 20px;
+    transition: .2s ease-in-out;
+}
+
+.password-icon.slash{
+    rotate: 360deg;
+}
+
+.action-container{
+    width: 40%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.button-confirm{
+    width: 100%;
+    border: 1px solid var(--pink);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    background-color: var(--pink_10);
+    user-select: none;
+}
+
+.button-confirm p{
+    margin: 0;
+    padding: 10px;
+}
+
+.button-confirm:hover,
+.button-rejected:hover{
+    border: 1px solid var(--light-blue);
+    transition: .2s ease-in-out;
+}
+
+.button-rejected{
+    width: 50%;
+    border: 1px solid var(--white);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    background-color: var(--white-10);
+    user-select: none;
+}
+
+.button-rejected p{
+    margin: 0;
+    padding: 10px;
+}
