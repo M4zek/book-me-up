@@ -117,7 +117,7 @@
 }
 
 .dropdown-menu li:hover {
-    color: var(--light-blue-15);
+    color: var(--light-blue);
 }
 
 .dropdown-menu li:nth-last-child(2),
