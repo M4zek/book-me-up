@@ -1,0 +1,65 @@
+.offer-item-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    border-bottom: solid 2px var(--pink);
+    gap: 1rem;
+    align-items: center;
+    padding: .5rem;
+    transition: .2s ease-in-out;
+    user-select: none;
+}
+
+.offer-item-container:hover{
+    background-color: var(--white-5);
+    transition: .2s ease-in-out;
+}
+
+.offer-item-container:active{
+    background-color: var(--pink_10);
+    transition: .1s ease-in-out;
+}
+
+
+.desc-container{
+    width: 80%;
+}
+
+.price-time-container{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+}
+.offer-title-paragraph,
+.offer-description-paragraph,
+.offer-price-paragraph,
+.offer-duration-paragraph{
+    margin: 0;
+}
+
+.offer-title-paragraph{
+    font: bold 1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.offer-description-paragraph{
+    font: .9rem "Times New Roman", sans-serif;
+    color: var(--white-50);
+    text-wrap: wrap;
+    text-align: justify;
+}
+
+.offer-price-paragraph{
+    font: bold 1.1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.offer-duration-paragraph{
+    font: .9rem "Roboto", sans-serif;
+    color: var(--white-75);
+}
+
+

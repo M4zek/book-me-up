@@ -1,0 +1,10 @@
+<div class="offer-item-container" (click)="openReservationDialog()">
+    <div class="desc-container">
+        <p class="offer-title-paragraph">{{title}}</p>
+        <p class="offer-description-paragraph">{{description}}</p>
+    </div>
+    <div class="price-time-container">
+        <p class="offer-price-paragraph">{{price | number: '1.2-2'}} PLN</p>
+        <p class="offer-duration-paragraph">{{duration}} min</p>
+    </div>
+</div>

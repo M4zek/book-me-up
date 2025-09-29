@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
 import {ImageListComponent} from "../../components/image-list/image-list.component";
+import {CompanyOfferListComponent} from "../../components/company-offer-list/company-offer-list.component";
 
 @Component({
   selector: 'app-company-view',
   imports: [
-    ImageListComponent
+    ImageListComponent,
+    CompanyOfferListComponent
   ],
   templateUrl: './company-view.component.html',
   styleUrl: './company-view.component.css'
