@@ -29,8 +29,8 @@
 }
 
 .drop-down-icon{
-    width: 15px;
-    height: 15px;
+    width: 25px;
+    height: 25px;
     object-fit: cover;
     padding: 5px;
     margin-left: 5px;
@@ -43,7 +43,7 @@
 }
 
 .user-avatar{
-    width: 35px;
+    width: 45px;
     height: 35px;
     object-fit: cover;
     padding-right: 10px;

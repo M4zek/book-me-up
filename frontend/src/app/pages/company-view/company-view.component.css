@@ -1,0 +1,23 @@
+.company-container{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.left-container {
+    display: flex;
+    flex-flow: column;
+    width: 65%;
+    background-color: var(--white-10);
+    align-items: center;
+}
+
+.right-container {
+    display: flex;
+    flex-flow: column;
+    width: 40%;
+    background-color: var(--white-10);
+    align-items: center;
+}

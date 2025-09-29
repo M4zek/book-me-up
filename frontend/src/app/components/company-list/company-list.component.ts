@@ -18,7 +18,7 @@ export class CompanyListComponent {
   left_arrow_icon_path: string = '/icons/left_arrow_icon.svg';
   right_arrow_icon_path: string = '/icons/right_arrow_icon.svg';
 
-  company_list_size = 2;
+  company_list_size = 10;
   currentIndex = 0;
   itemWidth = 345;
   visibleItems = 0;
@@ -32,8 +32,11 @@ export class CompanyListComponent {
   }
 
   next() {
-    if (this.currentIndex < this.company_list_size - this.visibleItems) {
-      this.currentIndex++;
+    if (this.currentIndex < this.company_list_size - this.visibleItems &&
+        this.currentIndex < this.company_list_size - 1)
+    {
+        this.currentIndex++;
+
     }
   }
 

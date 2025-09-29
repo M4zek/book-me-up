@@ -1,26 +1,6 @@
-.main-container {
-    width: 100%;
+.content-container{
     display: flex;
     flex-flow: column;
-}
-
-.main-start-container{
-    display: flex;
-    flex-flow: column;
-    justify-items: center;
-    margin-top: 20px;
-    width: 75%;
-    align-self: center;
-    margin-bottom: 20px;
-    background-color: var(--black-25);
-    border-radius: 5px;
-    padding: 10px;
-}
-
-@media (min-width: 1920px) {
-    .main-start-container{
-        max-width: 1920px;
-    }
 }
 
 .start-welcome-text{

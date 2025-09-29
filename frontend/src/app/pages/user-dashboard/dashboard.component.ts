@@ -3,7 +3,7 @@ import {NavigationUserComponent} from "../../components/navigation-user/navigati
 import {RouterOutlet} from "@angular/router";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-user-dashboard',
   imports: [
     NavigationUserComponent,
     RouterOutlet

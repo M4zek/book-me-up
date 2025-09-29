@@ -1,0 +1,34 @@
+<div class="content-container">
+    <app-category-list/>
+    <p class="start-welcome-text">Discover the best places in the area and book your visit online!</p>
+    <div class="search-input-container">
+        <img [src]="'icons/search_icon.svg'" alt="search" class="input-icon"/>
+        <input type="text" placeholder="Search for offer or company" class="input-search">
+        <img [src]="'icons/confirm_icon.svg'" alt="confirm" class="input-icon"/>
+        <img [src]="'icons/reject_icon.svg'" alt="reject" class="input-icon"/>
+    </div>
+
+    <div class="recommended-list-container">
+        <p class="recommended-paragraph">Recommended</p>
+        <app-company-list/>
+    </div>
+    <div class="application-info-container">
+        <p class="info-title-paragraph">
+            Make an appointment online!
+        </p>
+        <div class="information-container">
+            <p class="info-content-paragraph">
+                Search and book services in just a few clicks!
+                to our intuitive platform, you can easily find specialists from different industries - from hairdressers and doctors to consultants and trainers.
+                Use a convenient booking system available on your computer and smartphone,
+                check reviews of other users and make a convenient appointment without unnecessary phone calls.
+                Fast, convenient and stress-free!  Book Me Up is a modern platform that makes it easy to find the best
+                local businesses and service providers. Whether you are looking for a specialist, a restaurant, a workshop or any other service,
+                Book Me Up allows you to quickly compare offers, read customer reviews and make an appointment online.
+                With a clear interface and smart filters, you save time and make the best decisions. Find, choose, book - all in one place!
+            </p>
+            <img class="img-info-1" [src]="img_1_path" alt="Image"/>
+        </div>
+    </div>
+</div>
+

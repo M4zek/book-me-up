@@ -32,6 +32,57 @@
     --lime: #73CA6B;
 }
 
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--light-blue);
+    border-radius: 6px;
+    border: 3px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--light-blue);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--light-blue) transparent;
+}
+
+.view-container{
+    display: flex;
+    flex-flow: column;
+    justify-items: center;
+    margin-top: 20px;
+    width: 75%;
+    align-self: center;
+    margin-bottom: 20px;
+    background-color: var(--black-25);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+@media (min-width: 1920px) {
+    .view-container{
+        max-width: 1920px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
 body{
     background: url('/images/background.png');
     -webkit-background-size: cover;

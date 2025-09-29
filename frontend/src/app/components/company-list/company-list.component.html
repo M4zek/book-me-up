@@ -6,12 +6,11 @@
         </div>
     </div>
 
-    <div class="list-button-container">
-        <div class="circle" (click)="prev()">
-            <img [src]="left_arrow_icon_path" alt="<" />
-        </div>
-        <div class="circle" (click)="next()">
-            <img [src]="right_arrow_icon_path" alt=">" />
-        </div>
+    <div class="circle-left" (click)="prev()">
+        <img [src]="left_arrow_icon_path" alt="<" />
     </div>
+    <div class="circle-right" (click)="next()">
+        <img [src]="right_arrow_icon_path" alt=">" />
+    </div>
+
 </div>
