@@ -1,0 +1,12 @@
+<div class="toast-container">
+    <div
+            class="toast"
+            *ngFor="let toast of toastService.toasts$ | async; trackBy: trackById"
+            [ngClass]="[toast.type, toast.show ? 'show' : '', toast.closing ? 'closing' : '']"
+            (click)="toastService.startRemove(toast.id)"
+    >
+        <img class="toast-icon" [src]="getIcon(toast.type)" alt="Icon"/>
+        <span class="toast-text">{{ toast.text }}</span>
+        <div class="progress-bar"></div>
+    </div>
+</div>

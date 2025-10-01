@@ -62,6 +62,13 @@
     scrollbar-color: var(--light-blue) transparent;
 }
 
+h2{
+    color: var(--white);
+    font: bold 1.1rem "Roboto", sans-serif;
+    margin: 0 0 .5rem;
+    padding: 0;
+}
+
 .view-container{
     display: flex;
     flex-flow: column;
