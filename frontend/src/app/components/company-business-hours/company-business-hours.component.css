@@ -1,0 +1,79 @@
+.company-business-hours{
+    display: flex;
+    flex-direction: column;
+}
+
+.title{
+    color: var(--white);
+    font: bold 1.1rem "Roboto", sans-serif;
+    margin: 1rem 0 .5rem 0;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    min-width: 90px;
+    max-width: 90px;
+    min-height: 74px;
+    gap: .5rem;
+    padding: .5rem;
+    border-radius: 5px;
+}
+
+.content.open{
+    background-color: var(--lime_25);
+}
+
+.content.closed{
+    background-color: var(--pink_25);
+}
+
+.parent{
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.day{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.hours{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.day-paragraph{
+    font: bold .9rem "Times New Roman", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+}
+
+.hour-from-paragraph{
+    font: .8rem "Times New Roman", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.hour-to-paragraph{
+    font: .9rem "Times New Roman", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}

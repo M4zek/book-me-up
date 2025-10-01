@@ -1,0 +1,65 @@
+.opinions-main-container{
+    display: flex;
+    flex-flow: column;
+}
+
+.star-container{
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+}
+
+.overall-opinions{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    width: 40%;
+    padding: 0 1rem;
+    align-items: center;
+}
+
+.detailed-opinions{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    width: 60%;
+}
+
+.bar{
+    width: 100%;
+}
+
+/* PARAGRAPHS */
+
+.title{
+    color: var(--white);
+    font: bold 1.1rem "Roboto", sans-serif;
+    margin: 1rem 0 .5rem 0;
+}
+
+.overall-value-opinion{
+    font: bold 1.1rem "Roboto", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+}
+
+.overall-number-value{
+    font: bold .8rem "Roboto", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: .5rem 0 0 0;
+    width: fit-content;
+}
+
+.container-list{
+    margin: 1rem 0;
+    overflow-y: auto;
+    padding-right: .5rem;
+    height: 300px;
+}
+
+
+
+

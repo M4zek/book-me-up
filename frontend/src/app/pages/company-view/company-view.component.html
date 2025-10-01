@@ -19,9 +19,18 @@
         <div class="parent">
             <app-company-offer-list></app-company-offer-list>
         </div>
-
     </div>
+
     <div class="right-container">
-        <p style="color: wheat">Right rontainer</p>
+        <div class="company-address-map">
+            <app-map [address]="companyAddress"></app-map>
+        </div>
+        <div class="company-description">
+            <p class="title-paragraph">About us</p>
+            <p class="company-desc-paragraph">{{companyDescription}}</p>
+        </div>
+        <app-company-employee-list></app-company-employee-list>
+        <app-company-business-hours></app-company-business-hours>
+        <app-company-opinions></app-company-opinions>
     </div>
 </div>

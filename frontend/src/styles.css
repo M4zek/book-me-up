@@ -18,6 +18,7 @@
 
     --pink: #C80037;
     --pink_10: rgba(200, 0, 55, 0.1);
+    --pink_25: rgba(200, 0, 55, 0.25);
     --pink_50: rgba(200, 0, 55, 0.5);
     --red-15: #BC0003;
 
@@ -32,6 +33,9 @@
     --light-yellow: #CACA6B;
 
     --lime: #73CA6B;
+    --lime_25: rgba(115, 202, 107, 0.25);
+    --lime_50: rgba(115, 202, 107, 0.5);
+    --lime_750: rgba(115, 202, 107, 0.75);
 }
 
 ::-webkit-scrollbar {

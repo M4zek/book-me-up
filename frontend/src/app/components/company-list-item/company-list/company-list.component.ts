@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
-import {CompanyListItemComponent} from "../company-list-item/company-list-item.component";
+import {CompanyListItemComponent} from "../company-list-item.component";
 import {NgForOf} from "@angular/common";
 
 @Component({

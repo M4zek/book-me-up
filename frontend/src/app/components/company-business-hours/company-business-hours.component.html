@@ -1,0 +1,15 @@
+<div class="company-business-hours">
+    <p class="title">Opening hours</p>
+    <div class="parent">
+        <div class="content" *ngFor="let item of openingHours" [ngClass]="item.isOpen? 'open': 'closed'">
+            <div class="day">
+                <p class="day-paragraph">{{item.dayOfWeek}}</p>
+            </div>
+            <div class="hours">
+                <p class="hour-from-paragraph" *ngIf="!item.isOpen">Closed</p>
+                <p class="hour-from-paragraph" *ngIf="item.isOpen">{{item.openTime}}</p>
+                <p class="hour-to-paragraph" *ngIf="item.isOpen">{{item.closeTime}}</p>
+            </div>
+        </div>
+    </div>
+</div>

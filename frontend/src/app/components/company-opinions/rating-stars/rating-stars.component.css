@@ -1,0 +1,10 @@
+.stars {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+}
+
+.star {
+    width: 2rem;
+    height: 2rem;
+}

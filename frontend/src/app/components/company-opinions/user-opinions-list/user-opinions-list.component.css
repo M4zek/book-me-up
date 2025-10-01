@@ -1,0 +1,103 @@
+
+.user-opinion-container{
+    display: flex;
+    flex-flow: column;
+    margin: 1rem 0;
+    gap: 1rem;
+    border-bottom: 1px solid var(--white-75);
+}
+
+.head-opinion-container{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-information-container{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-information-container img{
+    width: 30px;
+    height: 30px;
+}
+
+.user-information > .name{
+    font: bold 1rem "Roboto", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+}
+
+.user-information > .date{
+    font: bold .7rem "Roboto", sans-serif;
+    color: var(--white-75);
+    margin: 0;
+    padding: 0;
+}
+
+.star-icon-container{
+    display: flex;
+    flex-flow: row;
+    gap: 5px;
+    align-self: flex-start;
+    height: 100%;
+}
+.star-icon-container img{
+    width: 20px;
+    height: 20px;
+}
+
+.opinion-actions-container{
+    display: flex;
+    gap: 10px;
+}
+
+.opinion-actions-container img{
+    width: 18px;
+    height: 18px;
+}
+
+.content-opinion{
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    gap: 5px;
+    margin: .5rem 0;
+}
+
+.offer-name{
+    font: bold 1rem "Roboto", sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+}
+
+.opinion-message{
+    font: 1rem "Times New Roman", sans-serif;
+    color: var(--white-75);
+    margin: 0;
+    padding: 0;
+    text-wrap: wrap;
+    text-align: justify;
+}
+
+.center{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.center p{
+    color: #00BBFF
+}
+
+.center p:hover{
+    scale: 1.05;
+    transition: .2s ease-in-out;
+    user-select: none;
+}
