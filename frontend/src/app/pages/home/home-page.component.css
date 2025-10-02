@@ -3,6 +3,15 @@
     flex-flow: column;
 }
 
+.parent{
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    gap: 20px;
+}
+
 .start-welcome-text{
     text-align: center;
     color: var(--white);
@@ -14,16 +23,14 @@
     align-self: center;
     display: flex;
     align-items: center;
-    background-color: white;
+    border-bottom: 2px solid var(--white);
     padding: 5px 10px;
-    border-radius: 5px;
     width: 50%;
 }
 
 .input-icon{
-    width: auto;
-    height: auto;
-    scale: 1.35;
+    width: 20px;
+    height: 20px;
     margin-right: 10px;
     object-fit: cover;
 }
@@ -34,66 +41,45 @@
     background-color: transparent;
     border: none;
     font-size: 12px;
+    color: var(--white);
 }
 
 .input-search:focus{
     outline: none;
 }
 
-.recommended-list-container{
-    margin-top: 25px;
-    padding: 10px;
-    border-radius: 5px;
+.category-drop-down-container{
+    width: 25%;
 }
 
-.recommended-paragraph{
-    font: bold italic 1.2rem Georgia, serif;
+.action-container{
+    width: 10%;
+    border: 2px solid var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    transition: all .3s ease-in-out;
+}
+
+.action-container > p{
+    text-align: center;
     color: var(--white);
     margin: 0;
+    padding: 0;
+    user-select: none;
 }
 
-.info-title-paragraph{
-    font: bold italic 1.2rem Georgia, serif;
-    color: var(--white);
+.action-container:hover{
+    background-color: var(--pink_50);
+    border: 2px solid var(--pink);
+    transition: all .3s ease-in-out;
 }
 
-.info-content-paragraph{
-    font: 1rem Arial, serif;
-    color: var(--white);
-    line-height: 1.8;
-    text-align: justify;
-    width: auto;
-    padding-right: 20px;
+.width_30{
+    width: 30%;
 }
 
-.information-container{
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-}
-
-@media (max-width: 1024px) {
-    .information-container{
-        flex-flow: column;
-        justify-content: center;
-    }
-    .info-content-paragraph{
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-    .information-container > .img-info-1{
-        width: 100%;
-    }
-}
-
-.application-info-container{
-    display: flex;
-    flex-flow: column;
-    padding: 10px;
-}
-
-.img-info-1{
-    width: 40vh;
-    border-radius: 5px;
+.width_20{
+    width: 20%;
 }

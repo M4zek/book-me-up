@@ -13,13 +13,6 @@
     padding: 10px;
 }
 
-.search-input-container{
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
 
 .top-bar-sing-in-create-account{
     display: flex;
@@ -41,29 +34,85 @@
     transition: 0.2s ease-in-out;
 }
 
-.input-icon{
-    width: auto;
-    height: auto;
-    scale: 1.35;
-    margin-right: 10px;
-    object-fit: cover;
-}
-
-.input-search{
-    height: 28px;
-    background-color: transparent;
-    border: none;
-    font-size: 12px;
-    margin-right: 10px;
-}
-
-.input-search:focus{
-    outline: none;
-}
 
 .title-paragraph{
     font-size: 20px;
     font-weight: bold;
     font-style: italic;
     color: white;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: all .3s ease-in-out;
+    width: 0;
+}
+
+.search-container.active{
+    width: 30%;
+}
+
+.action-container{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.action-container:hover{
+    background-color: var(--white-10);
+    transition: 0.2s ease-in-out;
+}
+
+.action-container:active{
+    background-color: var(--pink_50);
+    transition: 0.2s ease-in-out;
+}
+
+
+.search-icon {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
+    user-select: none;
+}
+
+.search-input-container {
+    width: 0;
+    opacity: 0;
+    display: flex;
+    padding: 5px;
+    margin-left: 30px;
+    border-radius: 4px;
+    gap:10px;
+    overflow: hidden;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.input-container{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.search-input{
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: var(--white);
+    transition: all .2s ease-in-out;
+}
+
+.search-container.active .search-input-container {
+    width: 100%;
+    opacity: 1;
+    transition: all 0.3s ease;
 }

@@ -1,0 +1,15 @@
+<div class="dropdown-container">
+    <input
+       class="selected-input"
+       disabled
+       [(ngModel)]="selectedOption"
+       placeholder="{{placeholder}}"/>
+
+    <img [ngClass]="{ 'up': menuOpen }" [src]="'icons/drop_down_arrow.png'" (click)="toggleMenu()" alt="Drop down" class="drop-down-icon"/>
+</div>
+
+<ul class="dropdown-menu" *ngIf="menuOpen">
+    <li class="item" *ngFor="let item of options" (click)="select(item)">
+        <p class="item-text" [ngClass]="item==selectedOption ? 'sel' : ''">{{item}}</p>
+    </li>
+</ul>

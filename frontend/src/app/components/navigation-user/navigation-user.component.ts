@@ -25,6 +25,11 @@ export class NavigationUserComponent {
   reject_icon: string = 'icons/reject_icon.svg';
 
   menuOpen: boolean = false;
+  isActive = false;
+
+  toggleSearch() {
+    this.isActive = !this.isActive;
+  }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;

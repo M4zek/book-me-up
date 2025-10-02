@@ -3,18 +3,27 @@
 
     <div class="nav-item-container">
 
-        <div class="nav-search-container">
-            <div class="search-input-container">
-                <img [src]="search_icon" alt="search" class="input-icon"/>
-                <input type="text" placeholder="Search for offer or company" class="input-search">
-                <img [src]="confirm_icon" alt="confirm" class="input-icon"/>
-                <img [src]="reject_icon" alt="reject" class="input-icon"/>
+        <div class="search-container" [class.active]="isActive">
+
+            <div class="search-icon-title-container" (click)="toggleSearch()">
+                <img class="search-icon"
+                     [src]="'icons/search_icon.svg'"
+                     alt="icon"/>
+                <p style="color: white;">
+                    Search
+                </p>
             </div>
+
             <div class="search-input-container">
-                <img [src]="localization_icon" alt="search" class="input-icon"/>
-                <input type="text" placeholder="Where?" class="input-search"/>
-                <img [src]="confirm_icon" alt="confirm" class="input-icon"/>
-                <img [src]="reject_icon" alt="reject" class="input-icon"/>
+                <div class="input-container">
+                    <input type="text" placeholder="Search by company" class="search-input" />
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Search by place" class="search-input" />
+                </div>
+                <div class="action-container">
+                    <img [src]="'icons/confirm_icon.svg'" alt="search"/>
+                </div>
             </div>
         </div>
 
