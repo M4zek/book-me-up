@@ -2,6 +2,11 @@ import {Component, EventEmitter, HostListener, Input, Output} from '@angular/cor
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
+export interface DropDownListItem{
+  content: string;
+  image?: string;
+}
+
 @Component({
   selector: 'app-drop-down-list',
   imports: [
@@ -18,25 +23,26 @@ export class DropDownListComponent {
   @Input() placeholder: string = 'Select option'
 
   menuOpen: boolean = false;
-  selectedOption: string = ''
+  selectedOption: DropDownListItem = {content: ''};
 
-  @Input() options: string[] = [
-      'None',
-      'Test 1',
-      'Test 2',
-      'Test 3',
-      'Test 4',
-      'Test 5',
-      'Test 6'
+  @Input() options: DropDownListItem[] = [
+    {
+      content: 'Item 1',
+      image: 'images/user_default_avatar.png',
+    },
+    {
+      content: 'Item 2',
+    }
   ]
 
-  select(option: string): any {
-    if(option === 'None') {
-      this.selectedOption = '';
+  select(option: DropDownListItem): any {
+    if(option.content === 'None') {
+      this.selectedOption.content = '';
     } else {
       this.selectedOption = option;
     }
-    this.valueChanged.emit(this.selectedOption);
+    this.valueChanged.emit(this.selectedOption.content);
+    this.toggleMenu();
   }
 
   toggleMenu(): void {

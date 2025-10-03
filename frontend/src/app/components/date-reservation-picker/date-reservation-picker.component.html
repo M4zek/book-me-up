@@ -1,0 +1,50 @@
+<div class="date-reservation-picker-container">
+    <div class="calendar-container">
+        <div class="month-nav">
+            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prevMonth()"/>
+            <h3>{{ currentMonth }} {{ currentYear }}</h3>
+            <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="nextMonth()"/>
+        </div>
+
+        <div class="carousel">
+            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prevWeek()"/>
+            <div class="days" [ngClass]="animationDateCarouselDirection">
+                <div
+                        *ngFor="let d of days"
+                        (click)="!isDisabled(d.date) && selectDay(d)"
+                        [class.selected]="d.day === selectedDay"
+                        [class.disabled]="isDisabled(d.date)"
+                        [class.closed]="isClosed(d.date)"
+                        class="day-box"
+                >
+                    <div class="weekday">{{ d.weekDay }}</div>
+                    <div class="day">{{ d.day }}</div>
+                    <div class="status" [ngClass]="d.status"></div>
+                </div>
+            </div>
+
+            <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="nextWeek()"/>
+        </div>
+    </div>
+    <div class="time-picker">
+        <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prev()"/>
+        <div class="time-carousel">
+            <div class="slots-container">
+                <div class="slots" [ngClass]="animationTimeCarouselDirection">
+                    <div
+                            *ngFor="let s of visibleSlots"
+                            (click)="selectSlot(s)"
+                            [class.selected]="selectedSlot?.label === s.label"
+                            [class.disabled]="s.disabled"
+                            class="slot-box"
+                    >
+                        {{ s.label }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="next()"/>
+    </div>
+
+</div>
+

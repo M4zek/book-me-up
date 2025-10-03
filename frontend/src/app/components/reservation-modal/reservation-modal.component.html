@@ -1,0 +1,58 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <app-date-reservation-picker (changeDate)="onDateChange($event)" [duration]="reservationData.offer.duration"/>
+        <div class="white-line"></div>
+        <div class="user-reservation-information">
+            <div class="user-data">
+                <img [src]="'icons/user_icon.svg'" alt="icon"/>
+                <input [value]="reservationData.firstName" placeholder="First name" class="input-con">
+            </div>
+            <div class="user-data">
+                <img [src]="'icons/user_icon.svg'" alt="icon"/>
+                <input [value]="reservationData.lastName" placeholder="Last name" class="input-con">
+            </div>
+            <div class="user-data">
+                <img [src]="'icons/phone_icon.svg'" alt="icon"/>
+                <input [value]="reservationData.phoneNumber" placeholder="Phone number" class="input-con">
+            </div>
+            <div class="user-data">
+                <img [src]="'icons/envelope_icon.svg'" alt="icon"/>
+                <input [value]="reservationData.email" placeholder="Email" class="input-con">
+            </div>
+        </div>
+        <div class="white-line"></div>
+        <div class="offer-reservation-information">
+            <div class="horizontal-info-container">
+                <p class="offer-name">{{reservationData.offer.name}}</p>
+                <div class="vertical-container-information">
+                    <p class="price">{{reservationData.offer.price}} PLN</p>
+                    <p class="time">{{reservationData.offer.duration}} min</p>
+                </div>
+            </div>
+            <div class="white-line-25"></div>
+            <app-drop-down-list [placeholder]="'Preferred employee'" (valueChanged)="changePreferredEmployee($event)"></app-drop-down-list>
+        </div>
+        <div class="white-line"></div>
+        <div class="reservation-summary">
+            <div class="summary-content">
+                <p class="title-summary">Date:</p>
+                <p class="summary-par">{{startDate}}</p>
+            </div>
+            <div class="summary-content">
+                <p class="title-summary">Price:</p>
+                <p class="summary-par">{{reservationData.offer.price}} PLN</p>
+            </div>
+            <div class="summary-content">
+                <p class="title-summary">Time:</p>
+                <p class="summary-par">{{ reservationData.offer.duration }} min</p>
+            </div>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" class="checkbox">
+            <p>I confirm the registration details</p>
+        </div>
+        <div class="btn-confirm" (click)="confirmReservation()">
+            <p>Confirm reservation</p>
+        </div>
+    </div>
+</div>

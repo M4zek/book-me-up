@@ -8,3 +8,5 @@
         <p class="offer-duration-paragraph">{{duration}} min</p>
     </div>
 </div>
+
+<app-reservation-modal [isVisible]="isReservationVisible" (closeModal)="hideReservationDialog()"/>

@@ -1,10 +1,12 @@
 import {Component, Input} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
+import {ReservationModalComponent} from "../../reservation-modal/reservation-modal.component";
 
 @Component({
   selector: 'app-offer-item',
   imports: [
-    DecimalPipe
+    DecimalPipe,
+    ReservationModalComponent
   ],
   templateUrl: './offer-item.component.html',
   styleUrl: './offer-item.component.css'
@@ -15,7 +17,14 @@ export class OfferItemComponent {
   @Input() price: number = 30.00;
   @Input() duration: number = 10;
 
+  isReservationVisible: boolean = false;
+
   openReservationDialog() {
-    console.log('OpenReservationDialog: ' + this.title);
+    this.isReservationVisible = true;
   }
+
+  hideReservationDialog() {
+    this.isReservationVisible = false;
+  }
+
 }

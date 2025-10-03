@@ -1,0 +1,200 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: var(--dark-blue);
+    border-radius: 8px;
+    top: 10%;
+    width: 50%;
+    position: absolute;
+    max-width: 800px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    flex-flow: column;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: auto;
+}
+
+.input-con{
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    font-size: 1rem;
+}
+
+.user-reservation-information{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    gap:10px;
+}
+
+.offer-reservation-information{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    gap:10px;
+    border-radius: 5px;
+    background-color: var(--white-5);
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.reservation-summary{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap:10px;
+    justify-content: center;
+    align-items: end;
+    padding: 10px 0;
+}
+
+.summary-content{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+}
+
+.title-summary, .summary-par{
+    padding: 0;
+    margin: 0;
+}
+
+.title-summary{
+    color: var(--white-50);
+}
+
+.summary-par{
+    color: var(--white);
+    font-weight: bold;
+}
+
+.checkbox-container{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.checkbox-container p{
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+.horizontal-info-container{
+    display: flex;
+    flex-direction: row;
+}
+
+.vertical-container-information{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+}
+
+.offer-name,
+.price,
+.time{
+    padding: 0;
+    margin: 0;
+}
+
+.price, .time{
+    text-align: end;
+}
+
+.price{
+    font: bold 1rem var(--white);
+    color: var(--white);
+}
+
+.time{
+    font: .8rem var(--white-50);
+    color: var(--white-50);
+}
+
+
+.offer-name{
+    width: 70%;
+    font: bold 1rem var(--white);
+    text-align: start;
+    color: var(--white);
+}
+
+.user-data{
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--white-5);
+}
+
+.user-data img{
+    width: 30px;
+}
+
+
+.btn-confirm{
+    display: flex;
+    width: 30%;
+    background-color: var(--pink);
+    align-self: center;
+    border-radius: 5px;
+    justify-content: center;
+    padding: 10px;
+    transition: all .1s ease-in-out;
+}
+
+.btn-confirm:hover{
+    background-color: var(--light-blue);
+}
+.btn-confirm:active{
+    background-color: var(--white-50);
+}
+
+.btn-confirm p {
+    color: var(--white);
+    font-weight: bold;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+}
+
+.white-line{
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid var(--white);
+}
+
+.white-line-25{
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid var(--white-25);
+}
+
+:host ::ng-deep app-drop-down-list .dropdown-container {
+    border-bottom: none;
+}
