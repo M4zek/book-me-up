@@ -1,6 +1,8 @@
 .opinions-main-container{
     display: flex;
     flex-flow: column;
+    container-type: inline-size;
+    container-name: opinionsMainContainer;
 }
 
 .star-container{
@@ -14,8 +16,8 @@
     flex-flow: column;
     justify-content: center;
     width: 40%;
-    padding: 0 1rem;
     align-items: center;
+    padding: 10px;
 }
 
 .detailed-opinions{
@@ -23,6 +25,7 @@
     flex-flow: column;
     justify-content: center;
     width: 60%;
+    padding: 0 10px;
 }
 
 .bar{
@@ -54,10 +57,26 @@
 }
 
 .container-list{
-    margin: 1rem 0;
     overflow-y: auto;
-    padding-right: .5rem;
+    height:0;
+    padding: 0 10px;
+    transition: height .3s ease-in-out;
+}
+
+.container-list.show {
     height: 300px;
+    max-height: 300px;
+}
+
+
+@container opinionsMainContainer (width < 440px){
+    .star-container{
+        flex-flow: column;
+    }
+    .overall-opinions,
+    .detailed-opinions{
+        width: 100%;
+    }
 }
 
 

@@ -1,6 +1,7 @@
 .content-container{
     display: flex;
     flex-flow: column;
+    padding: 10px;
 }
 
 .parent{

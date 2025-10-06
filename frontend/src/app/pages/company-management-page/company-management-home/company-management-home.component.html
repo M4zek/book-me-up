@@ -1,0 +1,59 @@
+<div class="wrapper">
+    <div class="company-name-logo-grid">
+        <div class="logo-name-company-container">
+            <img [src]="companyLogo" alt="Logo"/>
+            <h3>{{companyName}}</h3>
+        </div>
+        <div class="edit-container-action top-right" (click)="editCompanyLogoOrName()">
+            <img [src]="'icons/pencil_icon.svg'" alt="edit">
+        </div>
+    </div>
+    <div class="company-description-grid">
+        <h2>Description</h2>
+        <div class="desc-con">
+            <p>{{description}}</p>
+        </div>
+        <div class="edit-container-action" (click)="editDescription()">
+            <img [src]="'icons/pencil_icon.svg'" alt="edit">
+        </div>
+    </div>
+    <div class="company-address-grid">
+        <h2>Localization</h2>
+        <app-map></app-map>
+        <div class="company-address">
+            <div class="address-elem">
+                <h3>City:</h3>
+                <p>Warsaw</p>
+            </div>
+            <div class="address-elem">
+                <h3>Street:</h3>
+                <p>Padarewskiego</p>
+            </div>
+            <div class="address-elem">
+                <h3>Building number:</h3>
+                <p>10/22</p>
+            </div>
+            <div class="address-elem">
+                <h3>Postal code:</h3>
+                <p>01-100</p>
+            </div>
+        </div>
+        <div class="edit-container-action" (click)="editAddress()">
+            <img [src]="'icons/pencil_icon.svg'" alt="edit">
+        </div>
+    </div>
+    <div class="company-portfolio-grid">
+        <h2>Portfolio</h2>
+        <app-company-portfolio-list></app-company-portfolio-list>
+
+    </div>
+    <div class="company-opinion-gird">
+        <app-company-opinions></app-company-opinions>
+    </div>
+    <div class="company-open-hours-gird">
+        <app-company-business-hours></app-company-business-hours>
+        <div class="edit-container-action" (click)="editHours()">
+            <img [src]="'icons/pencil_icon.svg'" alt="edit">
+        </div>
+    </div>
+</div>

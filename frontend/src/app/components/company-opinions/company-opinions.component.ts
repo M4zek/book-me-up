@@ -16,6 +16,9 @@ import {UserOpinionsListComponent} from "./user-opinions-list/user-opinions-list
   styleUrl: './company-opinions.component.css'
 })
 export class CompanyOpinionsComponent {
+
+  showUserOpinionsList = false;
+
   opinionsDetails=
     {
       overallOpinions: 521,
@@ -30,5 +33,11 @@ export class CompanyOpinionsComponent {
     }
 
 
+    onShowUserOpinionsListChange($event: Event) {
+        this.showUserOpinionsList = ($event.target as HTMLInputElement).checked;
 
+        // TODO MAKE A REQUEST TO DOWNLOAD OPINION LIST
+        // THEN SEND THE LIST TO UserOpinionListContainer
+
+    }
 }

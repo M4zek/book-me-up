@@ -1,0 +1,72 @@
+.company-management-nav{
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    padding: 0;
+    border-radius: 5px 5px 0 0;
+    background-color: var(--dark);
+    align-items: center;
+}
+
+.nav-list{
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    padding: 0 10px;
+    margin: 0;
+    justify-content: start;
+    /*align-items: center;*/
+    height: 100%;
+    width: 100%;
+}
+
+.header{
+    width: 30%;
+}
+
+.nav-item{
+    color: white;
+    font: bold 14px/1.5 "Roboto", sans-serif;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    transition: all .3s ease;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.nav-item-cont{
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-item-cont:hover .border-bottom{
+    border-bottom: 2px solid var(--light-blue);
+    animation: expand .3s linear forwards;
+}
+
+.border-bottom{
+    border-bottom: 2px solid var(--pink);
+    width: 0;
+}
+
+.border-bottom.active{
+    width: 100%;
+    transition: all .3s ease;
+}
+
+
+@keyframes expand {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+
+:host ::ng-deep app-drop-down-list .dropdown-container {
+    border-bottom: none;
+}

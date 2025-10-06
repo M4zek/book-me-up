@@ -12,7 +12,12 @@
             </div>
         </div>
     </div>
-    <div class="container-list">
+    <div class="checkbox-wrapper">
+        <input type="checkbox" class="sc-gJwTLC ikxBAC" (change)="onShowUserOpinionsListChange($event)">
+        <p>Show user opinions</p>
+    </div>
+    <div class="container-list"
+    [class.show]="showUserOpinionsList">
         <app-user-opinions-list></app-user-opinions-list>
     </div>
 </div>

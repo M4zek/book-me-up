@@ -20,6 +20,7 @@
     --pink_10: rgba(200, 0, 55, 0.1);
     --pink_25: rgba(200, 0, 55, 0.25);
     --pink_50: rgba(200, 0, 55, 0.5);
+    --pink_75: rgba(200, 0, 55, 0.75);
     --red-15: #BC0003;
 
     --light-blue: #00BBFF;
@@ -80,7 +81,7 @@ h2{
     margin-bottom: 20px;
     background-color: var(--black-25);
     border-radius: 5px;
-    padding: 10px;
+    /*padding: 10px;*/
 }
 
 @media (min-width: 1920px) {
@@ -112,4 +113,82 @@ body{
         flex-direction: column;
         align-items: center;
     }
+}
+
+
+
+/* Check box css */
+.checkbox-wrapper{
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-wrapper p{
+    font: 1rem "Times New Roman", sans-serif;
+    color: var(--white-75);
+}
+
+.checkbox-wrapper .ikxBAC {
+    appearance: none;
+    background-color: var(--white-10);
+    border-radius: 72px;
+    border-style: none;
+    flex-shrink: 0;
+    height: 20px;
+    margin: 0;
+    position: relative;
+    width: 40px;
+}
+
+.checkbox-wrapper .ikxBAC::before {
+    bottom: -6px;
+    content: "";
+    left: -6px;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+}
+
+.checkbox-wrapper .ikxBAC,
+.checkbox-wrapper .ikxBAC::after {
+    transition: all 100ms ease-out;
+}
+
+.checkbox-wrapper .ikxBAC::after {
+    background-color: var(--pink);
+    border-radius: 50%;
+    content: "";
+    height: 14px;
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    width: 14px;
+}
+
+.checkbox-wrapper input[type=checkbox] {
+    cursor: default;
+}
+
+.checkbox-wrapper .ikxBAC:hover {
+    background-color: var(--white-10);
+    transition-duration: 0s;
+}
+
+.checkbox-wrapper .ikxBAC:checked {
+    background-color: var(--pink_10);
+}
+
+.checkbox-wrapper .ikxBAC:checked::after {
+    background-color: var(--pink);
+    left: 23px;
+}
+
+.checkbox-wrapper :focus:not(.focus-visible) {
+    outline: 0;
+}
+
+.checkbox-wrapper .ikxBAC:checked:hover {
+    background-color: var(--pink_10);
 }

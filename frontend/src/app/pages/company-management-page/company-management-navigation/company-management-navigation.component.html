@@ -1,0 +1,17 @@
+<div class="company-management-nav">
+    <div class="header">
+        <app-drop-down-list [placeholder]="'Select company'"> </app-drop-down-list>
+    </div>
+
+    <div class="nav-list">
+        <div class="nav-item-cont" *ngFor="let key of navigation">
+            <a class="nav-item"
+               [routerLink]="NAVIGATION[key].path"
+                >{{NAVIGATION[key].name}}</a>
+            <div class="border-bottom"
+                 [ngClass]="router.url == NAVIGATION[key].path ? 'active': ''">
+            </div>
+        </div>
+    </div>
+
+</div>

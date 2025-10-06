@@ -1,0 +1,151 @@
+.wrapper {
+    height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    opacity: 1;
+}
+.wrapper > div {
+    border-radius: 5px;
+    background-color: var(--white-10);
+    padding: 10px;
+    height: 100%;
+}
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+.company-name-logo-grid {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    position: relative;
+}
+
+.logo-name-company-container{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-name-company-container img{
+    width: 75%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    padding: 20px;
+}
+
+.logo-name-company-container h3 {
+    font: bold 2rem 'Times New Roman', sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+.company-description-grid {
+    grid-column: 2 / 4;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+}
+.desc-con p {
+    text-align: justify;
+    color: var(--white-50);
+    margin: 0;
+    padding: 0 10px 0 0;
+    overflow: auto;
+    max-height: 250px;
+}
+
+.company-address-grid {
+    grid-column: 1;
+    grid-row: 3 / 5;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.company-portfolio-grid {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+}
+.company-opinion-gird {
+    grid-column: 2/3;
+    grid-row: 4;
+}
+.company-open-hours-gird {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-column: 3/4;
+    grid-row: 4;
+}
+
+.edit-container-action{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 10px 0 0 0 ;
+    border-radius: 50px;
+    align-self: center;
+    background-color: var(--pink_50);
+    transition: all .3s ease;
+}
+
+.edit-container-action:hover{
+    background-color: var(--dark-blue);
+}
+
+.edit-container-action:active{
+    background-color: var(--light-blue-50);
+}
+
+.edit-container-action img{
+    user-select: none;
+    width: 20px;
+}
+
+.top-right{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.company-address{
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.address-elem{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address-elem h3{
+    font: bold 1rem 'Times New Roman', sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+.address-elem p{
+    font: 1rem 'Times New Roman', sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+
+
