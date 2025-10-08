@@ -4,7 +4,7 @@
         <div class="horizontal-container">
             <div class="vertical-container">
                 <p class="company-name-paragraph">{{companyName}}</p>
-                <p class="company-address-paragraph">{{companyAddress}}</p>
+                <p class="company-address-paragraph">{{companyAddress.city}}, {{companyAddress.street}} {{companyAddress.buildingNumber}}</p>
             </div>
             <div class="icon-container">
                 <svg class="share" width="23" height="30" viewBox="0 0 23 30" fill="none" (click)="shareCompany()">
@@ -23,7 +23,7 @@
 
     <div class="right-container">
         <div class="company-address-map">
-            <app-map [address]="companyAddress"></app-map>
+            <app-map [currentAddress]="companyAddress"></app-map>
         </div>
         <div class="company-description">
             <p class="title-paragraph">About us</p>

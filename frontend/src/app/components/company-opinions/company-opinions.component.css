@@ -26,6 +26,7 @@
     justify-content: center;
     width: 60%;
     padding: 0 10px;
+    margin-bottom: 10px;
 }
 
 .bar{
@@ -33,12 +34,6 @@
 }
 
 /* PARAGRAPHS */
-
-.title{
-    color: var(--white);
-    font: bold 1.1rem "Roboto", sans-serif;
-    margin: 1rem 0 .5rem 0;
-}
 
 .overall-value-opinion{
     font: bold 1.1rem "Roboto", sans-serif;

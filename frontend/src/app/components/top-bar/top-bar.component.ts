@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthModalComponent} from "../auth-modal/auth-modal.component";
+import {AuthModalComponent} from "../modals/auth-modal/auth-modal.component";
 
 @Component({
   selector: 'app-top-bar',

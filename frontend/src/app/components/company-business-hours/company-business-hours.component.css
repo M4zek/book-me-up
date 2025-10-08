@@ -3,12 +3,6 @@
     flex-direction: column;
 }
 
-.title{
-    color: var(--white);
-    font: bold 1.1rem "Roboto", sans-serif;
-    margin: 1rem 0 .5rem 0;
-}
-
 .content{
     display: flex;
     flex-direction: column;
