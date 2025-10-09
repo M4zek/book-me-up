@@ -3,3 +3,10 @@ export interface SearchCompanyResult {
     place?: string | null;
     category?: string | null;
 }
+
+export interface Pagination{
+    totalItems: number,
+    itemsPerPage: number,
+    currentPage: number,
+    itemsPerPageOptions?: number[]
+}
