@@ -10,3 +10,18 @@ export interface CompanyNameAndLogo{
     logoName: string;
     companyName: string;
 }
+
+export interface HiredEmployeeData {
+    id: number;
+    name: string;
+    role: string;
+    email: string;
+    phone: string;
+    photo: string;
+}
+
+export enum HiredEmployeeRole{
+    admin = 'Admin',
+    owner = 'Owner',
+    employee = 'Employee',
+}

@@ -23,7 +23,7 @@ export class DropDownListComponent {
   @Input() placeholder: string = 'Select option'
 
   menuOpen: boolean = false;
-  selectedOption: DropDownListItem = {content: ''};
+  @Input() selectedOption: DropDownListItem = {content: ''};
 
   @Input() options: DropDownListItem[] = [
     {
