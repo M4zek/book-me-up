@@ -4,19 +4,25 @@ import {Pagination} from "../../../model/search/search.model";
 import {NgForOf} from "@angular/common";
 import {DropDownListComponent, DropDownListItem} from "../../../components/drop-down-list/drop-down-list.component";
 import {HiredEmployeeData, HiredEmployeeRole} from "../../../model/gui/gui.model";
+import {
+    CompanyAddEmployeeModalComponent
+} from "../../../components/modals/company-add-employee-modal/company-add-employee-modal.component";
 
 
 @Component({
   selector: 'app-company-management-employee',
-  imports: [
-    PaginatorComponent,
-    NgForOf,
-    DropDownListComponent
-  ],
+    imports: [
+        PaginatorComponent,
+        NgForOf,
+        DropDownListComponent,
+        CompanyAddEmployeeModalComponent
+    ],
   templateUrl: './company-management-employee.component.html',
   styleUrl: './company-management-employee.component.css'
 })
 export class CompanyManagementEmployeeComponent implements OnInit {
+
+  isAddEmployeeModalOpen = false;
 
   roles: DropDownListItem[] = []
 
@@ -82,5 +88,13 @@ export class CompanyManagementEmployeeComponent implements OnInit {
 
   fireEmployee(id: number) {
 
+  }
+
+  openAddEmployeeModal(): void {
+      this.isAddEmployeeModalOpen = true;
+  }
+
+  closeAddEmployeeModal() {
+      this.isAddEmployeeModalOpen = false;
   }
 }

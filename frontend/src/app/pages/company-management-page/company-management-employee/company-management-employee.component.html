@@ -7,7 +7,7 @@
             </div>
             <input type="text" placeholder="Search employee"/>
         </div>
-        <div class="add-employee">
+        <div class="add-employee" (click)="openAddEmployeeModal()">
             <img [src]="'icons/plus_icon.svg'" alt="add"/>
             <div class="expand">
                 <p>Add new employee</p>
@@ -39,3 +39,5 @@
                    (itemsPerPageChange)="onItemsPerPageChange($event)"
                    (pageChange)="onPageChange($event)"></app-paginator>
 </div>
+
+<app-company-add-employee-modal [isVisible]="isAddEmployeeModalOpen" (closeModal)="closeAddEmployeeModal()"></app-company-add-employee-modal>
