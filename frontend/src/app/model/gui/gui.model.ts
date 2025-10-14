@@ -25,3 +25,9 @@ export enum HiredEmployeeRole{
     owner = 'Owner',
     employee = 'Employee',
 }
+
+export interface PortfolioModel {
+    id: number;
+    name: string;
+    photo: string;
+}

@@ -44,7 +44,11 @@
     </div>
     <div class="company-portfolio-grid">
         <h2>Portfolio</h2>
-        <app-company-portfolio-list></app-company-portfolio-list>
+        <app-company-portfolio-list [images]="portfolioList"></app-company-portfolio-list>
+        <div class="add-container-action" (click)="openEditModal('addPortfolioModal')">
+            <img alt="add" [src]="'icons/plus_icon.svg'"/>
+            <p>Add new photos</p>
+        </div>
     </div>
     <div class="company-opinion-gird">
         <app-company-opinions></app-company-opinions>
@@ -62,3 +66,4 @@
 <app-company-address-edit-modal [currentLocalization]="companyAddress" [isVisible]="openEditAddressModal" (closeModal)="closeEditModal('editAddressModal')"/>
 <app-company-name-logo-edit-modal [isVisible]="openEditLogoNameModal" [logoAndName]="companyNameLogo" (closeModal)="closeEditModal('editLogoNameModal')"/>
 <app-company-business-hour-edit-modal [isVisible]="openEditHoursModal" (closeModal)="closeEditModal('editHoursModal')"/>
+<app-company-portfolio-add-modal [portfolioList]="portfolioList" [isVisible]="openAddPortfolioModal" (closeModal)="closeEditModal('addPortfolioModal')"/>

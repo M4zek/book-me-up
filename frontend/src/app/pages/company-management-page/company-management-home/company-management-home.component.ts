@@ -13,13 +13,16 @@ import {
 import {
   CompanyAddressEditModalComponent
 } from "../../../components/modals/company-address-edit-modal/company-address-edit-modal.component";
-import {Address, CompanyNameAndLogo} from "../../../model/gui/gui.model";
+import {Address, CompanyNameAndLogo, PortfolioModel} from "../../../model/gui/gui.model";
 import {
   CompanyNameLogoEditModalComponent
 } from "../../../components/modals/company-name-logo-edit-modal/company-name-logo-edit-modal.component";
 import {
   CompanyBusinessHourEditModalComponent
 } from "../../../components/modals/company-bussines-hour-edit-modal/company-business-hour-edit-modal.component";
+import {
+  CompanyPortfolioAddModalComponent
+} from "../../../components/modals/company-portfolio-add-modal/company-portfolio-add-modal.component";
 
 @Component({
   selector: 'app-company-management-home',
@@ -31,7 +34,8 @@ import {
     CompanyDescriptionEditModalComponent,
     CompanyAddressEditModalComponent,
     CompanyNameLogoEditModalComponent,
-    CompanyBusinessHourEditModalComponent
+    CompanyBusinessHourEditModalComponent,
+    CompanyPortfolioAddModalComponent
   ],
   templateUrl: './company-management-home.component.html',
   styleUrl: './company-management-home.component.css'
@@ -64,6 +68,14 @@ export class CompanyManagementHomeComponent {
       'and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
 
 
+  portfolioList: PortfolioModel[] = [
+    {
+      id: 0,
+      name: 'image_1',
+      photo: 'images/default_logo_company.png'
+    }
+  ];
+
   companyNameLogo: CompanyNameAndLogo = {
     logo: 'images/default_logo_company.png',
     logoName: 'logo.png',
@@ -81,6 +93,7 @@ export class CompanyManagementHomeComponent {
   openEditAddressModal: boolean = false;
   openEditHoursModal: boolean = false;
   openEditLogoNameModal: boolean = false;
+  openAddPortfolioModal: boolean = false;
 
 
   openEditModal(modalName: string) {
@@ -97,6 +110,9 @@ export class CompanyManagementHomeComponent {
       case 'editLogoNameModal':
         this.openEditLogoNameModal = true;
         break;
+       case 'addPortfolioModal':
+         this.openAddPortfolioModal = true;
+         break;
     }
   }
 
@@ -114,6 +130,9 @@ export class CompanyManagementHomeComponent {
         break;
       case 'editLogoNameModal':
         this.openEditLogoNameModal = false;
+        break;
+      case 'addPortfolioModal':
+        this.openAddPortfolioModal = false;
         break;
     }
   }

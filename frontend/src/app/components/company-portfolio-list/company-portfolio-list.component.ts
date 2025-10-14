@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgForOf} from "@angular/common";
+import {PortfolioModel} from "../../model/gui/gui.model";
 
 @Component({
   selector: 'app-company-portfolio-list',
@@ -11,20 +12,9 @@ import {NgForOf} from "@angular/common";
 })
 export class CompanyPortfolioListComponent {
 
-  images: string[] = [
-    'images/default_logo_company.png',
-    'images/default_logo_company.png',
-    'images/default_logo_company.png',
-    'images/default_logo_company.png',
-    'images/default_logo_company.png',
-    'images/default_logo_company.png',
-  ];
+  @Input() images: PortfolioModel[] = [];
 
   removeImage(index: number) {
     this.images.splice(index, 1);
-  }
-
-  addImage() {
-
   }
 }

@@ -2,15 +2,11 @@
     <div class="slider-container">
         <div class="slider-track">
             <div class="slide" *ngFor="let img of images; let i = index">
-                <img class="portfolio-image" [src]="img" alt="Image {{i+1}}">
+                <img class="portfolio-image" [src]="img.photo" alt="Image {{i+1}}">
                 <div class="remove-container" (click)="removeImage(i)">
                     <img class="remove-icon" [src]="'icons/trash_icon.svg'" alt="Delete" />
                 </div>
             </div>
         </div>
-    </div>
-    <div class="add-container-action" (click)="addImage()">
-        <img alt="add" [src]="'icons/plus_icon.svg'"/>
-        <p>Add new photos</p>
     </div>
 </div>

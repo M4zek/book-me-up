@@ -1,0 +1,46 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <h2>Add new photos to portfolio</h2>
+        <app-double-spinner *ngIf="imagesToSend.length == 0 "/>
+        <app-company-portfolio-list [images]="imagesToSend" *ngIf="imagesToSend.length != 0"></app-company-portfolio-list>
+        <input
+                type="file"
+                #fileInput
+                style="display: none"
+                (change)="onFileSelected($event)"
+                multiple accept="image/*"
+        />
+        <p>In total, you have {{imagesToSend.length + portfolioList.length}} out of 10 photos in your portfolio</p>
+
+
+        <div class="container-buttons">
+
+            <div class="btn-container pink-bg"
+                 (click)="openFileDialog()">
+                <img [src]="'icons/file_select_icon.svg'" alt="select" />
+                <div class="expand">
+                    <p class="btn-text white">Select files</p>
+                </div>
+            </div>
+
+            <div class="btn-container"
+                 (click)="confirm()"
+                [class.disabled]="imagesToSend.length == 0"
+            >
+                <img [src]="'icons/confirm_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text white">Confirm</p>
+                </div>
+            </div>
+
+            <div class="btn-container" (click)="close()">
+                <img [src]="'icons/reject_icon.svg'" alt="close" />
+                <div class="expand">
+                    <p class="btn-text">Close</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
