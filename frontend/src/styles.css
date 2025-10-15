@@ -194,3 +194,9 @@ body{
 .checkbox-wrapper .ikxBAC:checked:hover {
     background-color: var(--pink_10);
 }
+
+
+.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}

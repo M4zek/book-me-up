@@ -31,3 +31,11 @@ export interface PortfolioModel {
     name: string;
     photo: string;
 }
+
+export interface OfferManagementItem {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    duration: number;
+}

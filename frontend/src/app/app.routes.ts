@@ -12,6 +12,9 @@ import {
 import {
     CompanyManagementEmployeeComponent
 } from "./pages/company-management-page/company-management-employee/company-management-employee.component";
+import {
+    CompanyManagementOfferComponent
+} from "./pages/company-management-page/company-management-offer/company-management-offer.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -45,7 +48,8 @@ export const routes: Routes = [
             children: [
                 { path: '', redirectTo: "home", pathMatch: 'full' },
                 { path: 'home', component: CompanyManagementHomeComponent},
-                { path: 'employee', component: CompanyManagementEmployeeComponent}
+                { path: 'employee', component: CompanyManagementEmployeeComponent},
+                { path: 'offers', component: CompanyManagementOfferComponent}
             ]}
         ]
     }
