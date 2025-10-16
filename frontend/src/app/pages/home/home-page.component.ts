@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {CategoryListComponent} from "../../components/category-list/category-list.component";
 import {Router, RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
-import {DropDownListComponent} from "../../components/drop-down-list/drop-down-list.component";
+import {DropDownListComponent, DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 import {SearchCompanyResult} from "../../model/search/search.model";
 
 @Component({
@@ -44,7 +44,7 @@ export class HomePage {
         )
     }
 
-    changeCategory($event: string) {
-        this.categoryValue = $event;
+    changeCategory($event: DropDownListItem) {
+        this.categoryValue = $event.content;
     }
 }

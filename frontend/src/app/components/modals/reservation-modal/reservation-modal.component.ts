@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
-import {DateReservationPickerComponent} from "../date-reservation-picker/date-reservation-picker.component";
-import {DropDownListComponent} from "../drop-down-list/drop-down-list.component";
+import {DateReservationPickerComponent} from "../../date-reservation-picker/date-reservation-picker.component";
+import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
 import {FormsModule} from "@angular/forms";
 
 export interface ReservationData {
@@ -61,7 +61,7 @@ export class ReservationModalComponent {
 
   }
 
-  changePreferredEmployee($event: string) {
+  changePreferredEmployee($event: DropDownListItem) {
       console.log($event);
   }
 

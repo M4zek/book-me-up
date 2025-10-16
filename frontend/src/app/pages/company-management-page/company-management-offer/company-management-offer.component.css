@@ -1,3 +1,9 @@
+.parent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .offer-card-container{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

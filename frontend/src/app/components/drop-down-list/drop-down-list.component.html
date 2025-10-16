@@ -13,6 +13,7 @@
 <ul class="dropdown-menu" *ngIf="menuOpen">
     <li class="item" *ngFor="let item of options" (click)="select(item)">
         <img [src]="item.image" alt="img" *ngIf="item.image" class="icon">
-        <p class="item-text" [ngClass]="item.content==selectedOption.content ? 'sel' : ''">{{item.content}}</p>
+        <p class="item-text"
+           [ngClass]="item.id==selectedOption.id ? 'sel' : ''">{{item.content}}</p>
     </li>
 </ul>

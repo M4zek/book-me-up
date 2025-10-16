@@ -1,10 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
-export interface DropDownListItem{
+export interface DropDownListItem {
+  id?: number,
   content: string;
   image?: string;
+  option?: string;
 }
 
 @Component({
@@ -18,30 +20,36 @@ export interface DropDownListItem{
   templateUrl: './drop-down-list.component.html',
   styleUrl: './drop-down-list.component.css'
 })
-export class DropDownListComponent {
-  @Output() valueChanged = new EventEmitter<string>();
+export class DropDownListComponent implements OnChanges {
+
+  @Output() valueChanged = new EventEmitter<DropDownListItem>();
   @Input() placeholder: string = 'Select option'
 
   menuOpen: boolean = false;
-  @Input() selectedOption: DropDownListItem = {content: ''};
+  @Input() selectedOption: DropDownListItem = {id: 0, content: ''};
 
-  @Input() options: DropDownListItem[] = [
-    {
-      content: 'Item 1',
-      image: 'images/user_default_avatar.png',
-    },
-    {
-      content: 'Item 2',
+  @Input() options: DropDownListItem[] = []
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['options']) {
+      let defaultOptions: DropDownListItem = {
+        content: 'None',
+      }
+      this.options = [defaultOptions, ...this.options];
+      this.options = this.options.map((item, index) => ({
+        ...item,
+        id: item.id ?? index,
+      }));
     }
-  ]
+  }
 
   select(option: DropDownListItem): any {
     if(option.content === 'None') {
-      this.selectedOption.content = '';
+      this.selectedOption = this.options[0];
     } else {
       this.selectedOption = option;
     }
-    this.valueChanged.emit(this.selectedOption.content);
+    this.valueChanged.emit(this.selectedOption);
     this.toggleMenu();
   }
 

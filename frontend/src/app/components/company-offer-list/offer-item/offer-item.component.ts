@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
-import {ReservationModalComponent} from "../../reservation-modal/reservation-modal.component";
+import {ReservationModalComponent} from "../../modals/reservation-modal/reservation-modal.component";
 
 @Component({
   selector: 'app-offer-item',

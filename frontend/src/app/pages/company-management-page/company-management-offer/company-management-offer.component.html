@@ -1,6 +1,11 @@
-<div class="offer-card-container">
-    <app-company-management-offer-item *ngFor="let offer of offers" [offer]="offer"/>
+<div class="parent">
+    <app-search-bar
+            (searchChanged)="onSearchChange($event)"
+            (sortChanged)="onSortChange($event)"/>
+    <div class="offer-card-container">
+        <app-company-management-offer-item *ngFor="let offer of offers" [offer]="offer"/>
+    </div>
+    <app-paginator [pagination]="paginator"
+                   (itemsPerPageChange)="onItemsPerPageChange($event)"
+                   (pageChange)="onPageChange($event)"/>
 </div>
-<app-paginator [pagination]="paginator"
-               (itemsPerPageChange)="onItemsPerPageChange($event)"
-               (pageChange)="onPageChange($event)"/>

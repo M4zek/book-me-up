@@ -6,13 +6,15 @@ import {NgForOf} from "@angular/common";
 import {Pagination} from "../../../model/search/search.model";
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
 import {OfferManagementItem} from "../../../model/gui/gui.model";
+import {SearchAndSortBarComponent, SortBy} from "../../../components/search-bar/search-and-sort-bar.component";
 
 @Component({
   selector: 'app-company-management-offer',
     imports: [
         CompanyManagementOfferItemComponent,
         NgForOf,
-        PaginatorComponent
+        PaginatorComponent,
+        SearchAndSortBarComponent
     ],
   templateUrl: './company-management-offer.component.html',
   styleUrl: './company-management-offer.component.css'
@@ -49,5 +51,13 @@ export class CompanyManagementOfferComponent {
 
     onItemsPerPageChange(num: number) {
         this.paginator.itemsPerPage = num;
+    }
+
+    onSortChange($event: SortBy) {
+        console.log($event);
+    }
+
+    onSearchChange($event: string) {
+        console.log($event);
     }
 }

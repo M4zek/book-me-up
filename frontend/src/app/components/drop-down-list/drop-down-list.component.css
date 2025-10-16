@@ -14,8 +14,8 @@
     height: 28px;
     background-color: transparent;
     border: none;
-    font-size: 12px;
     color: var(--white);
+    font: bold 12px/1.5 "Roboto", sans-serif;
 }
 
 .selected-input:focus{
@@ -68,6 +68,7 @@
 
 .dropdown-menu .item .item-text {
     color: var(--white);
+    font: bold 14px/1.5 "Roboto", sans-serif;
     margin: 0;
     padding: 0;
 }
