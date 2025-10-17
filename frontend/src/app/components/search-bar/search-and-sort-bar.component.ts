@@ -9,7 +9,7 @@ export interface SortBy{
 }
 
 @Component({
-  selector: 'app-search-bar',
+  selector: 'app-search-and-sort-bar',
     imports: [
         DropDownListComponent,
         FormsModule

@@ -4,12 +4,82 @@
     width: 100%;
 }
 
+.horizontal{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    padding: 0 5px;
+    gap: 10px;
+    border-bottom: 2px solid var(--white-25);
+
+    container-name: horizontal-name;
+    container-type: inline-size;
+
+}
+
+.add-button-container{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: var(--pink);
+    transition: all .4s ease;
+}
+
+.add-button-container:hover{
+    padding: 5px;
+    gap: 10px;
+    width: 150px;
+    border-radius: 2px;
+}
+
+.add-button-container:hover .expand{
+    width: 100%;
+    opacity: 1;
+}
+
+.add-button-container:active{
+    background-color: var(--lime);
+}
+
+.expand{
+    display: flex;
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.expand span{
+    text-wrap: nowrap;
+    color: var(--white);
+    user-select: none;
+}
+
+.add-button-container img{
+    width: 20px;
+}
+
+.search-bar-cont{
+    width: 100%;
+}
 .offer-card-container{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 10px;
     justify-items: center;
+}
+
+
+@media screen and (max-width: 500px) {
+    .horizontal{
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
 }
 
 @media  (max-width: 999px) {
@@ -34,4 +104,9 @@
     .offer-card-container {
         grid-template-columns: repeat(4, 1fr);
     }
+}
+
+
+:host ::ng-deep app-search-and-sort-bar .search-bar {
+    border-bottom: none;
 }

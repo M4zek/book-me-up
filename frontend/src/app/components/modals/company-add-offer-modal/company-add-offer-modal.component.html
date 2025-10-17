@@ -1,0 +1,86 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="title">
+            <h2>Add new offer</h2>
+        </div>
+        <form #offerForm="ngForm" (ngSubmit)="onSubmit(offerForm)">
+            <div class="content">
+                <div class="inputBox">
+                    <input type="text"
+                           name="name"
+                           required
+                           minlength="3"
+                           #nameCtrl="ngModel"
+                           [(ngModel)]="offerData.name">
+                    <span>Offer name</span>
+                    <div *ngIf="nameCtrl.invalid && nameCtrl.touched">
+                        <p *ngIf="nameCtrl.errors?.['required']">Name is required</p>
+                        <p *ngIf="nameCtrl.errors?.['minlength']">Name must be at least 3 characters</p>
+                    </div>
+
+                </div>
+                <div class="horizontal">
+                    <div class="inputBox">
+                        <input
+                            type="number"
+                            name="price"
+                            [(ngModel)]="offerData.price"
+                            required
+                            min="1"
+                            #priceCtrl="ngModel">
+                        <span>Price (PLN)</span>
+                        <div *ngIf="priceCtrl.invalid && priceCtrl.touched">
+                            <p *ngIf="priceCtrl.errors?.['required']">Price is required</p>
+                            <p *ngIf="priceCtrl.errors?.['min']">Price must be positive</p>
+                        </div>
+                    </div>
+                    <div class="inputBox">
+                        <input
+                            type="number"
+                            name="duration"
+                            [(ngModel)]="offerData.duration"
+                            required
+                            min="10"
+                            #durationCtrl="ngModel">
+
+                        <span>Duration (min)</span>
+                        <div *ngIf="durationCtrl.invalid && durationCtrl.touched">
+                            <p *ngIf="durationCtrl.errors?.['required']">Duration is required</p>
+                            <p *ngIf="durationCtrl.errors?.['min']">Duration must be at least 10 min</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-description">
+                            <textarea
+                                name="description"
+                                [(ngModel)]="offerData.description"
+                                required
+                                minlength="10"
+                                #descCtrl="ngModel">
+                            </textarea>
+                    <span>Description</span>
+                    <div *ngIf="descCtrl.invalid && descCtrl.touched">
+                        <p *ngIf="descCtrl.errors?.['required']">Description is required</p>
+                        <p *ngIf="descCtrl.errors?.['minlength']">Description must be longer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container" (click)="onSubmit(offerForm)">
+                <div class="btn-container">
+                    <img [src]="'icons/confirm_icon.svg'" alt="search" />
+                    <div class="expand">
+                        <p class="btn-text">Confirm</p>
+                    </div>
+                </div>
+
+                <div class="btn-container" (click)="close()">
+                    <img [src]="'icons/reject_icon.svg'" alt="search" />
+                    <div class="expand">
+                        <p class="btn-text">Close</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

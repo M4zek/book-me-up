@@ -7,6 +7,9 @@ import {Pagination} from "../../../model/search/search.model";
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
 import {OfferManagementItem} from "../../../model/gui/gui.model";
 import {SearchAndSortBarComponent, SortBy} from "../../../components/search-bar/search-and-sort-bar.component";
+import {
+    CompanyAddOfferModalComponent
+} from "../../../components/modals/company-add-offer-modal/company-add-offer-modal.component";
 
 @Component({
   selector: 'app-company-management-offer',
@@ -14,12 +17,15 @@ import {SearchAndSortBarComponent, SortBy} from "../../../components/search-bar/
         CompanyManagementOfferItemComponent,
         NgForOf,
         PaginatorComponent,
-        SearchAndSortBarComponent
+        SearchAndSortBarComponent,
+        CompanyAddOfferModalComponent
     ],
   templateUrl: './company-management-offer.component.html',
   styleUrl: './company-management-offer.component.css'
 })
 export class CompanyManagementOfferComponent {
+
+    isAddOfferModalOpen = false;
 
     offers: OfferManagementItem[] = [
         {
@@ -60,4 +66,13 @@ export class CompanyManagementOfferComponent {
     onSearchChange($event: string) {
         console.log($event);
     }
+
+    openAddModal() {
+        this.isAddOfferModalOpen = true;
+    }
+
+    closeAddModal(){
+        this.isAddOfferModalOpen = false;
+    }
+
 }

@@ -33,7 +33,7 @@ export interface PortfolioModel {
 }
 
 export interface OfferManagementItem {
-    id: number;
+    id?: number;
     name: string;
     description: string;
     price: number;
