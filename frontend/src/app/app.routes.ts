@@ -15,6 +15,9 @@ import {
 import {
     CompanyManagementOfferComponent
 } from "./pages/company-management-page/company-management-offer/company-management-offer.component";
+import {
+    CompanyManagementAppointmentsComponent
+} from "./pages/company-management-page/company-management-appointments/company-management-appointments.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -49,7 +52,8 @@ export const routes: Routes = [
                 { path: '', redirectTo: "home", pathMatch: 'full' },
                 { path: 'home', component: CompanyManagementHomeComponent},
                 { path: 'employee', component: CompanyManagementEmployeeComponent},
-                { path: 'offers', component: CompanyManagementOfferComponent}
+                { path: 'offers', component: CompanyManagementOfferComponent},
+                { path: 'appointments', component: CompanyManagementAppointmentsComponent}
             ]}
         ]
     }

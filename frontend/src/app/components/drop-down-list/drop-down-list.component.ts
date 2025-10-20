@@ -26,7 +26,7 @@ export class DropDownListComponent implements OnChanges {
   @Input() placeholder: string = 'Select option'
 
   menuOpen: boolean = false;
-  @Input() selectedOption: DropDownListItem = {id: 0, content: ''};
+  @Input() selectedOption: DropDownListItem = {id: -1, content: ''};
 
   @Input() options: DropDownListItem[] = []
 

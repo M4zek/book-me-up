@@ -11,6 +11,13 @@ export interface CompanyNameAndLogo{
     companyName: string;
 }
 
+export interface EmployeeDropDownItem {
+    id: number;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+}
+
 export interface HiredEmployeeData {
     id: number;
     name: string;

@@ -1,0 +1,138 @@
+.appointments-card{
+    display: flex;
+    flex-direction: column;
+    background: var(--black-25);
+    border-radius: 5px;
+    padding: 5px;
+    transition: all .3s ease;
+}
+
+.appointments-card:hover{
+    transform: scale(1.05);
+}
+
+.name-container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    border-bottom: 1px solid var(--pink);
+}
+
+.appointments-data{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+    gap: 10px;
+}
+
+.order-user{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+    gap: 10px;
+    background-color: var(--white-10);
+    border-radius: 5px;
+}
+
+.order-user img{
+    width: 24px;
+}
+
+.order-user span{
+    width: 100%;
+    color: var(--white);
+    font-weight: bold;
+}
+
+.order-date-information{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.order-date-information div{
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--white-10);
+}
+
+.order-date-information div > span{
+    color: var(--white);
+}
+
+.pink-75-width-line{
+    width: 75%;
+    border-bottom: 2px solid var(--pink);
+    height: 2px;
+}
+
+.status-employee-information{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap:10px;
+}
+
+
+
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--white);
+    height: 35px;
+    width: 35px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    user-select: none;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.btn-container img{
+    width: 20px;
+    user-select: none;
+}
+
+.expand {
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-text {
+    margin: 0;
+    padding: 0 10px;
+    color: var(--dark);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.btn-container:active {
+    background-color: var(--lime);
+}
+
+.btn-container:hover {
+    border-radius: 10px;
+    width: 30%;
+    padding: 0 10px;
+    transition: all 0.3s ease;
+
+}
+
+.btn-container:hover .expand {
+    opacity: 1;
+    max-width: fit-content;
+}
