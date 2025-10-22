@@ -18,6 +18,12 @@ export interface EmployeeDropDownItem {
     avatar: string;
 }
 
+export interface UserNameAndAvatar {
+    id: number;
+    name: string;
+    avatar: string;
+}
+
 export interface HiredEmployeeData {
     id: number;
     name: string;

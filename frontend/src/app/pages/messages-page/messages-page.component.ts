@@ -2,6 +2,9 @@ import {Component} from '@angular/core';
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 import {NgClass, NgForOf} from "@angular/common";
 import {Pagination} from "../../model/search/search.model";
+import {
+    CreateChatRoomModalComponent
+} from "../../components/modals/create-chat-room-modal/create-chat-room-modal.component";
 
 // Temporary interface
 export interface RoomMessage {
@@ -13,15 +16,18 @@ export interface RoomMessage {
 
 @Component({
   selector: 'app-messages-page',
-  imports: [
-    PaginatorComponent,
-    NgForOf,
-    NgClass
-  ],
+    imports: [
+        PaginatorComponent,
+        NgForOf,
+        NgClass,
+        CreateChatRoomModalComponent
+    ],
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.css'
 })
 export class MessagesPageComponent {
+
+  isCreateModalVisible = false;
 
   paginator: Pagination = {
     totalItems: 50,
@@ -59,5 +65,13 @@ export class MessagesPageComponent {
 
   onItemsPerPageChange($event: number) {
     this.paginator.itemsPerPage = $event;
+  }
+
+  onCreateModalOpen(){
+    this.isCreateModalVisible = true;
+  }
+
+  onCreateModalClose() {
+    this.isCreateModalVisible = false;
   }
 }

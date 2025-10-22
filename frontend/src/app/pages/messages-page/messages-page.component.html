@@ -6,7 +6,7 @@
                 <img [src]="'icons/search_icon.svg'" alt="search"/>
             </div>
 
-            <div class="btn-create-room">
+            <div class="btn-create-room" (click)="onCreateModalOpen()">
                 <img [src]="'icons/plus_icon.svg'" alt="add"/>
                 <div class="expand">
                     <span>Create new chat</span>
@@ -66,3 +66,6 @@
     </div>
 
 </div>
+
+
+<app-create-chat-room-modal [isVisible]="isCreateModalVisible" (closeModal)="onCreateModalClose()"> </app-create-chat-room-modal>
