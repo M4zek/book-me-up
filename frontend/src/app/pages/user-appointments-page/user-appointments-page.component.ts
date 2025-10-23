@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
-import {SearchAndSortBarComponent} from "../../components/search-bar/search-and-sort-bar.component";
+import {SearchAndSortBarComponent, SortBy} from "../../components/search-bar/search-and-sort-bar.component";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Address} from "../../model/gui/gui.model";
+import {DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 
 // Temporary interface
 export interface UserAppointmentItem{
@@ -35,22 +36,27 @@ export interface Status{
 })
 export class UserAppointmentsPageComponent {
 
+  filterByItems: DropDownListItem[] = [
+    { content: 'Pending', image:'icons/pending_icon.svg' },
+    { content: 'Realized', image:'icons/realized_icon.svg' },
+    { content: 'Rejected', image:'icons/reject_icon.svg' },
+    { content: 'Canceled', image:'icons/canceled_icon.svg' },
+    { content: 'Accepted', image:'icons/accepted_icon.svg' },
+  ]
+
+  sortByItems: DropDownListItem[] = [
+    {content: 'Date', image: 'icons/sort_number_asc_icon.svg', option: 'asc'},
+    {content: 'Date', image: 'icons/sort_number_desc_icon.svg', option: 'desc'},
+    {content: 'Price', image: 'icons/sort_number_asc_icon.svg', option: 'asc'},
+    {content: 'Price', image: 'icons/sort_number_desc_icon.svg', option: 'desc'}
+  ]
+
   status: Status[] = [
-    {
-      status: 'Pending', image: 'icons/pending_icon.svg',
-    },
-    {
-      status: 'Accepted', image: 'icons/accepted_icon.svg',
-    },
-    {
-      status: 'Realized', image: 'icons/realized_icon.svg',
-    },
-    {
-      status: 'Canceled', image: 'icons/canceled_icon.svg',
-    },
-    {
-      status: 'Rejected', image: 'icons/reject_icon.svg',
-    },
+    { status: 'Pending', image: 'icons/pending_icon.svg'},
+    {status: 'Accepted', image: 'icons/accepted_icon.svg'},
+    {status: 'Realized', image: 'icons/realized_icon.svg'},
+    {status: 'Canceled', image: 'icons/canceled_icon.svg'},
+    {status: 'Rejected', image: 'icons/reject_icon.svg'},
   ]
 
   getRandomStatus(){
@@ -72,5 +78,17 @@ export class UserAppointmentsPageComponent {
 
   cancelReservation() {
 
+  }
+
+  onFilterChange($event: string) {
+    console.log($event);
+  }
+
+  onSortChange($event: SortBy) {
+    console.log($event);
+  }
+
+  onSearchChanged($event: string) {
+    console.log($event);
   }
 }

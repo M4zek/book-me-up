@@ -1,5 +1,11 @@
 <div class="appointments-container">
-    <app-search-and-sort-bar/>
+    <app-search-and-sort-bar
+            [showFilter]="true"
+            [filterByItems]="filterByItems"
+            [sortByItems]="sortByItems"
+            (searchChanged)="onSearchChanged($event)"
+            (sortChanged)="onSortChange($event)"
+            (filterChanged)="onFilterChange($event)"/>
     <div class="appointments-list">
         <div class="appointment-item"
              [ngClass]="item.status.toLowerCase()"

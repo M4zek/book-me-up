@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DropDownListComponent, DropDownListItem} from "../drop-down-list/drop-down-list.component";
 import {FormsModule} from "@angular/forms";
 import {ToastService} from "../../service/toast.service";
+import {NgIf} from "@angular/common";
 
 export interface SortBy{
   name: string;
@@ -10,32 +11,27 @@ export interface SortBy{
 
 @Component({
   selector: 'app-search-and-sort-bar',
-    imports: [
-        DropDownListComponent,
-        FormsModule
-    ],
+  imports: [
+    DropDownListComponent,
+    FormsModule,
+    NgIf
+  ],
   templateUrl: './search-and-sort-bar.component.html',
   styleUrl: './search-and-sort-bar.component.css'
 })
 export class SearchAndSortBarComponent {
   @Output() sortChanged = new EventEmitter<SortBy>();
   @Output() searchChanged = new EventEmitter<string>();
+  @Output() filterChanged = new EventEmitter<string>();
 
   @Input() placeholder: string = 'Search...';
+  @Input() showFilter: boolean = false;
 
   searchValue: string = '';
 
-  sortByItems: DropDownListItem[] = [
-    {
-      content: 'Name', image: 'icons/sort_string_asc_icon.svg', option: 'asc',
-    }, {
-      content: 'Name', image: 'icons/sort_string_desc_icon.svg', option: 'desc',
-    }, {
-      content: 'Price', image: 'icons/sort_number_asc_icon.svg', option: 'asc',
-    }, {
-      content: 'Price', image: 'icons/sort_number_desc_icon.svg', option: 'desc',
-    }
-  ]
+  @Input() filterByItems: DropDownListItem[] = []
+
+  @Input() sortByItems: DropDownListItem[] = []
 
   constructor(private toast: ToastService) { }
 
@@ -63,6 +59,12 @@ export class SearchAndSortBarComponent {
       this.searchChanged.emit(this.searchValue);
     } else {
       this.toast.show('The search field cannot be empty', 'warning');
+    }
+  }
+
+  onFilterChanged($event: DropDownListItem) {
+    if($event.content) {
+      this.filterChanged.emit($event.content);
     }
   }
 }

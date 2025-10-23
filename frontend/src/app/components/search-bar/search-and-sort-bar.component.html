@@ -16,8 +16,15 @@
 
     <div class="sort-by">
         <app-drop-down-list
+                *ngIf="showFilter"
+                (valueChanged)="onFilterChanged($event)"
+                [options]="filterByItems"
+                [placeholder]="'Filter by'"
+        />
+        <app-drop-down-list
                 (valueChanged)="onSortChanged($event)"
                 [options]="sortByItems"
-                [placeholder]="'Sort by'"/>
+                [placeholder]="'Sort by'"
+        />
     </div>
 </div>
