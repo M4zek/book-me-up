@@ -1,4 +1,6 @@
 <div class="top-bar-container">
+    <div class="parent">
+
     <p class="title-paragraph">Book me up</p>
 
     <div class="search-container" [class.active]="isActive">
@@ -20,6 +22,7 @@
 
     <div class="top-bar-sing-in-create-account">
         <p [textContent]="sign_in_or_create_account" class="sign-in-paragraph" (click)="showAuthModal()"></p>
+    </div>
     </div>
 </div>
 
