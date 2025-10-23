@@ -3,11 +3,13 @@
 }
 
 .result-list-container{
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 10px;
+    width: 100%;
     flex-wrap: wrap;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
-    max-height: 90vh;
+    max-height: 40vh;
     overflow-y: auto;
 }

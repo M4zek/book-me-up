@@ -4,13 +4,15 @@ import {CompanyListComponent} from "../../../components/company-list-item/compan
 import {CompanyListItemComponent} from "../../../components/company-list-item/company-list-item.component";
 import {SearchCompanyResult} from "../../../model/search/search.model";
 import {Subject, takeUntil} from "rxjs";
+import {PaginatorComponent} from "../../../components/paginator/paginator.component";
 
 @Component({
   selector: 'app-search-result',
-  imports: [
-    CompanyListComponent,
-    CompanyListItemComponent
-  ],
+    imports: [
+        CompanyListComponent,
+        CompanyListItemComponent,
+        PaginatorComponent
+    ],
   templateUrl: './search-result.component.html',
   styleUrl: './search-result.component.css'
 })
