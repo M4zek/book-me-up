@@ -19,6 +19,7 @@ import {
     CompanyManagementAppointmentsComponent
 } from "./pages/company-management-page/company-management-appointments/company-management-appointments.component";
 import {MessagesPageComponent} from "./pages/messages-page/messages-page.component";
+import {UserAppointmentsPageComponent} from "./pages/user-appointments-page/user-appointments-page.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -57,6 +58,7 @@ export const routes: Routes = [
                 { path: 'appointments', component: CompanyManagementAppointmentsComponent}
             ]},
             { path: 'messages', component: MessagesPageComponent},
+            { path: 'appointments', component: UserAppointmentsPageComponent},
         ]
     }
 ];

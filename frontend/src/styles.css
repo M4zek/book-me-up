@@ -6,6 +6,7 @@
     --black-50: rgba(0, 0, 0, 0.5);
     --black-75: rgba(0, 0, 0, 0.75);
 
+    --gray: #1E1E1E;
 
     --white: white;
     --white-5: rgba(255, 255, 255, 0.05);
@@ -17,6 +18,7 @@
 
 
     --pink: #C80037;
+    --pink_5: rgba(200, 0, 55, 0.05);
     --pink_10: rgba(200, 0, 55, 0.1);
     --pink_25: rgba(200, 0, 55, 0.25);
     --pink_50: rgba(200, 0, 55, 0.5);
@@ -28,16 +30,28 @@
     --light-blue-85: rgba(0, 187, 255, 0.85);
     --light-blue-15: rgba(0, 147, 188, 0.15);
     --light-blue-25: rgba(0, 147, 188, 0.25);
+    --light-blue-10: rgba(0, 147, 188, 0.10);
+    --light-blue-5: rgba(0, 147, 188, 0.05);
 
     --dark-blue: #0f1b24;
 
     --gold: #BC8100;
+    --gold-10: rgba(188, 129, 0, 0.1);
+    --gold-5: rgba(188, 129, 0, 0.05);
     --light-yellow: #CACA6B;
 
     --lime: #73CA6B;
+    --lime_5: rgba(115, 202, 107, 0.05);
+    --lime_10: rgba(115, 202, 107, 0.10);
     --lime_25: rgba(115, 202, 107, 0.25);
     --lime_50: rgba(115, 202, 107, 0.5);
     --lime_750: rgba(115, 202, 107, 0.75);
+
+    --green: #0dff00;
+    --green-5: rgba(13, 255, 0, 0.05);
+    --green-10: rgba(13, 255, 0, 0.1);
+
+
 }
 
 ::-webkit-scrollbar {
