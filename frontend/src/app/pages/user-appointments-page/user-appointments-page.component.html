@@ -9,7 +9,7 @@
     <div class="appointments-list">
         <div class="appointment-item"
              [ngClass]="item.status.toLowerCase()"
-             *ngFor="let item of createList(10)">
+             *ngFor="let item of this.tmpList">
             <img [src]="'images/default_logo_company.png'" alt="logo"/>
             <span>Company Name</span>
 
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="button opinion"
-                     (click)="addOpinionOffer()"
+                     (click)="openAddOpinionModal()"
                     *ngIf="item.status === 'Realized'">
                     <img [src]="'icons/white_stroke_star_icon.svg'" alt="cancel"/>
                     <div class="expand">
@@ -62,3 +62,5 @@
     </div>
     <app-paginator/>
 </div>
+
+<app-add-opinion-modal [isVisible]="isAddModalOpen" (closeModal)="onAddOpinionModalClose()"/>

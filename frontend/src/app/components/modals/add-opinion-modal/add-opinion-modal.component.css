@@ -1,0 +1,98 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: var(--dark);
+    border-radius: 8px;
+    top: 10%;
+    width: 50%;
+    padding: 10px;
+    position: absolute;
+    max-width: 600px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.top{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    border-bottom: 2px solid var(--pink);
+}
+
+.top img{
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: 30px;
+}
+
+.top span{
+    font: bold 17px/1.5 "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.rating-input,
+.opinion-content{
+    width: 100%;
+    border: 2px solid var(--pink);
+    background-color: var(--white-10);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.opinion-content textarea{
+    width: 100%;
+    background-color: transparent;
+    color: var(--white);
+    border: none;
+    resize: none;
+    height: 200px;
+}
+
+.opinion-content textarea:focus{
+    outline: none;
+}
+
+.button{
+    display: flex;
+    width: 30%;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--pink_25);
+    border-radius: 5px;
+    border: 2px solid var(--pink);
+    transition: all .2s ease;
+}
+
+.button span{
+    font: bold 14px/1.5 "Roboto", sans-serif;
+    color: var(--white);
+    user-select: none;
+}
+.button:hover{
+    cursor: pointer;
+}
+
+.button:active{
+    cursor: pointer;
+    background-color: var(--lime);
+}

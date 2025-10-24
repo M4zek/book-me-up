@@ -1,6 +1,10 @@
 <div class="stars">
-    <ng-container *ngFor="let star of stars">
-        <svg viewBox="0 0 24 24" class="star">
+    <ng-container
+            *ngFor="let star of stars, let i = index"
+    >
+        <svg viewBox="0 0 24 24" class="star"
+        (click)="setRating(i + 1)"
+        >
             <defs>
                 <linearGradient [attr.id]="'grad' + star">
                     <stop [attr.offset]="getStarFill(star) + '%'" stop-color="gold"/>

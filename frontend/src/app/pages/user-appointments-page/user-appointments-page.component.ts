@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SearchAndSortBarComponent, SortBy} from "../../components/search-bar/search-and-sort-bar.component";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Address} from "../../model/gui/gui.model";
 import {DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
+import {AddOpinionModalComponent} from "../../components/modals/add-opinion-modal/add-opinion-modal.component";
 
 // Temporary interface
 export interface UserAppointmentItem{
@@ -24,17 +25,26 @@ export interface Status{
 
 @Component({
   selector: 'app-user-appointments-page',
-  imports: [
-    SearchAndSortBarComponent,
-    PaginatorComponent,
-    NgForOf,
-    NgClass,
-    NgIf
-  ],
+    imports: [
+        SearchAndSortBarComponent,
+        PaginatorComponent,
+        NgForOf,
+        NgClass,
+        NgIf,
+        AddOpinionModalComponent
+    ],
   templateUrl: './user-appointments-page.component.html',
   styleUrl: './user-appointments-page.component.css'
 })
-export class UserAppointmentsPageComponent {
+export class UserAppointmentsPageComponent implements OnInit {
+
+  ngOnInit(): void {
+      this.createList(10)
+  }
+
+  tmpList:Status [] = []
+
+  isAddModalOpen = false;
 
   filterByItems: DropDownListItem[] = [
     { content: 'Pending', image:'icons/pending_icon.svg' },
@@ -65,15 +75,9 @@ export class UserAppointmentsPageComponent {
 
 
   createList(max: number){
-    let list: Status[] = [];
     for (let i = 0; i < max; i++) {
-      list.push(this.getRandomStatus());
+      this.tmpList.push(this.getRandomStatus());
     }
-    return list;
-  }
-
-  addOpinionOffer() {
-
   }
 
   cancelReservation() {
@@ -90,5 +94,13 @@ export class UserAppointmentsPageComponent {
 
   onSearchChanged($event: string) {
     console.log($event);
+  }
+
+  openAddOpinionModal() {
+    this.isAddModalOpen = true;
+  }
+
+  onAddOpinionModalClose() {
+    this.isAddModalOpen = false;
   }
 }
