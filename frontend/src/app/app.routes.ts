@@ -20,6 +20,7 @@ import {
 } from "./pages/company-management-page/company-management-appointments/company-management-appointments.component";
 import {MessagesPageComponent} from "./pages/messages-page/messages-page.component";
 import {UserAppointmentsPageComponent} from "./pages/user-appointments-page/user-appointments-page.component";
+import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -32,11 +33,11 @@ export const routes: Routes = [
             children: [
                 { path: '', redirectTo: "welcome", pathMatch: 'full'},
                 { path: 'welcome', component: WelcomeComponent},
-                { path: 'search', component: SearchResultComponent}
+                { path: 'search', component: SearchResultComponent},
+                { path: '**', component: PageNotFoundComponent },
             ]},
-            { path: 'company', component: CompanyViewComponent }
-        ]
-    },
+            { path: 'company', component: CompanyViewComponent },
+        ] },
     {
         path: 'app',
         component: DashboardComponent,
@@ -46,7 +47,8 @@ export const routes: Routes = [
                 children: [
                     { path: '', redirectTo: "welcome", pathMatch: 'full'},
                     { path: 'welcome', component: WelcomeComponent},
-                    { path: 'search', component: SearchResultComponent}
+                    { path: 'search', component: SearchResultComponent},
+                    { path: '**', component: PageNotFoundComponent },
                 ]},
             { path: 'company', component: CompanyViewComponent},
             { path: 'company-management', component: CompanyManagementPageComponent,
@@ -55,10 +57,13 @@ export const routes: Routes = [
                 { path: 'home', component: CompanyManagementHomeComponent},
                 { path: 'employee', component: CompanyManagementEmployeeComponent},
                 { path: 'offers', component: CompanyManagementOfferComponent},
-                { path: 'appointments', component: CompanyManagementAppointmentsComponent}
+                { path: 'appointments', component: CompanyManagementAppointmentsComponent},
+                { path: '**', component: PageNotFoundComponent },
             ]},
             { path: 'messages', component: MessagesPageComponent},
             { path: 'appointments', component: UserAppointmentsPageComponent},
+            { path: '**', component: PageNotFoundComponent }
         ]
-    }
+    },
+    { path: '**', component: PageNotFoundComponent }
 ];

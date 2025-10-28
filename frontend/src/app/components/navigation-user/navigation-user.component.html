@@ -51,7 +51,7 @@
                     <div class="nav-icon-container">
                         <img [src]="item.icon" alt="My appointments"/>
                     </div>
-                    <p [ngClass]="router.url == item.path ? 'active': ''">{{item.name}}</p>
+                    <p [ngClass]="router.url.includes(item.path) ? 'active': ''">{{item.name}}</p>
                 </li>
 
             </ul>
