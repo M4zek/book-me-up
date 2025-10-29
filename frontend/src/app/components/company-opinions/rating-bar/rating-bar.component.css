@@ -1,0 +1,45 @@
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+    width: 100%;
+}
+
+.rating-number {
+    display: flex;
+    flex-direction: row;
+    width: 20px;
+    gap: 3px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.progress-bar {
+    flex: 1;
+    width: 100%;
+    background-color: var(--white-5);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress{
+    height: 2px;
+    border-radius: 5px;
+    width: 0;
+    background-color: var(--gold);
+}
+
+
+.rating-count {
+    width: 30px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.rating-row p{
+    font: .9rem 'Roboto', sans-serif;
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+}

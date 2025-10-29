@@ -1,0 +1,38 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="map-localization">
+            <app-map [currentAddress]="currentLocalization" (resultAddressFound)="onResultMapAddressChange($event)"></app-map>
+        </div>
+        <div class="edit-data-container">
+            <input [(ngModel)]="newLocalization.city" type="text" placeholder="City"/>
+            <input [(ngModel)]="newLocalization.street" type="text" placeholder="Street"/>
+            <input [(ngModel)]="newLocalization.buildingNumber" type="text" placeholder="Building number"/>
+            <input [(ngModel)]="newLocalization.postalCode" type="text" placeholder="Postal code"/>
+        </div>
+        <div class="edit-container-buttons">
+            <div class="btn-container dark-bg"
+                 (click)="searchNewAddress()">
+                <img [src]="'icons/search_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text white">Show address on the map</p>
+                </div>
+            </div>
+
+            <div class="btn-container"
+                 (click)="confirmEdit()"
+                 [class.disabled]="!isAddressFound">
+                <img [src]="'icons/confirm_icon.svg'" alt="confirm" />
+                <div class="expand">
+                    <p class="btn-text">Confirm new address</p>
+                </div>
+            </div>
+
+            <div class="btn-container" (click)="close()">
+                <img [src]="'icons/reject_icon.svg'" alt="close" />
+                <div class="expand">
+                    <p class="btn-text">Close</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

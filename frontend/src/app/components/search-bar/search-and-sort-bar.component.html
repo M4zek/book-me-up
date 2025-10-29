@@ -1,0 +1,30 @@
+<div class="search-bar">
+    <div class="search">
+        <input type="text"
+               [placeholder]="placeholder"
+               [(ngModel)]="searchValue"/>
+
+        <div class="btn-container">
+            <div class="img-cont" (click)="searchConfirm()">
+                <img [src]="'icons/search_icon.svg'" alt="search" />
+            </div>
+            <div class="img-cont" (click)="clearSearch()">
+                <img [src]="'icons/reject_icon.svg'" alt="search" />
+            </div>
+        </div>
+    </div>
+
+    <div class="sort-by">
+        <app-drop-down-list
+                *ngIf="showFilter"
+                (valueChanged)="onFilterChanged($event)"
+                [options]="filterByItems"
+                [placeholder]="'Filter by'"
+        />
+        <app-drop-down-list
+                (valueChanged)="onSortChanged($event)"
+                [options]="sortByItems"
+                [placeholder]="'Sort by'"
+        />
+    </div>
+</div>

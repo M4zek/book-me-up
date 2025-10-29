@@ -1,0 +1,16 @@
+<div class="main-container">
+    <img [src]="company_logo_url" class="company-logo" alt="logo">
+    <div class="company-data">
+        <div class="name-address-data-container">
+            <p class="company-name-paragraph">{{company_name}}</p>
+            <p class="company-address-paragraph">{{company_address}}</p>
+        </div>
+        <div class="reviews-data">
+            <div class="reviews-rating">
+                <p class="rating-paragraph">{{rating}}</p>
+                <img [src]="star_icon" alt="star"/>
+            </div>
+            <p class="number-reviews-paragraph">{{number_of_opinions}} opinions</p>
+        </div>
+    </div>
+</div>

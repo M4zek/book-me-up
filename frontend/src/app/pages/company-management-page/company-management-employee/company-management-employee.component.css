@@ -1,0 +1,244 @@
+.hired-employee-view{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+}
+
+.top-bar{
+    display: flex;
+    flex-flow: row;
+    border-bottom: 1px solid var(--white-50);
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 10px;
+    /*height: 60px;*/
+}
+
+.img-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*width: 40px;*/
+    /*height: 40px;*/
+    padding: 5px;
+    border-radius: 50%;
+    transition: all .3s ease;
+}
+
+.img-container:hover{
+    background-color: var(--pink_50);
+}
+
+.add-employee{
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease;
+    overflow: hidden;
+    padding: 5px;
+    background-color: var(--pink);
+    border-radius: 50%;
+    /*padding: 10px;*/
+    user-select: none;
+}
+
+.add-employee img{
+    width: 18px;
+}
+
+.add-employee:hover{
+    border-radius: 5px;
+}
+
+.add-employee:active{
+    background-color: var(--lime);
+}
+
+.add-employee:hover .expand {
+    width: 125px;
+    opacity: 1;
+    margin-left: 10px;
+}
+.add-employee:hover .expand p {
+    opacity: 1;
+}
+
+.expand{
+    display: flex;
+    width: 0;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    transition: width .3s ease,
+                opacity .15s ease;
+}
+
+.expand p{
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    color: var(--white);
+    text-wrap: nowrap;
+    transition: all .3s ease;
+}
+
+.search{
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    /*padding: 10px;*/
+    gap: 10px;
+}
+
+.img-container img{
+    width: 20px;
+}
+
+.search input{
+    width: 90%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: white;
+}
+
+.content{
+    display: flex;
+    flex: 1;
+}
+
+.hired-employee-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.employee-item{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:5px;
+}
+
+.employee-item img{
+    width: 75%;
+}
+
+h2{
+    margin: 0;
+}
+
+
+:host ::ng-deep app-drop-down-list .dropdown-container {
+    border-bottom: none;
+    padding: 0;
+}
+
+
+.fire-employee{
+    display: flex;
+    flex-flow: row;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    background-color: transparent;
+    border-radius: 16px;
+    padding: 10px;
+    user-select: none;
+    transition: all .3s ease;
+    position: absolute;
+    top: 2%;
+    left: 3%;
+}
+
+.fire-employee p {
+    opacity: 0;
+    color: var(--white);
+    text-wrap: nowrap;
+    width: 0;
+    margin-left: 10px;
+    transition: all .3s ease;
+}
+
+.fire-employee:hover {
+    background-color: var(--pink_50);
+    width: 70%;
+    border-radius: 16px;
+}
+
+.fire-employee:active{
+    background-color: var(--lime);
+}
+
+.fire-employee:hover .expand {
+    width: auto;
+    opacity: 1;
+    transition: all .3s ease;
+}
+.fire-employee:hover .expand p {
+    opacity: 1;
+    width: 100%;
+    transition: all .3s ease;
+}
+
+h3{
+    margin: 0;
+    padding: 5px;
+    color: var(--white);
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    justify-items: center;
+}
+
+.profile-card {
+    background: rgba(10, 10, 20, 0.8);
+    border: 1px solid var(--pink);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    max-width: 240px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.profile-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.email, .phone {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+@media (min-width: 1200px) {
+    .card-container {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+

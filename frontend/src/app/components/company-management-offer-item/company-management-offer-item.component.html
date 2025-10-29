@@ -1,0 +1,89 @@
+<div class="offer-card">
+    <div class="inputBox"
+         [class.editable]="!toEdit"
+    >
+        <input type="text"
+               [disabled]="toEdit"
+               [(ngModel)]="changesOffer.name">
+        <span>Offer name :</span>
+    </div>
+    <div class="horizontal">
+        <div class="img-cont">
+            <img [src]="'images/universal_service_booking.svg'" alt="img"/>
+        </div>
+        <div class="parent">
+
+             <div class="horizontal">
+                 <div class="inputBox"
+                      [class.editable]="!toEdit">
+                     <input type="text"
+                            [disabled]="toEdit"
+                            [(ngModel)]="changesOffer.price">
+                     <span>Price (PLN)</span>
+                 </div>
+             </div>
+
+            <div class="horizontal">
+                <div class="inputBox"
+                [class.editable]="!toEdit"
+                >
+                    <input type="text"
+                           [disabled]="toEdit"
+                           [(ngModel)]="changesOffer.duration">
+                    <span>Duration (min)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="offer-description"
+         [class.editable]="!toEdit"
+    >
+        <textarea [(ngModel)]="changesOffer.description"
+                  [disabled]="toEdit"
+                  type="text"> </textarea>
+        <span>Description</span>
+    </div>
+
+    <div class="button-container">
+        <div class="btn-container bg-white"
+             *ngIf="!toEdit"
+             [class.disabled]="!isOfferChanged()"
+             (click)="confirmChanges()"
+             >
+            <img [src]="'icons/confirm_icon.svg'" alt="search" />
+            <div class="expand">
+                <p class="btn-text">Confirm</p>
+            </div>
+        </div>
+
+        <div class="btn-container bg-blue"
+             *ngIf="toEdit"
+             (click)="edit()"
+        >
+            <img [src]="'icons/pencil_icon.svg'" alt="search" />
+            <div class="expand">
+                <p class="btn-text">Edit</p>
+            </div>
+        </div>
+
+        <div class="btn-container bg-dark-blue"
+             (click)="cancelEdit()"
+             *ngIf="!toEdit"
+        >
+            <img [src]="'icons/plus_icon.svg'" alt="search" />
+            <div class="expand">
+                <p class="btn-text">Cancel</p>
+            </div>
+        </div>
+
+        <div class="btn-container bg-pink"
+        (click)="removeOffer()"
+        >
+            <img [src]="'icons/trash_icon.svg'" alt="search" />
+            <div class="expand">
+                <p class="btn-text">Remove</p>
+            </div>
+        </div>
+
+    </div>
+</div>

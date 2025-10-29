@@ -1,0 +1,22 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="top">
+            <img [src]="'images/default_logo_company.png'" alt="logo">
+            <span>Company Name - Offer name</span>
+        </div>
+        <div class="rating-input">
+            <app-rating-stars
+                    (ratingChanged)="onRatingChange($event)"
+                    [isEditing]="true"/>
+        </div>
+        <div class="opinion-content">
+            <textarea
+                    maxlength="1024"
+                    placeholder="Write your opinion here..."></textarea>
+        </div>
+        <div class="button"
+            (click)="confirm()">
+            <span>Confirm</span>
+        </div>
+    </div>
+</div>

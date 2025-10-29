@@ -1,0 +1,44 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="logo-container">
+            <img [src]="copyLogoAndName.logo" alt="company-logo">
+            <div class="select-image-container"  (click)="openDialogFile()">
+                <img [src]="'icons/file_select_icon.svg'" alt="icon">
+                <div class="expand">
+                    <p>Select new logo</p>
+                </div>
+                <input
+                        type="file"
+                        #fileInput
+                        style="display: none"
+                        (change)="onFileSelected($event)"
+                />
+            </div>
+        </div>
+        <div class="edit-name-container">
+            <p>File name: </p>
+            <input [(ngModel)]="copyLogoAndName.logoName" disabled>
+        </div>
+        <div class="edit-name-container">
+            <p>Company Name: </p>
+            <input [(ngModel)]="copyLogoAndName.companyName">
+        </div>
+        <div class="edit-container-buttons">
+
+            <div class="btn-container dark-bg"
+                 (click)="confirmEdit()">
+                <img [src]="'icons/confirm_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text white">Confirm changes</p>
+                </div>
+            </div>
+
+            <div class="btn-container" (click)="close()">
+                <img [src]="'icons/reject_icon.svg'" alt="close" />
+                <div class="expand">
+                    <p class="btn-text">Close</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="category-container">
+    <div class="category-list-container">
+        <ul class="category-list">
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">3231</p>
+            </li>
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">1321</p>
+            </li>
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">1321</p>
+            </li>
+        </ul>
+        <img class="drop-down-icon" [ngClass]="{ 'up': isDropdownOpen }" [src]="drop_down_icon" alt="More" (click)="toggleDropdown()" />
+    </div>
+    <div class="category-other-container-dropdown" [ngClass]="{ 'show': isDropdownOpen }">
+        <ul class="category-list">
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">3231</p>
+            </li>
+            <li class="category-item">
+                <p class="category-name-paragraph">Test</p>
+                <p class="category-company-amount">1321</p>
+            </li>
+        </ul>
+    </div>
+</div>

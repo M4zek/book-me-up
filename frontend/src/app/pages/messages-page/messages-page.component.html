@@ -1,0 +1,71 @@
+<div class="messages-page">
+    <div class="list-container">
+        <div class="top">
+            <div class="search">
+                <input type="text" placeholder="Search by user or chat name"/>
+                <img [src]="'icons/search_icon.svg'" alt="search"/>
+            </div>
+
+            <div class="btn-create-room" (click)="onCreateModalOpen()">
+                <img [src]="'icons/plus_icon.svg'" alt="add"/>
+                <div class="expand">
+                    <span>Create new chat</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="list">
+            <div class="list-item" *ngFor="let item of createList(5)">
+                <img [src]="'images/user_default_avatar.png'" alt="img"/>
+                <span>John Doe</span>
+            </div>
+        </div>
+
+        <app-paginator [pagination]="paginator"
+                       (itemsPerPageChange)="onItemsPerPageChange($event)"
+                       (pageChange)="onPageChange($event)"/>
+    </div>
+
+    <div class="message-content">
+        <div class="room">
+            <div class="cont">
+                <div class="images">
+                    <img *ngFor="let item of createList(15), let i = index"
+                            [src]="'images/user_default_avatar.png'"
+                         alt="img"/>
+                </div>
+                <span>Room name</span>
+            </div>
+            <img [src]="'icons/menu_icon.svg'" alt="menu"/>
+        </div>
+
+        <div class="messages">
+            <div class="parent" *ngFor="let item of createList(5), let i = index"
+            [ngClass]="getMessageSide(i)">
+                <div class="message-item">
+                    <div class="top-message">
+                        <div class="user-data">
+                            <img [src]="'images/user_default_avatar.png'" alt="img"/>
+                            <span>John Doe</span>
+                        </div>
+                        <span>14:30</span>
+                    </div>
+                    <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    </span>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="write">
+            <textarea type="text" placeholder="Write your message here..."></textarea>
+            <img [src]="'icons/plane_icon.svg'" alt="send"/>
+        </div>
+
+    </div>
+
+</div>
+
+
+<app-create-chat-room-modal [isVisible]="isCreateModalVisible" (closeModal)="onCreateModalClose()"> </app-create-chat-room-modal>

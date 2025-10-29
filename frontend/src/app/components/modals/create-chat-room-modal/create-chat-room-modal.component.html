@@ -1,0 +1,89 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="title-create">
+            <h2>Create new chat room</h2>
+        </div>
+
+        <div class="create-navigation">
+            <div class="navigation-item" (click)="isSingleChat = true"
+            [class.active]="isSingleChat"
+            >
+                <span>Single chat</span>
+            </div>
+            <div class="navigation-item"
+                 [class.active]="!isSingleChat"
+                 (click)="isSingleChat = false">
+                <span>Group chat</span>
+            </div>
+        </div>
+
+        <div class="create-content-container">
+            <app-search-and-sort-bar/>
+
+            <div class="single-chat-container" *ngIf="isSingleChat">
+                <div class="grid-list-container">
+                    <div class="list-row"
+                         [ngClass]="{'selected' : item == selectedUser}"
+                         (click)="selectUser(item)"
+                         *ngFor="let item of this.resultUserList">
+                        <img [src]="item.avatar" alt="Avatar">
+                        <span>{{ item.name }}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="group-chat-container" *ngIf="!isSingleChat">
+                <form #roomNameForm="ngForm">
+                    <div class="inputBox">
+                        <input type="text"
+                               name="name"
+                               required
+                               minlength="3"
+                               #nameCtrl="ngModel"
+                               [(ngModel)]="roomName">
+                        <span>Room name</span>
+                        <div *ngIf="nameCtrl.invalid && nameCtrl.touched">
+                            <p *ngIf="nameCtrl.errors?.['required']">Room name is required</p>
+                            <p *ngIf="nameCtrl.errors?.['minlength']">Room name must be at least 3 characters</p>
+                        </div>
+                    </div>
+                </form>
+
+            <div class="users-list">
+                <div class="result-user-container">
+                    <span>Search result</span>
+                    <div class="result-user-list">
+                        <div class="list-row"
+                             [ngClass]="{'disabled': isUserSelected(item)}"
+                             (click)="addUserToSelected(item)"
+                             *ngFor="let item of this.resultUserList">
+                            <img [src]="item.avatar" alt="Avatar">
+                            <span>{{item.name}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="selected-user-container">
+                    <span>Added chat users</span>
+                    <div class="selected-user-list">
+                        <div class="list-row"
+                             (click)="removeUserFromSelected(item)"
+                             *ngFor="let item of this.selectedUserList">
+                            <img [src]="item.avatar" alt="Avatar">
+                            <span>{{item.name}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <app-paginator [pagination]="paginator"
+                           (itemsPerPageChange)="onItemsPerPageChange($event)"
+                           (pageChange)="onPageChange($event)" />
+        </div>
+
+        <div class="confirm-button" (click)="confirm()">
+            <span>Confirm</span>
+        </div>
+    </div>
+</div>

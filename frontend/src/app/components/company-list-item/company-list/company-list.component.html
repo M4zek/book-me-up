@@ -1,0 +1,16 @@
+<div class="main-list-container">
+    <div class="list-row-container">
+        <div #container class="row-items-container"
+             [style.transform]="'translateX(' + (-currentIndex * itemWidth) + 'px)'">
+            <app-company-list-item *ngFor="let item of rows(company_list_size)"></app-company-list-item>
+        </div>
+    </div>
+
+    <div class="circle-left" (click)="prev()">
+        <img [src]="left_arrow_icon_path" alt="<" />
+    </div>
+    <div class="circle-right" (click)="next()">
+        <img [src]="right_arrow_icon_path" alt=">" />
+    </div>
+
+</div>

@@ -1,0 +1,96 @@
+.category-container{
+    width: 100%;
+    background-color: transparent;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    border-bottom: 2px solid var(--white);
+}
+
+.category-list-container{
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    justify-content: center;
+    display: flex;
+}
+
+
+.category-list, .category-item{
+    width: auto;
+    height: auto;
+    padding: 0;
+}
+
+.category-list{
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-item{
+    font: bold 14px/1.5 Georgia, "Times New Roman", Times, serif;
+    color: var(--white);
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+}
+
+.category-item p{
+    padding: 0;
+    margin: 0;
+}
+
+.category-item > .category-company-amount{
+    font-size: 12px;
+    user-select: none;
+}
+
+.category-item > .category-name-paragraph{
+    font-size: 14px;
+    user-select: none;
+}
+
+.category-item:hover{
+    color: var(--pink);
+    transition: .35s;
+}
+
+
+.category-other-container-dropdown{
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    list-style: none;
+    gap: 30px;
+    margin-bottom: 10px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+.category-other-container-dropdown.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.drop-down-icon{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+}
+
+.drop-down-icon.up{
+    rotate: 180deg;
+    transition: .2s ease-in-out;
+}

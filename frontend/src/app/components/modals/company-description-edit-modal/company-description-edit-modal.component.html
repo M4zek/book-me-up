@@ -1,0 +1,15 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="edit-container">
+            <textarea type="text" [value]="description"></textarea>
+        </div>
+        <div class="edit-container-buttons">
+            <div class="btn-container">
+                <img [src]="'icons/confirm_icon.svg'" alt="confirm" (click)="confirmEdit()"/>
+            </div>
+            <div class="btn-container" (click)="close()">
+                <img [src]="'icons/reject_icon.svg'" alt="close"/>
+            </div>
+        </div>
+    </div>
+</div>

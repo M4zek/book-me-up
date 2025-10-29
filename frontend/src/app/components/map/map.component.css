@@ -1,0 +1,25 @@
+.map-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    display: flex;
+}
+
+.map{
+    width: 100%;
+    height: 300px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.map-localization{
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    display: flex;
+}
+
+.map-localization img{
+    width: 300px;
+    border-radius: 50%;
+}

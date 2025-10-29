@@ -1,0 +1,66 @@
+<div class="appointments-container">
+    <app-search-and-sort-bar
+            [showFilter]="true"
+            [filterByItems]="filterByItems"
+            [sortByItems]="sortByItems"
+            (searchChanged)="onSearchChanged($event)"
+            (sortChanged)="onSortChange($event)"
+            (filterChanged)="onFilterChange($event)"/>
+    <div class="appointments-list">
+        <div class="appointment-item"
+             [ngClass]="item.status.toLowerCase()"
+             *ngFor="let item of this.tmpList">
+            <img [src]="'images/default_logo_company.png'" alt="logo"/>
+            <span>Company Name</span>
+
+            <div class="action-buttons">
+                <div class="button status">
+                    <img [src]="item.image" alt="status"/>
+                    <div class="expand">
+                        <span>{{item.status}}</span>
+                    </div>
+                </div>
+                <div class="button cancel"
+                     *ngIf="item.status != 'Realized'"
+                     (click)="cancelReservation()">
+                    <img [src]="'icons/plus_icon.svg'" alt="cancel"/>
+                    <div class="expand">
+                        <span>Cancel</span>
+                    </div>
+                </div>
+
+                <div class="button opinion"
+                     (click)="openAddOpinionModal()"
+                    *ngIf="item.status === 'Realized'">
+                    <img [src]="'icons/white_stroke_star_icon.svg'" alt="cancel"/>
+                    <div class="expand">
+                        <span>Add opinion</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="appointment-information">
+                <div class="information-item">
+                    <img [src]="'icons/localization_stroke_icon.svg'" alt="localization"/>
+                    <span> 123 New York </span>
+                </div>
+                <div class="information-item">
+                    <img [src]="'icons/calendar_stroke_icon.svg'" alt="date"/>
+                    <span> Mon, February 3, 14:30 - 15:00 </span>
+                </div>
+                <div class="information-item">
+                    <img [src]="'icons/stroke_bookmark_icon.svg'" alt="bookmark"/>
+                    <span> Men's haircut </span>
+                </div>
+                <div class="information-item">
+                    <img [src]="'icons/dollar_icon.svg'" alt="price"/>
+                    <span> 35 PLN </span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <app-paginator/>
+</div>
+
+<app-add-opinion-modal [isVisible]="isAddModalOpen" (closeModal)="onAddOpinionModalClose()"/>

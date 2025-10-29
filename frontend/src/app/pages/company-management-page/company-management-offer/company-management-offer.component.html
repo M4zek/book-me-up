@@ -1,0 +1,25 @@
+<div class="parent">
+    <div class="horizontal">
+        <div class="search-bar-cont">
+            <app-search-and-sort-bar
+                    (searchChanged)="onSearchChange($event)"
+                    (sortChanged)="onSortChange($event)"/>
+        </div>
+        <div class="add-button-container" (click)="openAddModal()">
+            <img [src]="'icons/plus_icon.svg'" alt="add"/>
+            <div class="expand">
+                <span>Add new offer</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="offer-card-container">
+        <app-company-management-offer-item *ngFor="let offer of offers" [offer]="offer"/>
+    </div>
+    <app-paginator [pagination]="paginator"
+                   (itemsPerPageChange)="onItemsPerPageChange($event)"
+                   (pageChange)="onPageChange($event)"/>
+</div>
+
+
+<app-company-add-offer-modal [isVisible]="isAddOfferModalOpen" (closeModal)="closeAddModal()"/>

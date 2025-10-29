@@ -1,0 +1,43 @@
+<div class="hired-employee-view">
+
+    <div class="top-bar">
+        <div class="search">
+            <div class="img-container">
+                <img [src]="'icons/search_icon.svg'" alt="Search"/>
+            </div>
+            <input type="text" placeholder="Search employee"/>
+        </div>
+        <div class="add-employee" (click)="openAddEmployeeModal()">
+            <img [src]="'icons/plus_icon.svg'" alt="add"/>
+            <div class="expand">
+                <p>Add new employee</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-container">
+        <div class="profile-card" *ngFor="let user of users">
+            <img [src]="user.photo" alt="Profile photo" class="avatar" />
+            <h3>{{ user.name }}</h3>
+            <app-drop-down-list [options]="roles" [selectedOption]="getEmployeeRole(user.role)"/>
+            <p class="email">{{ user.email }}</p>
+            <p class="phone">{{ user.phone }}</p>
+
+            <div class="fire-employee" (click)="fireEmployee(user.id)">
+                <img [src]="'icons/reject_icon.svg'" alt="remove"/>
+                <div class="expand">
+                    <p>Fire employee</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <app-paginator [pagination]="pagination"
+                   (itemsPerPageChange)="onItemsPerPageChange($event)"
+                   (pageChange)="onPageChange($event)"></app-paginator>
+</div>
+
+<app-company-add-employee-modal [isVisible]="isAddEmployeeModalOpen" (closeModal)="closeAddEmployeeModal()"></app-company-add-employee-modal>

@@ -1,0 +1,74 @@
+.main-list-container{
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+    margin: 10px 0 10px 0;
+    padding: 20px;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    position: relative;
+}
+
+
+.list-row-container{
+    width: 96%;
+    overflow: hidden;
+    display: flex;
+}
+
+.row-items-container{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    gap: 15px;
+    transition: transform 0.5s ease;
+}
+
+.list-button-container{
+    position: absolute;
+    width: calc(100% + 30px);
+    top: calc(50% - 15px);
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.circle-left, .circle-right {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: .3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: calc(50% - 20px);
+}
+
+.circle-right{
+    right: 0;
+}
+
+.circle-left{
+    left: 0;
+}
+
+.circle-left img, .circle-right img{
+    width: 30px;
+    height: 30px;
+}
+
+.circle-left:hover, .circle-right:hover{
+    background-color: var(--light-blue-85);
+    transition: .3s ease-in-out;
+}
+
+.circle-left:active, .circle-right:active{
+    background-color: var(--pink);
+    transition: .1s ease-in-out;
+}
+
+

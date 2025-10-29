@@ -1,0 +1,39 @@
+.parent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.appointment-card-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    justify-items: center;
+    transition: all .3s ease;
+}
+
+
+@media  (max-width: 999px) {
+    .appointment-card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1499px) {
+    .appointment-card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1500px) and (max-width: 1999px) {
+    .appointment-card-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 2000px) {
+    .appointment-card-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

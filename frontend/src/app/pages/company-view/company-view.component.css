@@ -1,0 +1,139 @@
+.company-container{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+}
+
+.left-container {
+    display: flex;
+    flex-flow: column;
+    width: 60%;
+    height: 100%;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.right-container {
+    display: flex;
+    flex-flow: column;
+    border-radius: 5px;
+    width: 40%;
+    height: 100%;
+}
+
+.vertical-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.vertical-container > .company-name-paragraph{
+    font: bold 1.3rem "Roboto", sans-serif;
+    color: var(--white);
+    margin: 0;
+}
+
+.vertical-container > .company-address-paragraph {
+    font: italic 14px "Roboto", sans-serif;
+    color: var(--white-75);
+    margin: 0;
+}
+
+.icon-container{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-flow: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-container > svg{
+    width: 100%;
+    height: 100%;
+    max-height: 25px;
+    max-width: 25px;
+    user-select: none;
+}
+
+.icon-container > .heart:hover{
+    fill: red;
+    stroke: red;
+    transition: 0.2s ease;
+}
+
+.icon-container > .heart:active, .share:active{
+    scale: 1.1;
+    transition: 0.1s ease;
+}
+
+.icon-container > .share:hover{
+    fill: var(--light-blue);
+    transition: 0.2s ease;
+}
+
+.horizontal-container {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+}
+
+.parent{
+    width: 100%;
+    height: 100%;
+}
+
+.company-address-map{
+    width: 100%;
+    height: 50%;
+}
+
+.company-description{
+    width: 100%;
+    height: fit-content;
+}
+
+.title-paragraph{
+    color: var(--white);
+    font: bold 1.1rem "Roboto", sans-serif;
+    margin: 1rem 0 -1rem 0;
+}
+
+.company-description{
+    color: var(--white-75);
+    font: 1rem "Times New Roman", sans-serif;
+    text-align: justify;
+}
+
+.title-employees{
+    color: var(--white);
+    font: bold 1.1rem "Roboto", sans-serif;
+    margin: 0 0 .5rem;
+    padding: 0;
+}
+
+.employees{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.4rem
+}
+
+.employee img{
+    width: 3rem;
+    height: 3rem;
+}
+
+.employee > .employee-name-paragraph{
+    font: .8rem "Times New Roman", sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}

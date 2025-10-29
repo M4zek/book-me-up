@@ -1,0 +1,22 @@
+<div class="content-container">
+    <app-category-list/>
+    <p class="start-welcome-text">Discover the best places in the area and book your visit online!</p>
+    <div class="parent">
+        <div class="search-input-container width_30">
+            <img [src]="'icons/search_icon.svg'" alt="search" class="input-icon"/>
+            <input type="text" placeholder="Search for company" class="input-search" [(ngModel)]="nameValue">
+        </div>
+        <div class="search-input-container width_20">
+            <img [src]="'icons/localization_stroke_icon.svg'" alt="search" class="input-icon"/>
+            <input type="text" placeholder="Search by place" class="input-search" [(ngModel)]="placeValue">
+        </div>
+        <div class="category-drop-down-container">
+            <app-drop-down-list [placeholder]="'Select category'" (valueChanged)="changeCategory($event)"></app-drop-down-list>
+        </div>
+        <div class="action-container" (click)="onSearch()">
+            <p>Search</p>
+        </div>
+    </div>
+    <router-outlet></router-outlet>
+</div>
+

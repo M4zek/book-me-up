@@ -1,0 +1,12 @@
+<div class="parent">
+    <app-search-and-sort-bar
+            (searchChanged)="onSearchChange($event)"
+            (sortChanged)="onSortChange($event)"/>
+    <div class="appointment-card-container">
+        <app-company-management-appointments-item/>
+        <app-company-management-appointments-item/>
+        <app-company-management-appointments-item/>
+    </div>
+
+    <app-paginator></app-paginator>
+</div>

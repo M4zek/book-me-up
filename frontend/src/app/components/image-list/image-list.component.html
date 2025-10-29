@@ -1,0 +1,29 @@
+
+<div class="image-container">
+    <div (click)="goToPrevious()" class="leftArrow">
+        <img [src]="'/icons/left_arrow_icon.svg'" alt="<"/>
+    </div>
+    <div (click)="goToNext()" class="rightArrow">
+        <img [src]="'/icons/right_arrow_icon.svg'" alt="<"/>
+    </div>
+
+    <div class="image-list">
+        <div class="image-item">
+            <img class="image"
+                 [src]="getImage()"
+                 alt="Image"
+            />
+        </div>
+    </div>
+
+    <div class="dotsContainer">
+        <div
+                *ngFor="let slide of imageList; let slideIndex = index"
+                (click)="goToSlide(slideIndex)"
+        >
+            <div class="dot" [ngClass]="currentIndex===slideIndex ? 'white' : ''">
+                ●
+            </div>
+        </div>
+    </div>
+</div>

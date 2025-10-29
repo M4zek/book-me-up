@@ -1,0 +1,29 @@
+<div class="company-management-nav">
+    <div class="header">
+        <app-drop-down-list [placeholder]="'Select company'"> </app-drop-down-list>
+
+        <div class="nav-list">
+            <div class="nav-item-cont" *ngFor="let key of navigation">
+                <a class="nav-item"
+                   [routerLink]="NAVIGATION[key].path"
+                >{{NAVIGATION[key].name}}</a>
+                <div class="border-bottom"
+                     [ngClass]="router.url == NAVIGATION[key].path ? 'active': ''">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-company-button" (click)="openAddCompanyDialog()">
+        <img [src]="'icons/plus_icon.svg'" alt="add"/>
+        <div class="expand">
+            <span>Add new company</span>
+        </div>
+    </div>
+
+</div>
+
+<app-company-management-add-company-modal
+        [isVisible]="isOpenAddDialog"
+        (closeModal)="closeAddCompanyDialog()"
+/>

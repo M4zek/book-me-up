@@ -1,0 +1,44 @@
+<div class="appointments-card">
+    <div class="name-container">
+        <h2>Men's haircut</h2>
+    </div>
+    <div class="appointments-data">
+        <div class="order-user">
+            <img [src]="'images/user_default_avatar.png'" alt="avatar"/>
+            <span>User name</span>
+        </div>
+        <div class="order-date-information">
+            <div>
+                <span>22 - 02 - 2025 (Monday)</span>
+            </div>
+            <div>
+                <span>13:30 - 14:00</span>
+            </div>
+            <div>
+                <span>35 PLN</span>
+            </div>
+        </div>
+        <div class="pink-75-width-line"></div>
+        <div class="status-employee-information">
+            <app-drop-down-list
+                    (valueChanged)="onPreferredEmployeeChanged($event)"
+                    [selectedOption]="selectedEmployee"
+                    [options]="toDropDownList()"
+                    [placeholder]="'Preferred employee'">
+            </app-drop-down-list>
+            <app-drop-down-list
+                    (valueChanged)="onStatusChanged($event)"
+                    [selectedOption]="selectedStatus"
+                    [options]="statusDropDownList"
+                    [placeholder]="'Status'">
+            </app-drop-down-list>
+        </div>
+        <div class="btn-container"
+        >
+            <img [src]="'icons/confirm_icon.svg'" alt="search" />
+            <div class="expand">
+                <p class="btn-text">Confirm</p>
+            </div>
+        </div>
+    </div>
+</div>

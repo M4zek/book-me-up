@@ -1,0 +1,212 @@
+.date-reservation-picker-container{
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    z-index: 10000;
+}
+
+.calendar-container {
+    text-align: center;
+    color: white;
+    background: #0f1b24;
+    overflow: hidden;
+    justify-content: center;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.carousel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.month-nav h3{
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.month-nav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.days {
+    display: flex;
+    overflow: hidden;
+    scrollbar-width: none;
+    gap:5px;
+    transition: transform .3s ease;
+}
+
+.day-box {
+    background: #1e2933;
+    border-radius: 8px;
+    margin: 0 5px;
+    padding: 8px;
+    min-width: 60px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.day-box.selected {
+    background: #0072ce;
+}
+
+.day-box.disabled {
+    opacity: 0.4;
+    background: #1e2933;
+    pointer-events: none;
+}
+
+.day-box.closed{
+    opacity: 0.4;
+    pointer-events: none;
+    background: rgba(255, 0, 0, 0.25);
+}
+
+.weekday {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.day {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.status {
+    width: 30px;
+    height: 4px;
+    margin: 5px auto 0;
+    border-radius: 3px;
+}
+
+.status.green {
+    background: #4ade80;
+}
+
+.status.yellow {
+    background: #facc15;
+}
+
+.status.red {
+    background: #f87171;
+}
+
+
+.time-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f1b24;
+    padding: 10px 10px;
+    color: white;
+}
+
+.time-picker{
+    text-align: center;
+    color: white;
+    background: #0f1b24;
+    overflow: hidden;
+    justify-content: space-between;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.nav-btn {
+    width: 30px;
+    height: 30px;
+    margin: 0 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.slots-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.slots {
+    display: flex;
+    overflow: hidden;
+    width: fit-content;
+    gap: 10px;
+    justify-content: center;
+}
+
+.slot-box {
+    background: #1e2933;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 90px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.slot-box.selected {
+    background: #0072ce;
+}
+
+.slot-box.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    background: #444;
+}
+
+.slide-left {
+    animation: slideLeft 0.3s ease forwards;
+}
+
+.slide-right {
+    animation: slideRight 0.3s ease forwards;
+}
+
+@keyframes slideLeft {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideRight {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+@media (max-width: 1400px) {
+    .days{
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .slots{
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

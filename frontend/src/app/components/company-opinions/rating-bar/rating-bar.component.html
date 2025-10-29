@@ -1,0 +1,10 @@
+<div class="rating-row">
+    <div class="rating-number">
+        <p>{{ rating }}</p>
+        <img src="/icons/star_icon.svg" alt=""/>
+    </div>
+    <div class="progress-bar">
+        <div class="progress" [style.width.%]="getPercentage()">></div>
+    </div>
+    <div class="rating-count"> <p>{{ count }} </p></div>
+</div>

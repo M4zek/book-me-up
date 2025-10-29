@@ -1,0 +1,66 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="title-container">
+            <h2>Add new employee</h2>
+        </div>
+
+        <div class="parent">
+
+            <div class="search-bar">
+                <input type="text" [(ngModel)]="searchModel" placeholder="Search by name or surname">
+                <img [src]="'icons/search_icon.svg'" alt="search"/>
+            </div>
+
+            <div class="search-employee-container">
+                <div class="search-employee-list">
+                    <div class="employee-item"
+                         *ngFor="let employee of searchEmployeeList"
+                         (click)="addEmployeeToSelected(employee)"
+                         [ngClass]="{'disabled': isEmployeeSelected(employee.id)}"
+                    >
+                        <img [src]="employee.avatar" alt="Avatar"/>
+                        <h2>{{employee.name}}</h2>
+                    </div>
+                </div>
+
+                <app-paginator [pagination]="paginator"
+                               (pageChange)="onPageChange($event)"
+                                (itemsPerPageChange)="onItemsPerPageChange($event)"></app-paginator>
+            </div>
+
+            <div class="added-employee-preview-list" *ngIf="selectedEmployee.length > 0">
+                <h2>Added employee</h2>
+                <div class="search-employee-list">
+                    <div class="employee-item added"
+                         *ngFor="let empl of selectedEmployee"
+                         (click)="removeEmployeeFromSelected(empl.id)"
+                    >
+                        <img [src]="empl.avatar" alt="Avatar"/>
+                        <h2>{{empl.name}}</h2>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="edit-container-buttons">
+            <div class="btn-container"
+                 (click)="confirm()">
+                <img [src]="'icons/confirm_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text white">Confirm</p>
+                </div>
+            </div>
+
+
+            <div class="btn-container" (click)="close()">
+                <img [src]="'icons/reject_icon.svg'" alt="close" />
+                <div class="expand">
+                    <p class="btn-text">Close</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
