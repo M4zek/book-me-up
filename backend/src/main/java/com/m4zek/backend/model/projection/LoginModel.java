@@ -1,22 +1,17 @@
 package com.m4zek.backend.model.projection;
 
-
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-public class UserWriteModel {
-
+public class LoginModel {
     @NotBlank(message = "Email is required")
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
-            message = "Email must be a valid email address"
+            message = "Incorrect email address format"
     )
-    private String addressEmail;
+    private String email;
 
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,50}$",
@@ -24,9 +19,8 @@ public class UserWriteModel {
     )
     private String password;
 
-    @Valid
-    private UserDataWriteModel userData;
-
-
-
+    public LoginModel(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

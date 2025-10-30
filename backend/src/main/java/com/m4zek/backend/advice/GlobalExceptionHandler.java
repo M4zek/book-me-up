@@ -105,6 +105,17 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EmailExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleEmailExists(EmailExistsException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(ImageException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleImageException(ImageException e, WebRequest request) {
@@ -174,5 +185,16 @@ class GlobalExceptionHandler {
                 errors,
                 request.getDescription(false)
         );
+    }
+
+
+    @ExceptionHandler(RefreshTokenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorMessage handleTokenRefreshException(RefreshTokenException ex, WebRequest request){
+        return new ErrorMessage(
+                HttpStatus.FORBIDDEN.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(true));
     }
 }
