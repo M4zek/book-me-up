@@ -9,6 +9,9 @@ import com.m4zek.backend.repository.CategoryRepository;
 import com.m4zek.backend.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,22 +81,27 @@ public class CategoryServiceTest {
         // given
         Category category1 = new Category("Category1");
         Category category2 = new Category("Category2");
+        var pageable = PageRequest.of(0, 10);
 
         var mockCategoryRepository = mock(CategoryRepository.class);
-        when(mockCategoryRepository.findAll()).thenReturn(List.of(category1, category2));
+        when(mockCategoryRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(category1, category2)));
 
         // system under test
         var toTest = new CategoryService(mockCategoryRepository);
 
+
+
         // when
-        List<CategoryReadModel> categories = toTest.findAllCategories();
+        Page<CategoryReadModel> categories = toTest.findAllCategories(pageable);
+        List<CategoryReadModel> content = categories.getContent();
 
         // then
-        assertThat(categories).hasSize(2);
-        assertThat(categories.get(0).getName()).isEqualTo("Category1");
-        assertThat(categories.get(1).getName()).isEqualTo("Category2");
+        assertThat(content)
+                .hasSize(2)
+                .extracting(CategoryReadModel::getName)
+                .containsExactly("Category1", "Category2");
 
-        verify(mockCategoryRepository, times(1)).findAll();
+        verify(mockCategoryRepository, times(1)).findAll(pageable);
     }
 
 

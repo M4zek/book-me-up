@@ -5,16 +5,18 @@ import com.m4zek.backend.model.projection.CategoryReadModel;
 import com.m4zek.backend.model.projection.CategoryWriteModel;
 import com.m4zek.backend.service.CategoryService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping("/api")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -23,7 +25,12 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping
+//    *******************************************
+//            ENDPOINTS FOR LOGGED USERS
+//    *******************************************
+
+    @PostMapping("/v1/categories")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryReadModel> createNewCategory(@RequestBody @Valid CategoryWriteModel category) {
         Category newCategory = this.categoryService.saveCategory(category);
         int categoryId = newCategory.toReadModel().getId();
@@ -31,16 +38,23 @@ public class CategoryController {
         return ResponseEntity.created(location).body(newCategory.toReadModel());
     }
 
-    @GetMapping
-    public ResponseEntity<List<CategoryReadModel>> getAllCategories() {
-        List<CategoryReadModel> categoryReadModelList = this.categoryService.findAllCategories();
-        return ResponseEntity.ok(categoryReadModelList);
+    @PatchMapping("/v1/categories/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CategoryReadModel> updateCategoryName(
+                @PathVariable("id") int id,
+                @RequestBody @Valid CategoryWriteModel categoryWriteModel) {
+        return ResponseEntity.ok(this.categoryService.updateCategoryName(id, categoryWriteModel));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CategoryReadModel> updateCategoryName(
-                @PathVariable("id") int id, @RequestBody CategoryWriteModel categoryWriteModel) {
-        return ResponseEntity.ok(this.categoryService.updateCategoryName(id, categoryWriteModel));
+
+//    *******************************************
+//         ENDPOINTS FOR EVERYONE (PUBLIC)
+//    *******************************************
+
+    @GetMapping("/public/categories")
+    public ResponseEntity<Page<CategoryReadModel>> getAllCategories(Pageable pageable) {
+        Page<CategoryReadModel> categoryReadModelList = this.categoryService.findAllCategories(pageable);
+        return ResponseEntity.ok(categoryReadModelList);
     }
 
 }

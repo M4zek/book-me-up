@@ -6,6 +6,9 @@ import com.m4zek.backend.model.Category;
 import com.m4zek.backend.model.projection.CategoryReadModel;
 import com.m4zek.backend.model.projection.CategoryWriteModel;
 import com.m4zek.backend.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,10 +32,13 @@ public class CategoryService {
         return this.categoryRepository.save(category);
     }
 
-    public List<CategoryReadModel> findAllCategories() {
-        return categoryRepository.findAll().stream()
+
+    public Page<CategoryReadModel> findAllCategories(Pageable pageable) {
+        Page<Category> pageCategory = categoryRepository.findAll(pageable);
+        List<CategoryReadModel> categoryReadModels = pageCategory.stream()
                 .map(Category::toReadModel)
                 .toList();
+        return new PageImpl<>(categoryReadModels, pageable, pageCategory.getTotalElements());
     }
 
     public CategoryReadModel updateCategoryName(int id, CategoryWriteModel categoryWriteModel) {
