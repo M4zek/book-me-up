@@ -4,7 +4,7 @@ import com.m4zek.backend.model.projection.PortfolioImageReadModel;
 import jakarta.persistence.*;
 
 @Entity(name = "PortfolioImages")
-public class PortfolioImage {
+public class PortfolioImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

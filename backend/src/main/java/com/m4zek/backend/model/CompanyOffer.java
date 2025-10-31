@@ -14,7 +14,10 @@ public class CompanyOffer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
     private double price;
     private int duration;

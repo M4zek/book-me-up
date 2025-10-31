@@ -7,12 +7,13 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @Entity(name = "reviews")
-public class Review {
+public class Review extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 
     @Min(1)

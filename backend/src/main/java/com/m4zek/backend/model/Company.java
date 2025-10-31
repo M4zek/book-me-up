@@ -10,14 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 @Entity(name = "companies")
-public class Company {
+public class Company extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
     @Lob

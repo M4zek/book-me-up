@@ -16,6 +16,7 @@ public class UserData extends BaseEntity {
     private String lastName;
     private Date dateOfBirth;
     private String phoneNumber;
+    @Lob
     private byte[] photo;
 
     @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
