@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.CompanyHoursReadModel;
+import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
 import jakarta.persistence.*;
 
 @Entity(name = "CompaniesHours")

@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.UserReadModel;
+import com.m4zek.backend.model.dto.read.UserReadModel;
 import com.m4zek.backend.security.service.MyUserDetails;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;

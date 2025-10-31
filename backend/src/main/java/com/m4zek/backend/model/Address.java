@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.AddressReadModel;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.read.AddressReadModel;
+import com.m4zek.backend.model.dto.write.AddressWriteModel;
 import jakarta.persistence.*;
 
 @Entity(name = "addresses")

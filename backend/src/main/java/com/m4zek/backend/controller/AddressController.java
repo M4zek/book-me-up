@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.projection.AddressReadModel;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.read.AddressReadModel;
+import com.m4zek.backend.model.dto.write.AddressWriteModel;
 import com.m4zek.backend.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

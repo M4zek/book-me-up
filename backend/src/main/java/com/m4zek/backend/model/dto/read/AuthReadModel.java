@@ -1,4 +1,4 @@
-package com.m4zek.backend.model.projection;
+package com.m4zek.backend.model.dto.read;
 
 import lombok.Data;
 

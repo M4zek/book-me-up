@@ -2,7 +2,11 @@ package com.m4zek.backend.controller;
 
 import com.m4zek.backend.exception.RefreshTokenException;
 import com.m4zek.backend.model.RefreshToken;
-import com.m4zek.backend.model.projection.*;
+import com.m4zek.backend.model.dto.read.AuthReadModel;
+import com.m4zek.backend.model.dto.read.RefreshTokenReadModel;
+import com.m4zek.backend.model.dto.read.UserReadModel;
+import com.m4zek.backend.model.dto.write.LoginModel;
+import com.m4zek.backend.model.dto.write.UserWriteModel;
 import com.m4zek.backend.security.jwt.TokenManager;
 import com.m4zek.backend.security.service.MyUserDetails;
 import com.m4zek.backend.service.UserService;

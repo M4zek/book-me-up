@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.CategoryReadModel;
+import com.m4zek.backend.model.dto.read.CategoryReadModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

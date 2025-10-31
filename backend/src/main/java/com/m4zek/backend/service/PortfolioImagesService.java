@@ -5,7 +5,7 @@ import com.m4zek.backend.exception.ImageException;
 import com.m4zek.backend.exception.ImageNotFoundException;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.PortfolioImage;
-import com.m4zek.backend.model.projection.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
 import com.m4zek.backend.repository.CompanyRepository;
 import com.m4zek.backend.repository.PortfolioImageRepository;
 import org.springframework.data.domain.Page;

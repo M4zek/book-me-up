@@ -2,7 +2,7 @@ package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.AddressNotFoundException;
 import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.write.AddressWriteModel;
 import com.m4zek.backend.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 

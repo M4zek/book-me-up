@@ -3,8 +3,8 @@ package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
 import com.m4zek.backend.model.CompanyHours;
-import com.m4zek.backend.model.projection.CompanyHoursReadModel;
-import com.m4zek.backend.model.projection.CompanyHoursWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
+import com.m4zek.backend.model.dto.write.CompanyHoursWriteModel;
 import com.m4zek.backend.repository.CompanyHoursRepository;
 import com.m4zek.backend.repository.CompanyRepository;
 import org.springframework.stereotype.Service;

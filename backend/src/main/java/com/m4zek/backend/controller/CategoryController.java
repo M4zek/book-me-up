@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.projection.CategoryReadModel;
-import com.m4zek.backend.model.projection.CategoryWriteModel;
+import com.m4zek.backend.model.dto.read.CategoryReadModel;
+import com.m4zek.backend.model.dto.write.CategoryWriteModel;
 import com.m4zek.backend.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

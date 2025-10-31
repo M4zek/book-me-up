@@ -1,4 +1,4 @@
-package com.m4zek.backend.model.projection;
+package com.m4zek.backend.model.dto.write;
 
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.CompanyHours;

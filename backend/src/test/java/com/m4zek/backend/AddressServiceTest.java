@@ -3,7 +3,7 @@ package com.m4zek.backend;
 
 import com.m4zek.backend.exception.AddressNotFoundException;
 import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.write.AddressWriteModel;
 import com.m4zek.backend.repository.AddressRepository;
 import com.m4zek.backend.service.AddressService;
 import org.junit.jupiter.api.DisplayName;

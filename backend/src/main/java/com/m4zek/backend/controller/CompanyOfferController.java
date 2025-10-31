@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 
-import com.m4zek.backend.model.projection.CompanyOfferReadModel;
-import com.m4zek.backend.model.projection.CompanyOfferWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyOfferReadModel;
+import com.m4zek.backend.model.dto.write.CompanyOfferWriteModel;
 import com.m4zek.backend.service.CompanyOfferService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

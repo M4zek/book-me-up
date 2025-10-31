@@ -1,9 +1,9 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.Company;
-import com.m4zek.backend.model.projection.CompanyReadModel;
-import com.m4zek.backend.model.projection.CompanyWriteModel;
-import com.m4zek.backend.model.projection.UserReadModel;
+import com.m4zek.backend.model.dto.read.CompanyReadModel;
+import com.m4zek.backend.model.dto.write.CompanyWriteModel;
+import com.m4zek.backend.model.dto.read.UserReadModel;
 import com.m4zek.backend.service.CompanyService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

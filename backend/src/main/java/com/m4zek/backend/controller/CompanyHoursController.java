@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 
-import com.m4zek.backend.model.projection.CompanyHoursReadModel;
-import com.m4zek.backend.model.projection.CompanyHoursWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
+import com.m4zek.backend.model.dto.write.CompanyHoursWriteModel;
 import com.m4zek.backend.service.CompanyHoursService;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;

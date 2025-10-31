@@ -1,7 +1,7 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.projection.ReviewReadModel;
-import com.m4zek.backend.model.projection.ReviewWriteModel;
+import com.m4zek.backend.model.dto.read.ReviewReadModel;
+import com.m4zek.backend.model.dto.write.ReviewWriteModel;
 import com.m4zek.backend.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

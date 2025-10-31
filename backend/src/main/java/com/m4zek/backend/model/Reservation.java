@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.ReservationReadModel;
+import com.m4zek.backend.model.dto.read.ReservationReadModel;
 import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;

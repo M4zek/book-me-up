@@ -1,6 +1,7 @@
-package com.m4zek.backend.model.projection;
+package com.m4zek.backend.model.dto.write;
 
 
+import com.m4zek.backend.model.dto.read.UserDataWriteModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

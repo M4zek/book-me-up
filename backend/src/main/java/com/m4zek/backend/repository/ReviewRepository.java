@@ -1,7 +1,6 @@
 package com.m4zek.backend.repository;
 
 import com.m4zek.backend.model.Review;
-import com.m4zek.backend.model.projection.ReviewReadModel;
 
 import java.util.List;
 

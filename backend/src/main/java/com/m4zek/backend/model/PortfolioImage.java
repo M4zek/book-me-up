@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
 import jakarta.persistence.*;
 
 @Entity(name = "PortfolioImages")

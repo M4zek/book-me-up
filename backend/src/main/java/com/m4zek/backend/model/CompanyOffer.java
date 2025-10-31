@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.projection.CompanyOfferReadModel;
+import com.m4zek.backend.model.dto.read.CompanyOfferReadModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

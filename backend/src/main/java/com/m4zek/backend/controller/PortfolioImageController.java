@@ -1,6 +1,6 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.projection.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
 import com.m4zek.backend.service.PortfolioImagesService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

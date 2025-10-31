@@ -1,7 +1,7 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.projection.ReservationReadModel;
-import com.m4zek.backend.model.projection.ReservationWriteModel;
+import com.m4zek.backend.model.dto.read.ReservationReadModel;
+import com.m4zek.backend.model.dto.write.ReservationWriteModel;
 import com.m4zek.backend.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

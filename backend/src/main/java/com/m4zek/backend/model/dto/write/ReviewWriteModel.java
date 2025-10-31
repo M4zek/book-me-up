@@ -1,4 +1,4 @@
-package com.m4zek.backend.model.projection;
+package com.m4zek.backend.model.dto.write;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

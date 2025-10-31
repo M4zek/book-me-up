@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.projection.ReviewReadModel;
+import com.m4zek.backend.model.dto.read.ReviewReadModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
