@@ -2,11 +2,11 @@ package com.m4zek.backend.controller;
 
 import com.m4zek.backend.exception.RefreshTokenException;
 import com.m4zek.backend.model.RefreshToken;
-import com.m4zek.backend.model.dto.read.AuthReadModel;
-import com.m4zek.backend.model.dto.read.RefreshTokenReadModel;
-import com.m4zek.backend.model.dto.read.UserReadModel;
-import com.m4zek.backend.model.dto.write.LoginModel;
-import com.m4zek.backend.model.dto.write.UserWriteModel;
+import com.m4zek.backend.model.dto.read.AuthResponse;
+import com.m4zek.backend.model.dto.read.RefreshTokenResponse;
+import com.m4zek.backend.model.dto.read.UserResponse;
+import com.m4zek.backend.model.dto.write.LoginRequest;
+import com.m4zek.backend.model.dto.write.UserRequest;
 import com.m4zek.backend.security.jwt.TokenManager;
 import com.m4zek.backend.security.service.MyUserDetails;
 import com.m4zek.backend.service.UserService;
@@ -43,17 +43,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserReadModel> createAccount(@Valid @RequestBody UserWriteModel user) {
-        UserReadModel savedUser = userService.createNewUser(user);
+    public ResponseEntity<UserResponse> createAccount(@Valid @RequestBody UserRequest user) {
+        UserResponse savedUser = userService.createNewUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthReadModel> login(@Valid @RequestBody LoginModel loginModel) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginModel.getEmail(),
-                        loginModel.getPassword())
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword())
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -67,7 +67,7 @@ public class AuthController {
         String refreshToken = userService.createRefreshToken(userDetails.getId());
 
         return ResponseEntity.ok(
-                new AuthReadModel(
+                new AuthResponse(
                         userDetails.getId(),
                         token,
                         refreshToken,
@@ -78,7 +78,7 @@ public class AuthController {
 
 
     @PostMapping("refreshToken/{token}")
-    public ResponseEntity<RefreshTokenReadModel> refreshToken(
+    public ResponseEntity<RefreshTokenResponse> refreshToken(
             @Valid
             @Size(min = 36, max = 36, message = "Refresh token must be exactly 36 characters long")
             @Pattern(regexp = "^[a-zA-Z0-9-]*$", message = "Refresh token can only contain letters, numbers, and hyphens")
@@ -87,8 +87,7 @@ public class AuthController {
                 .map(userService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> tokenManager.generateToken(
-                        userService.findUserById(
-                            user.toUserReadModel().getId()).toUserReadModel().getEmail()
+                        userService.findUserById(user.getId()).getAddressEmail()
                         )
                 )
                 .orElseThrow(() -> new RefreshTokenException(token ,"Invalid refresh token"));
@@ -98,7 +97,7 @@ public class AuthController {
                 .map(RefreshToken::getRefreshToken)
                 .orElseThrow(() -> new RefreshTokenException(token ,"Invalid refresh token"));
 
-        return ResponseEntity.ok(new RefreshTokenReadModel(newJsonWebToken, refreshToken));
+        return ResponseEntity.ok(new RefreshTokenResponse(newJsonWebToken, refreshToken));
     }
 
 }

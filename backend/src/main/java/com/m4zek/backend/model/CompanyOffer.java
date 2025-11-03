@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.CompanyOfferReadModel;
+import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class CompanyOffer extends BaseEntity {
     private Company company;
 
     @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
-    List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
-    List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
 
     public CompanyOffer() {}
 
@@ -42,12 +42,47 @@ public class CompanyOffer extends BaseEntity {
         this.company = company;
     }
 
-    public CompanyOfferReadModel toReadModel() {
-        return CompanyOfferReadModel.builder()
+    // ------------ METHODS -------------
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public CompanyOfferResponse toReadModel() {
+        return CompanyOfferResponse.builder()
                 .name(this.name)
                 .description(this.description)
                 .price(this.price)
                 .duration(this.duration)
                 .build();
     }
+
 }

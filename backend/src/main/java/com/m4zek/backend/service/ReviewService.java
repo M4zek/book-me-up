@@ -5,8 +5,8 @@ import com.m4zek.backend.exception.ReviewExistsException;
 import com.m4zek.backend.model.CompanyOffer;
 import com.m4zek.backend.model.Review;
 import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.dto.read.ReviewReadModel;
-import com.m4zek.backend.model.dto.write.ReviewWriteModel;
+import com.m4zek.backend.model.dto.read.ReviewResponse;
+import com.m4zek.backend.model.dto.write.ReviewRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReviewRepository;
 import com.m4zek.backend.repository.UserRepository;
@@ -30,21 +30,21 @@ public class ReviewService {
     }
 
 
-    public ReviewReadModel createNewReview(ReviewWriteModel reviewWriteModel) {
+    public ReviewResponse createNewReview(ReviewRequest reviewRequest) {
 
-        if(reviewRepository.existsByUserIdAndCompanyOfferId(reviewWriteModel.getAuthor_id(), reviewWriteModel.getCompany_offer_id())){
+        if(reviewRepository.existsByUserIdAndCompanyOfferId(reviewRequest.getAuthor_id(), reviewRequest.getCompany_offer_id())){
             throw new ReviewExistsException("You can only add one review to an offer!");
         }
 
-        User author = userRepository.findById(reviewWriteModel.getAuthor_id())
+        User author = userRepository.findById(reviewRequest.getAuthor_id())
                 .orElseThrow(() -> new RuntimeException("Author not found"));
 
-        CompanyOffer companyOffer = companyOfferRepository.findById(reviewWriteModel.getCompany_offer_id())
+        CompanyOffer companyOffer = companyOfferRepository.findById(reviewRequest.getCompany_offer_id())
                 .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
 
         Review savedReview = this.reviewRepository.save(new Review(
-                reviewWriteModel.getComment(),
-                reviewWriteModel.getRating(),
+                reviewRequest.getComment(),
+                reviewRequest.getRating(),
                 companyOffer,
                 author
         ));
@@ -52,7 +52,7 @@ public class ReviewService {
         return savedReview.toReadModel();
     }
 
-    public List<ReviewReadModel> readAllCompanyOfferReviews(long company_offer_id) {
+    public List<ReviewResponse> readAllCompanyOfferReviews(long company_offer_id) {
         return this.reviewRepository.readAllByCompanyOfferId(company_offer_id)
                 .stream()
                 .map(Review::toReadModel)

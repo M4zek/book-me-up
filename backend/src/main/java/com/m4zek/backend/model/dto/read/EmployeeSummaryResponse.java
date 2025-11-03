@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryReadModel {
+public class EmployeeSummaryResponse {
+
     private int id;
-    private String name;
-    private int numberOfCompanies;
+    private String firstName;
+    private String lastName;
+    private byte[] avatar;
+
 }

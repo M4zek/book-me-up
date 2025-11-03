@@ -14,7 +14,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString
-public class CompanyHoursWriteModel {
+public class CompanyHoursRequest {
 
     @NotNull(message = "You must specify whether the company is open")
     private Boolean isOpen;

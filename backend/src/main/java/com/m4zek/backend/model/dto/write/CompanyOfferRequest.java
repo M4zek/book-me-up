@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyOfferWriteModel {
+public class CompanyOfferRequest {
 
     @NotBlank(message = "Name is required")
     @Size(max = 255, message = "Name must not exceed 255 characters")

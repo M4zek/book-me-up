@@ -2,9 +2,10 @@ package com.m4zek.backend.service;
 
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.mapper.CompanyHoursMapper;
 import com.m4zek.backend.model.CompanyHours;
-import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
-import com.m4zek.backend.model.dto.write.CompanyHoursWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyHoursResponse;
+import com.m4zek.backend.model.dto.write.CompanyHoursRequest;
 import com.m4zek.backend.repository.CompanyHoursRepository;
 import com.m4zek.backend.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class CompanyHoursService {
     }
 
 
-    public List<CompanyHoursReadModel> setCompanyHours(Long companyId, List<CompanyHoursWriteModel> companyWorkingHours) {
+    public List<CompanyHoursResponse> setCompanyHours(Long companyId, List<CompanyHoursRequest> companyWorkingHours) {
         List<CompanyHours> companyHours = companyWorkingHours.stream()
                 .map(writeModel ->
                         writeModel.toEntity(
@@ -35,17 +36,17 @@ public class CompanyHoursService {
 
         companyHours.forEach(this.companyHoursRepository::save);
 
-        return companyHours.stream().map(CompanyHours::toReadModel).toList();
+        return companyHours.stream().map(CompanyHoursMapper::companyHoursToCompanyHoursResponse).toList();
     }
 
 
-    public List<CompanyHoursReadModel> readCompanyHours(Long companyId) {
+    public List<CompanyHoursResponse> readCompanyHours(Long companyId) {
         List<CompanyHours> companyHours = this.companyHoursRepository.readAllByCompanyId(companyId);
         if (companyHours.isEmpty()) {
             throw new CompanyNotFoundException("The company's working hours could not be found");
         } else {
             return companyHours.stream()
-                    .map(CompanyHours::toReadModel)
+                    .map(CompanyHoursMapper::companyHoursToCompanyHoursResponse)
                     .toList();
         }
     }

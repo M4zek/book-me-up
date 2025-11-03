@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder(toBuilder = true)
-public class AddressReadModel {
+public class AddressResponse {
 
     private int id;
 

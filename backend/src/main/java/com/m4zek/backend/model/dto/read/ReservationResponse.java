@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Builder
-public class ReservationReadModel {
+public class ReservationResponse {
 
     private int id;
 
@@ -16,8 +16,8 @@ public class ReservationReadModel {
     private ZonedDateTime reservationDate;
     private String reservationNumber;
     private String status;
-    private UserReadModel customer;
-    private CompanyOfferReadModel companyOffer;
+    private UserResponse customer;
+    private CompanyOfferResponse companyOffer;
 
 
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PortfolioImageReadModel {
+public class PortfolioImageResponse {
 
     private int id;
     private String filename;

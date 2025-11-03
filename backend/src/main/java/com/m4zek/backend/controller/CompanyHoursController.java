@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 
-import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
-import com.m4zek.backend.model.dto.write.CompanyHoursWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyHoursResponse;
+import com.m4zek.backend.model.dto.write.CompanyHoursRequest;
 import com.m4zek.backend.service.CompanyHoursService;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
@@ -22,14 +22,14 @@ public class CompanyHoursController {
     }
 
     @PostMapping("/{companyId}")
-    public List<CompanyHoursReadModel> addCompanyHours(
+    public List<CompanyHoursResponse> addCompanyHours(
             @PathVariable Long companyId,
-            @RequestBody @Valid List<CompanyHoursWriteModel> companyHours) {
+            @RequestBody @Valid List<CompanyHoursRequest> companyHours) {
         return this.companyHoursService.setCompanyHours(companyId, companyHours);
     }
 
     @GetMapping("/{companyId}")
-    public List<CompanyHoursReadModel> readCompanyHours(@PathVariable Long companyId) {
+    public List<CompanyHoursResponse> readCompanyHours(@PathVariable Long companyId) {
         return this.companyHoursService.readCompanyHours(companyId);
     }
 

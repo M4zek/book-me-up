@@ -3,16 +3,19 @@ package com.m4zek.backend.service;
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.exception.CompanyNotFoundException;
 import com.m4zek.backend.exception.UserNotFoundException;
+import com.m4zek.backend.mapper.CompanyMapper;
 import com.m4zek.backend.model.*;
-import com.m4zek.backend.model.dto.read.CompanyReadModel;
-import com.m4zek.backend.model.dto.write.CompanyWriteModel;
-import com.m4zek.backend.model.dto.read.UserReadModel;
-import com.m4zek.backend.repository.*;
+import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
+import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
+import com.m4zek.backend.model.dto.write.CompanyRequest;
+import com.m4zek.backend.repository.CategoryRepository;
+import com.m4zek.backend.repository.CompanyRepository;
+import com.m4zek.backend.repository.CompanyRoleRepository;
+import com.m4zek.backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.List;
@@ -22,99 +25,84 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
-    private final CompanyUserRoleRepository companyUserRoleRepository;
     private final CompanyRoleRepository companyRoleRepository;
     private final UserRepository userRepository;
 
-    public CompanyService(CompanyRepository companyRepository, CategoryRepository categoryRepository, CompanyUserRoleRepository companyUserRoleRepository, CompanyRoleRepository companyRoleRepository, UserRepository userRepository) {
+    public CompanyService(CompanyRepository companyRepository,
+                          CategoryRepository categoryRepository,
+                          CompanyRoleRepository companyRoleRepository,
+                          UserRepository userRepository) {
         this.companyRepository = companyRepository;
         this.categoryRepository = categoryRepository;
-        this.companyUserRoleRepository = companyUserRoleRepository;
         this.companyRoleRepository = companyRoleRepository;
         this.userRepository = userRepository;
     }
 
-    public Company saveCompany(CompanyWriteModel companyWriteModel) {
-        Category category = this.getCategory(companyWriteModel.getCategory().getName());
-        Address address = companyWriteModel.getAddress().toEntity();
+    public CompanyDetailsResponse saveCompany(CompanyRequest companyRequest) {
+        User owner = userRepository.findById(companyRequest.getOwner_id())
+                .orElseThrow(() -> new UserNotFoundException("User with given id not found"));
 
-        byte[] logoBytes = companyWriteModel.getLogo() != null ?
-                Base64.getDecoder().decode(companyWriteModel.getLogo()) : null;
+        Category category = getCategory(companyRequest.getCategory().getName());
 
-        Company newCompany = new Company(
-                companyWriteModel.getName(),
-                companyWriteModel.getDescription(),
+        Address address = companyRequest.getAddress().toEntity();
+
+        byte[] logoBytes = companyRequest.getLogo() != null ?
+                Base64.getDecoder().decode(companyRequest.getLogo()) : null;
+
+        Company company = new Company(
+                companyRequest.getName(),
+                companyRequest.getDescription(),
                 logoBytes,
                 category,
                 address
         );
 
-        address.assignCompany(newCompany);
-        newCompany = this.companyRepository.save(newCompany);
+        address.assignCompany(company);
 
-        this.assignOwnerToCompany(companyWriteModel.getOwner_id(), newCompany);
+        CompanyRole companyRole = companyRoleRepository.findByName("COMPANY_OWNER")
+                .orElseThrow(() -> new CategoryNotFoundException("Category with name COMPANY_OWNER not found"));
 
-        return newCompany;
+        CompanyUserRole companyUserRole = new CompanyUserRole(owner, company, companyRole);
+
+        company.addUserRole(companyUserRole);
+
+        Company savedCompany = companyRepository.save(company);
+
+        return CompanyMapper.companyToCompanyDetailsResponse(savedCompany);
     }
 
-    public CompanyReadModel readCompany(int companyId){
-        return this.getCompany(companyId).toReadModel();
+
+    public Page<CompanySummaryResponse> readRecommendedCompany(Pageable pageable) {
+        Page<Company> recommendedCompaniesPage = this.companyRepository
+                .findAllOrderByAverageRatingDesc(pageable);
+
+        List<CompanySummaryResponse> companySummaryResponse = recommendedCompaniesPage.stream().map(
+                CompanyMapper::companyToCompanySummaryResponse
+        ).toList();
+        return new PageImpl<>(companySummaryResponse, pageable, recommendedCompaniesPage.getTotalElements());
     }
 
-
-    @Transactional
-    public Company updateCompany(int companyId, CompanyWriteModel companyWriteModel) {
+    public CompanyDetailsResponse readCompanyDetails(int companyId) {
         Company company = this.getCompany(companyId);
-
-        if(companyWriteModel.getName() != null && !companyWriteModel.getName().isEmpty())
-            company.changeName(companyWriteModel.getName());
-
-        if(companyWriteModel.getDescription() != null && !companyWriteModel.getDescription().isEmpty())
-            company.changeDescription(companyWriteModel.getDescription());
-
-        if(companyWriteModel.getLogo() != null && !companyWriteModel.getLogo().isEmpty()) {
-            byte[] logoBytes = Base64.getDecoder().decode(companyWriteModel.getLogo());
-            company.changeLogo(logoBytes);
-        }
-
-        if(companyWriteModel.getCategory() != null){
-            Category category = this.getCategory(companyWriteModel.getCategory().getName());
-            company.assignCategory(category);
-        }
-
-        companyRepository.save(company);
-        return company;
+        return CompanyMapper.companyToCompanyDetailsResponse(company);
     }
 
-    /*
-        TODO Create a separate DTO EmployeeReadModel to return
-            information about employees and their roles in the company?
-     */
-    public List<UserReadModel> readAllCompanyEmployees(int companyId) {
-        List<CompanyUserRole> companyUserRoles = this.companyUserRoleRepository.findAllByCompanyId(companyId);
+    public Page<CompanySummaryResponse> searchCompaniesByNameCityCategory(Pageable pageable, String companyName, String city, String categoryName) {
 
-        return companyUserRoles.stream()
-                .map(item -> item.getUsers().toUserReadModel()).toList();
+        Page<Company> resultPage = this.companyRepository.findCompaniesByNameContainingOrAddressCityContainingOrCategoryNameContaining(
+                pageable, companyName, city, categoryName);
+
+        List<CompanySummaryResponse> resultList = resultPage.stream().map(
+                CompanyMapper::companyToCompanySummaryResponse
+        ).toList();
+        return new PageImpl<>(resultList, pageable, resultPage.getTotalElements());
     }
 
 
-    public Page<CompanyReadModel> readAllCompanies(Pageable pageable) {
-        Page<Company> companies = companyRepository.findAll(pageable);
-        List<CompanyReadModel> companyReadModels = companies.stream()
-                .map(Company::toReadModel)
-                .toList();
-        return new PageImpl<>(companyReadModels, pageable, companies.getTotalElements());
-    }
+    /* ************************************
+                 PRIVATE METHODS
+    *************************************** */
 
-
-
-    public void deleteCompany(int companyId) {
-        Company companyToDelete = getCompany(companyId);
-        this.companyRepository.delete(companyToDelete);
-    }
-
-
-    // Private methods
     private Company getCompany(int companyId) {
         return this.companyRepository.findById(companyId)
                 .orElseThrow(()-> new CompanyNotFoundException("Company with id " + companyId + " not found"));
@@ -125,18 +113,5 @@ public class CompanyService {
                 () -> new CategoryNotFoundException("Category with given name not found")
         );
     }
-
-    private void assignOwnerToCompany(int user_id, Company company) {
-        User user = userRepository.findById(user_id)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
-
-        CompanyRole ownerCompanyRole = this.companyRoleRepository.findByName("COMPANY_OWNER")
-                .orElseThrow(() -> new CompanyNotFoundException("Company role not found"));
-
-
-        CompanyUserRole ownerRole = new CompanyUserRole(user, company, ownerCompanyRole);
-        this.companyUserRoleRepository.save(ownerRole);
-    }
-
 
 }

@@ -1,6 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
 import jakarta.persistence.*;
 
 @Entity(name = "PortfolioImages")
@@ -28,8 +28,8 @@ public class PortfolioImage extends BaseEntity {
         this.filename = filename;
     }
 
-    public PortfolioImageReadModel toReadModel(){
-        return PortfolioImageReadModel.builder()
+    public PortfolioImageResponse toReadModel(){
+        return PortfolioImageResponse.builder()
                 .id(this.id)
                 .filename(this.filename)
                 .image(this.image)

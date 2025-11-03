@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Builder
-public class ReservationWriteModel {
+public class ReservationRequest {
 
     @NotNull(message = "Company offer id cannot be null")
     @Min(value = 0, message = "Company offer id must be a positive number")

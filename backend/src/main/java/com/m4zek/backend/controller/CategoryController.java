@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.dto.read.CategoryReadModel;
-import com.m4zek.backend.model.dto.write.CategoryWriteModel;
+import com.m4zek.backend.model.dto.read.CategoryResponse;
+import com.m4zek.backend.model.dto.write.CategoryRequest;
 import com.m4zek.backend.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -31,19 +31,18 @@ public class CategoryController {
 
     @PostMapping("/v1/categories")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CategoryReadModel> createNewCategory(@RequestBody @Valid CategoryWriteModel category) {
+    public ResponseEntity<CategoryResponse> createNewCategory(@RequestBody @Valid CategoryRequest category) {
         Category newCategory = this.categoryService.saveCategory(category);
-        int categoryId = newCategory.toReadModel().getId();
-        URI location = URI.create("/api/v1/categories/" + categoryId);
-        return ResponseEntity.created(location).body(newCategory.toReadModel());
+        URI location = URI.create("/api/v1/categories/" + newCategory.getId());
+        return ResponseEntity.created(location).body(new CategoryResponse(newCategory));
     }
 
     @PatchMapping("/v1/categories/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CategoryReadModel> updateCategoryName(
+    public ResponseEntity<CategoryResponse> updateCategoryName(
                 @PathVariable("id") int id,
-                @RequestBody @Valid CategoryWriteModel categoryWriteModel) {
-        return ResponseEntity.ok(this.categoryService.updateCategoryName(id, categoryWriteModel));
+                @RequestBody @Valid CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(this.categoryService.updateCategoryName(id, categoryRequest));
     }
 
 
@@ -52,8 +51,8 @@ public class CategoryController {
 //    *******************************************
 
     @GetMapping("/public/categories")
-    public ResponseEntity<Page<CategoryReadModel>> getAllCategories(Pageable pageable) {
-        Page<CategoryReadModel> categoryReadModelList = this.categoryService.findAllCategories(pageable);
+    public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable pageable) {
+        Page<CategoryResponse> categoryReadModelList = this.categoryService.findAllCategories(pageable);
         return ResponseEntity.ok(categoryReadModelList);
     }
 

@@ -1,13 +1,12 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.CompanyReadModel;
+import com.m4zek.backend.model.dto.read.*;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Entity(name = "companies")
 public class Company extends BaseEntity{
@@ -54,44 +53,75 @@ public class Company extends BaseEntity{
         this.address = address;
     }
 
-    public void changeName(String newName) {
-        if(!this.name.equals(newName) && !newName.isEmpty())
-            this.name = newName;
+    public void addUserRole(CompanyUserRole companyUserRole){
+        this.users.add(companyUserRole);
     }
 
-    public void changeDescription(String description) {
-        if(!this.description.equals(description) && !description.isEmpty())
-            this.description = description;
+    public int getId() {
+        return id;
     }
 
-    public void changeLogo(byte[] newLogo) {
-        this.logo = newLogo;
+    public String getName() {
+        return name;
     }
 
-    public void assignCategory(Category newCategory) {
-        this.category = newCategory;
+    public String getDescription() {
+        return description;
     }
 
-    public void assignPortfolioImages(PortfolioImage newPortfolioImage) {
-        this.portfolioImages.add(newPortfolioImage);
+    public byte[] getLogo() {
+        return logo;
     }
 
-    public CompanyReadModel toReadModel() {
-        return CompanyReadModel
-                .builder()
-                .id(this.id)
-                .name(this.name)
-                .description(this.description)
-                .logo(this.logo)
-                .address(address.toReadModel())
-                .category(category.toReadModel())
-                .owner(
-                   this.users.stream()
-                            .filter(item -> item.getRole().getName().equals("COMPANY_OWNER"))
-                            .findFirst()
-                            .map(item -> item.getUsers().toUserReadModel())
-                            .orElse(null)
-                )
+    public Address getAddress() {
+        return address;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public List<CompanyHours> getCompanyHoursList() {
+        return companyHoursList;
+    }
+
+    public List<CompanyOffer> getCompanyOffers() {
+        return companyOffers;
+    }
+
+    public Set<CompanyUserRole> getUsers() {
+        return users;
+    }
+
+    public ReviewStatisticsResponse getCompanyReviewStatistics() {
+        List<Review> allReviews = companyOffers.stream()
+                .flatMap(offer -> offer.getReviews().stream())
+                .filter(r -> r.toReadModel().getRating() != null)
+                .toList();
+
+        int totalReviews = allReviews.size();
+
+        double averageRating = allReviews.stream()
+                .mapToInt(review -> review.toReadModel().getRating())
+                .average()
+                .orElse(0.0);
+
+        Map<Integer, Long> ratingCountMap = allReviews.stream()
+                .collect(Collectors.groupingBy(review -> review.toReadModel().getRating(), Collectors.counting()));
+
+        Map<Integer, Integer> completeRatingMap = IntStream.rangeClosed(1, 5)
+                .boxed()
+                .collect(Collectors.toMap(
+                        i -> i,
+                        i -> ratingCountMap.getOrDefault(i, 0L).intValue()
+                ));
+
+        List<Map<Integer, Integer>> ratingCounts = List.of(completeRatingMap);
+
+        return ReviewStatisticsResponse.builder()
+                .rating(averageRating)
+                .totalReviews(totalReviews)
+                .ratingCounts(ratingCounts)
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.dto.read.CompanyHoursReadModel;
 import jakarta.persistence.*;
 
 @Entity(name = "CompaniesHours")
@@ -31,14 +30,26 @@ public class CompanyHours extends BaseEntity{
     }
 
 
-    public CompanyHoursReadModel toReadModel(){
-        return CompanyHoursReadModel.builder()
-                .dayOfWeek(dayOfWeek)
-                .openTime(openTime)
-                .closeTime(closeTime)
-                .isOpen(isOpen)
-                .build();
+    public int getId() {
+        return id;
     }
+
+    public String getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public String getOpenTime() {
+        return openTime;
+    }
+
+    public String getCloseTime() {
+        return closeTime;
+    }
+
 
     @Override
     public String toString() {

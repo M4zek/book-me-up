@@ -1,7 +1,7 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.dto.read.ReservationReadModel;
-import com.m4zek.backend.model.dto.write.ReservationWriteModel;
+import com.m4zek.backend.model.dto.read.ReservationResponse;
+import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationReadModel> createReservation(@RequestBody @Valid ReservationWriteModel reservation) {
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody @Valid ReservationRequest reservation) {
         return ResponseEntity.ok(this.reservationService.createNewReservation(reservation));
     }
 

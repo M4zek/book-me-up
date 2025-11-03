@@ -5,7 +5,7 @@ import com.m4zek.backend.exception.ImageException;
 import com.m4zek.backend.exception.ImageNotFoundException;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.PortfolioImage;
-import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
 import com.m4zek.backend.repository.CompanyRepository;
 import com.m4zek.backend.repository.PortfolioImageRepository;
 import org.springframework.data.domain.Page;
@@ -29,7 +29,7 @@ public class PortfolioImagesService {
     }
 
 
-    public List<PortfolioImageReadModel> saveImages(int companyId, List<MultipartFile> portfolioImages) {
+    public List<PortfolioImageResponse> saveImages(int companyId, List<MultipartFile> portfolioImages) {
         Company company = getCompanyById(companyId);
 
          return portfolioImages.stream()
@@ -47,11 +47,11 @@ public class PortfolioImagesService {
                 }).toList();
     }
 
-    public Page<PortfolioImageReadModel> readImages(int companyId, Pageable pageable) {
+    public Page<PortfolioImageResponse> readImages(int companyId, Pageable pageable) {
         Company company = getCompanyById(companyId);
         Page<PortfolioImage> images = portfolioImageRepository.findAllByCompany(company, pageable);
 
-        List<PortfolioImageReadModel> readModels = images.stream()
+        List<PortfolioImageResponse> readModels = images.stream()
                 .map(PortfolioImage::toReadModel)
                 .toList();
 
@@ -64,7 +64,7 @@ public class PortfolioImagesService {
         portfolioImageRepository.delete(portfolioImage);
     }
 
-    public PortfolioImageReadModel getImageById(int imageId) {
+    public PortfolioImageResponse getImageById(int imageId) {
         return portfolioImageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"))
                 .toReadModel();

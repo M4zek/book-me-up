@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CompanyWriteModel {
+public class CompanyRequest {
 
     @NotBlank(message = "Name is required")
     @Size(max = 255, message = "Name must not exceed 255 characters")
@@ -30,9 +30,9 @@ public class CompanyWriteModel {
     private int owner_id;
 
     @Valid
-    private AddressWriteModel address;
+    private AddressRequest address;
 
     @Valid
-    private CategoryWriteModel category;
+    private CategoryRequest category;
 
 }

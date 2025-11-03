@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class LoginModel {
+public class LoginRequest {
     @NotBlank(message = "Email is required")
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
@@ -19,7 +19,7 @@ public class LoginModel {
     )
     private String password;
 
-    public LoginModel(String email, String password) {
+    public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

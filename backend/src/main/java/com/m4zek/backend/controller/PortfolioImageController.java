@@ -1,6 +1,6 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.dto.read.PortfolioImageReadModel;
+import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
 import com.m4zek.backend.service.PortfolioImagesService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +24,19 @@ public class PortfolioImageController {
     }
 
     @PostMapping("/{companyId}")
-    public ResponseEntity<List<PortfolioImageReadModel>> uploadNewImage(
+    public ResponseEntity<List<PortfolioImageResponse>> uploadNewImage(
             @PathVariable("companyId") int companyId,
             List<MultipartFile> images)
     {
-        List<PortfolioImageReadModel> portfolioImageReadModels =
+        List<PortfolioImageResponse> portfolioImageResponses =
                 this.portfolioImagesService.saveImages(companyId, images);
 
-        return ResponseEntity.ok().body(portfolioImageReadModels);
+        return ResponseEntity.ok().body(portfolioImageResponses);
     }
 
 
     @GetMapping("/{companyId}")
-    public ResponseEntity<Page<PortfolioImageReadModel>> getPortfolioImages(
+    public ResponseEntity<Page<PortfolioImageResponse>> getPortfolioImages(
             @PathVariable("companyId") int companyId, Pageable pageable)
     {
         return ResponseEntity.ok().body(this.portfolioImagesService.readImages(companyId, pageable));
@@ -52,7 +52,7 @@ public class PortfolioImageController {
 
     @GetMapping("/{imageId}/download")
     public ResponseEntity<byte[]> downloadImage(@PathVariable("imageId") int imageId) {
-        PortfolioImageReadModel readModel = this.portfolioImagesService.getImageById(imageId);
+        PortfolioImageResponse readModel = this.portfolioImagesService.getImageById(imageId);
         byte[] image = readModel.getImage();
 
         HttpHeaders headers = new HttpHeaders();

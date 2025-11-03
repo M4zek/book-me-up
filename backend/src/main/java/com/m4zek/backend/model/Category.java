@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.dto.read.CategoryReadModel;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,12 @@ import java.util.List;
 @Entity(name = "Categories")
 public class Category extends BaseEntity {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Getter
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
@@ -24,13 +26,8 @@ public class Category extends BaseEntity {
         this.name = name;
     }
 
-
-    public CategoryReadModel toReadModel() {
-        return CategoryReadModel.builder()
-                .id(this.id)
-                .name(this.name)
-                .numberOfCompanies(this.companies.size())
-                .build();
+    public int getNumberOfCompanies() {
+        return companies.size();
     }
 
     public void updateName(String name){

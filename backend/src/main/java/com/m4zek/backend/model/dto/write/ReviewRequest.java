@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewWriteModel {
+public class ReviewRequest {
 
     @NotBlank(message = "Comment cannot be blank")
     private String comment;

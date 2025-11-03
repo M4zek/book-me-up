@@ -1,8 +1,8 @@
 package com.m4zek.backend.controller;
 
 
-import com.m4zek.backend.model.dto.read.CompanyOfferReadModel;
-import com.m4zek.backend.model.dto.write.CompanyOfferWriteModel;
+import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
+import com.m4zek.backend.model.dto.write.CompanyOfferRequest;
 import com.m4zek.backend.service.CompanyOfferService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +22,15 @@ public class CompanyOfferController {
     }
 
     @PostMapping("/{companyId}")
-    public ResponseEntity<CompanyOfferReadModel> createCompanyOffer(@RequestBody @Valid CompanyOfferWriteModel companyOffer, @PathVariable int companyId) {
+    public ResponseEntity<CompanyOfferResponse> createCompanyOffer(@RequestBody @Valid CompanyOfferRequest companyOffer, @PathVariable int companyId) {
 
-        CompanyOfferReadModel companyOfferReadModel = this.companyOfferService.createNewOffer(companyOffer, companyId);
+        CompanyOfferResponse companyOfferResponse = this.companyOfferService.createNewOffer(companyOffer, companyId);
 
-        return ResponseEntity.ok(companyOfferReadModel);
+        return ResponseEntity.ok(companyOfferResponse);
     }
 
     @GetMapping("/{companyId}")
-    public ResponseEntity<List<CompanyOfferReadModel>> readAllCompanyOffers(@PathVariable int companyId) {
+    public ResponseEntity<List<CompanyOfferResponse>> readAllCompanyOffers(@PathVariable int companyId) {
         return ResponseEntity.ok(this.companyOfferService.getAllCompanyOffers(companyId));
     }
 

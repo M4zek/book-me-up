@@ -3,12 +3,13 @@ package com.m4zek.backend.service;
 import com.m4zek.backend.exception.EmailExistsException;
 import com.m4zek.backend.exception.RefreshTokenException;
 import com.m4zek.backend.exception.UserNotFoundException;
+import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.RefreshToken;
 import com.m4zek.backend.model.Role;
 import com.m4zek.backend.model.User;
 import com.m4zek.backend.model.UserData;
-import com.m4zek.backend.model.dto.read.UserReadModel;
-import com.m4zek.backend.model.dto.write.UserWriteModel;
+import com.m4zek.backend.model.dto.read.UserResponse;
+import com.m4zek.backend.model.dto.write.UserRequest;
 import com.m4zek.backend.repository.RefreshTokenRepository;
 import com.m4zek.backend.repository.RoleRepository;
 import com.m4zek.backend.repository.UserDateRepository;
@@ -47,14 +48,14 @@ public class UserService {
     }
 
 
-    public UserReadModel createNewUser(UserWriteModel userWriteModel) {
-        String userEmail = userWriteModel.getAddressEmail();
+    public UserResponse createNewUser(UserRequest userRequest) {
+        String userEmail = userRequest.getAddressEmail();
 
         if(this.userRepository.existsByAddressEmail(userEmail)) {
             throw new EmailExistsException("Address email already exists");
         }
 
-        UserData userData = userWriteModel.getUserData().toEntity();
+        UserData userData = userRequest.getUserData().toEntity();
         userData = this.userDateRepository.save(userData);
 
         Set<Role> roles = new HashSet<>();
@@ -62,15 +63,16 @@ public class UserService {
 
 
         User userToCreate = new User(
-                userWriteModel.getAddressEmail(),
-                passwordEncoder.encode(userWriteModel.getPassword()),
+                userRequest.getAddressEmail(),
+                passwordEncoder.encode(userRequest.getPassword()),
                 userData,
                 roles
         );
 
         User savedUser = this.userRepository.save(userToCreate);
 
-        return savedUser.toUserReadModel();
+        logger.info("[UserService] User created successfully");
+        return UserMapper.toUserResponse(savedUser);
     }
 
 
@@ -97,6 +99,7 @@ public class UserService {
                 )
         );
 
+        logger.info("[UserService] Refresh token created successfully");
         return refreshToken.getRefreshToken();
     }
 

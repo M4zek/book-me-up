@@ -3,8 +3,8 @@ package com.m4zek.backend;
 import com.m4zek.backend.exception.CategoryExistsException;
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.dto.read.CategoryReadModel;
-import com.m4zek.backend.model.dto.write.CategoryWriteModel;
+import com.m4zek.backend.model.dto.read.CategoryResponse;
+import com.m4zek.backend.model.dto.write.CategoryRequest;
 import com.m4zek.backend.repository.CategoryRepository;
 import com.m4zek.backend.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class CategoryServiceTest {
     @DisplayName("Should create new category")
     void createCategory_categoryCreated() {
         // given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("New category")
                 .build();
 
@@ -43,7 +43,7 @@ public class CategoryServiceTest {
         var newCategory = toTest.saveCategory(categoryDTO);
 
         //then
-        assertThat(newCategory.toReadModel().getName()).isEqualTo(categoryDTO.getName());
+        assertThat(newCategory.getName()).isEqualTo(categoryDTO.getName());
         verify(mockCategoryRepository, times(1)).save(any(Category.class));
 
     }
@@ -52,7 +52,7 @@ public class CategoryServiceTest {
     @DisplayName("saveCategory() - Should throw CategoryExistsException when an entity with that category name already exists")
     void createCategory_categoryAlreadyExists() {
         //given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -92,13 +92,13 @@ public class CategoryServiceTest {
 
 
         // when
-        Page<CategoryReadModel> categories = toTest.findAllCategories(pageable);
-        List<CategoryReadModel> content = categories.getContent();
+        Page<CategoryResponse> categories = toTest.findAllCategories(pageable);
+        List<CategoryResponse> content = categories.getContent();
 
         // then
         assertThat(content)
                 .hasSize(2)
-                .extracting(CategoryReadModel::getName)
+                .extracting(CategoryResponse::getName)
                 .containsExactly("Category1", "Category2");
 
         verify(mockCategoryRepository, times(1)).findAll(pageable);
@@ -109,7 +109,7 @@ public class CategoryServiceTest {
     @DisplayName("updateCategoryName() - Should throw CategoryExistsException when an entity with that category name already exists")
     void updateCategoryName_shouldThrowCategoryExistException() {
         //given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -138,7 +138,7 @@ public class CategoryServiceTest {
     void updateCategoryName_shouldThrowCategoryNotFoundException() {
         // given
         int categoryId = 1;
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
         var mockCategoryRepository = mock(CategoryRepository.class);
@@ -163,7 +163,7 @@ public class CategoryServiceTest {
     void updateCategory_success() {
         //given
         var categoryId = 0;
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -178,7 +178,7 @@ public class CategoryServiceTest {
         var toTest = new CategoryService(mockCategoryRepository);
 
         //when
-        CategoryReadModel updatedCategory = toTest.updateCategoryName(categoryId, categoryDTO);
+        CategoryResponse updatedCategory = toTest.updateCategoryName(categoryId, categoryDTO);
 
         // then
         assertThat(updatedCategory.getName()).isEqualTo(categoryDTO.getName());

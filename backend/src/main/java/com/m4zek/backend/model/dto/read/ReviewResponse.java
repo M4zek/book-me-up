@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ReviewReadModel {
+public class ReviewResponse {
     private int id;
     private String comment;
     private Integer rating;

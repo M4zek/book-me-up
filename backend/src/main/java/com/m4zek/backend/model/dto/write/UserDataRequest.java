@@ -1,4 +1,4 @@
-package com.m4zek.backend.model.dto.read;
+package com.m4zek.backend.model.dto.write;
 
 import com.m4zek.backend.model.UserData;
 import jakarta.validation.constraints.*;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Builder
-public class UserDataWriteModel {
+public class UserDataRequest {
 
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name must not exceed 50 characters")

@@ -1,7 +1,6 @@
 package com.m4zek.backend.model.dto.write;
 
 
-import com.m4zek.backend.model.dto.read.UserDataWriteModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserWriteModel {
+public class UserRequest {
 
     @NotBlank(message = "Email is required")
     @Pattern(
@@ -26,7 +25,7 @@ public class UserWriteModel {
     private String password;
 
     @Valid
-    private UserDataWriteModel userData;
+    private UserDataRequest userData;
 
 
 

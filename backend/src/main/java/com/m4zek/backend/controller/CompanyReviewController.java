@@ -1,7 +1,7 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.dto.read.ReviewReadModel;
-import com.m4zek.backend.model.dto.write.ReviewWriteModel;
+import com.m4zek.backend.model.dto.read.ReviewResponse;
+import com.m4zek.backend.model.dto.write.ReviewRequest;
 import com.m4zek.backend.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,14 +21,14 @@ public class CompanyReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewReadModel> createNewReview(@RequestBody @Valid ReviewWriteModel reviewWriteModel) {
-        ReviewReadModel savedReview = this.reviewService.createNewReview(reviewWriteModel);
+    public ResponseEntity<ReviewResponse> createNewReview(@RequestBody @Valid ReviewRequest reviewRequest) {
+        ReviewResponse savedReview = this.reviewService.createNewReview(reviewRequest);
         return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/{company_offer_id}")
-    public ResponseEntity<List<ReviewReadModel>> readAllCompanyOfferReviews(@PathVariable long company_offer_id){
+    public ResponseEntity<List<ReviewResponse>> readAllCompanyOfferReviews(@PathVariable long company_offer_id){
         return ResponseEntity.ok(this.reviewService.readAllCompanyOfferReviews(company_offer_id));
     }
 

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressWriteModel {
+public class AddressRequest {
 
     @NotBlank(message = "City field must not be empty")
     private String city;

@@ -6,8 +6,8 @@ import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.model.CompanyOffer;
 import com.m4zek.backend.model.Reservation;
 import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.dto.read.ReservationReadModel;
-import com.m4zek.backend.model.dto.write.ReservationWriteModel;
+import com.m4zek.backend.model.dto.read.ReservationResponse;
+import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
@@ -33,36 +33,36 @@ public class ReservationService {
 
 
 
-    public ReservationReadModel createNewReservation(ReservationWriteModel reservationWriteModel) {
+    public ReservationResponse createNewReservation(ReservationRequest reservationRequest) {
 
         Optional<Reservation> reservation = this.reservationRepository.findByUserIdAndCompanyOfferId(
-                reservationWriteModel.getUser_id(),
-                reservationWriteModel.getCompany_offer_id()
+                reservationRequest.getUser_id(),
+                reservationRequest.getCompany_offer_id()
         );
 
         if (reservation.isPresent()) {
             ZonedDateTime reservationTime = reservation.get().getReservationDate();
-            ZonedDateTime writeReservationDate = reservationWriteModel.getReservation_date();
+            ZonedDateTime writeReservationDate = reservationRequest.getReservation_date();
             if(reservationTime.isEqual(writeReservationDate)) {
                 throw new ReservationExistsException("Reservation already exists");
             }
         }
 
-        User user = this.userRepository.findById(reservationWriteModel.getUser_id())
+        User user = this.userRepository.findById(reservationRequest.getUser_id())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        CompanyOffer companyOffer = this.companyOfferRepository.findById(reservationWriteModel.getCompany_offer_id())
+        CompanyOffer companyOffer = this.companyOfferRepository.findById(reservationRequest.getCompany_offer_id())
                 .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
 
         String reservationNumber = this.createReservationNumber(
-                reservationWriteModel.getReservation_date(),
-                reservationWriteModel.getCompany_offer_id(),
-                reservationWriteModel.getUser_id()
+                reservationRequest.getReservation_date(),
+                reservationRequest.getCompany_offer_id(),
+                reservationRequest.getUser_id()
         );
 
         Reservation newReservation = this.reservationRepository.save(
                 new Reservation(
-                        reservationWriteModel.getReservation_date(),
+                        reservationRequest.getReservation_date(),
                         reservationNumber,
                         user,
                         companyOffer

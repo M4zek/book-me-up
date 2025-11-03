@@ -9,8 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class CategoryWriteModel {
-
+public class CategoryRequest {
     @NotBlank(message = "Category name must not be empty")
     private String name;
 
