@@ -96,14 +96,4 @@ export class CompanyAddEmployeeModalComponent {
         return this.selectedEmployee.some(emp => emp.id === employeeId);
     }
 
-    onPageChange(page: number) {
-        this.paginator.currentPage = page;
-        console.log(this.paginator.currentPage);
-    }
-
-    onItemsPerPageChange(page: number) {
-        this.paginator.itemsPerPage = page;
-        console.log(this.paginator);
-    }
-
 }

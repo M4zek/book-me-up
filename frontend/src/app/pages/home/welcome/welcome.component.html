@@ -1,6 +1,7 @@
 <div class="recommended-list-container">
     <p class="recommended-paragraph">Recommended</p>
-    <app-company-list/>
+    <app-double-spinner *ngIf="recommendedCompanies.length == 0"/>
+    <app-company-list *ngIf="recommendedCompanies.length > 0" [companies]="recommendedCompanies"/>
 </div>
 <div class="application-info-container">
     <p class="info-title-paragraph">

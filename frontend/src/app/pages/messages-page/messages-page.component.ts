@@ -59,13 +59,6 @@ export class MessagesPageComponent {
     }
   }
 
-  onPageChange($event: number) {
-    this.paginator.currentPage = $event;
-  }
-
-  onItemsPerPageChange($event: number) {
-    this.paginator.itemsPerPage = $event;
-  }
 
   onCreateModalOpen(){
     this.isCreateModalVisible = true;

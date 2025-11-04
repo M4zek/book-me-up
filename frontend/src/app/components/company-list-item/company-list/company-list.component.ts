@@ -1,61 +1,84 @@
-import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, ViewChild} from '@angular/core';
 import {CompanyListItemComponent} from "../company-list-item.component";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
+import {CompanySummaryResponse} from "../../../model/response.model";
+import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 
 @Component({
   selector: 'app-company-list',
-  imports: [
-    NgForOf,
-    CompanyListItemComponent
-  ],
+    imports: [
+        NgForOf,
+        CompanyListItemComponent,
+        DoubleSpinnerComponent,
+        NgIf
+    ],
   templateUrl: './company-list.component.html',
   styleUrl: './company-list.component.css'
 })
 export class CompanyListComponent {
-  @ViewChild('container') container!: ElementRef<HTMLDivElement>;
+    @Input() companies: CompanySummaryResponse[] = [];
+    @ViewChild('track') trackRef!: ElementRef<HTMLDivElement>;
+
+    private isDown = false;
+    private startX = 0;
+    private scrollLeft = 0;
+    private moved = false;
+
+    ngOnInit(): void {}
 
 
-  left_arrow_icon_path: string = '/icons/left_arrow_icon.svg';
-  right_arrow_icon_path: string = '/icons/right_arrow_icon.svg';
+    scrollByDirection(direction: 'left' | 'right') {
+        const el = this.trackRef.nativeElement;
+        const amount = Math.round(el.clientWidth * 0.7);
+        el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
+    }
 
-  company_list_size = 10;
-  currentIndex = 0;
-  itemWidth = 345;
-  visibleItems = 0;
+    onPointerDown(event: PointerEvent) {
+        const el = this.trackRef.nativeElement;
+        this.isDown = true;
+        this.moved = false;
+        el.classList.add('dragging');
+        this.startX = event.clientX - el.offsetLeft;
+        this.scrollLeft = el.scrollLeft;
+        (event.target as Element).setPointerCapture(event.pointerId);
+    }
 
-  ngAfterViewInit() {
-    this.calculateElementsInContainer();
-  }
 
-  rows(n: number): number[] {
-    return Array(n).fill(0).map((_, i) => i);
-  }
+    onPointerMove(event: PointerEvent) {
+        if (!this.isDown) return;
+        event.preventDefault();
+        const el = this.trackRef.nativeElement;
+        const x = event.clientX - el.offsetLeft;
+        const walk = (x - this.startX);
 
-  next() {
-    if (this.currentIndex < this.company_list_size - this.visibleItems &&
-        this.currentIndex < this.company_list_size - 1)
-    {
-        this.currentIndex++;
+        if (Math.abs(walk) > 2) this.moved = true;
+
+        el.scrollLeft = this.scrollLeft - walk;
+    }
+
+
+    onPointerUp(event: PointerEvent, company?: CompanySummaryResponse) {
+        this.isDown = false;
+        const el = this.trackRef.nativeElement;
+        el.classList.remove('dragging');
+        try { (event.target as Element).releasePointerCapture(event.pointerId); } catch (e) {}
+
+        if (!this.moved && company) {
+            this.onItemCLick(company);
+        }
 
     }
-  }
 
-  prev() {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
+    @HostListener('keydown', ['$event'])
+    onKeydown(event: KeyboardEvent) {
+        if (event.key === 'ArrowLeft') { this.scrollByDirection('left'); event.preventDefault(); }
+        if (event.key === 'ArrowRight') { this.scrollByDirection('right'); event.preventDefault(); }
     }
-  }
 
 
-  @HostListener('window:resize')
-  onResize() {
-    this.calculateElementsInContainer();
-    this.next();
-    this.prev();
-  }
+    onItemCLick(company: CompanySummaryResponse) {
+        console.log(company);
+    }
 
-  calculateElementsInContainer(){
-    const containerWidth = this.container.nativeElement.offsetWidth;
-    this.visibleItems = Math.floor(containerWidth / this.itemWidth);
-  }
+
 }

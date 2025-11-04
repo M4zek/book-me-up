@@ -1,31 +1,24 @@
 <div class="category-container">
-    <div class="category-list-container">
+    <app-double-spinner *ngIf="categoryList.length == 0"/>
+    <div class="category-list-container"
+         *ngIf="categoryList.length != 0"
+    >
         <ul class="category-list">
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">3231</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">1321</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">1321</p>
+            <li class="category-item" *ngFor="let category of categoryList">
+                <p class="category-name-paragraph">{{category.name}}</p>
+                <p class="category-company-amount">( {{category.numberOfCompanies}} )</p>
             </li>
         </ul>
-        <img class="drop-down-icon" [ngClass]="{ 'up': isDropdownOpen }" [src]="drop_down_icon" alt="More" (click)="toggleDropdown()" />
+        <img class="drop-down-icon"
+             *ngIf="pagination.totalItems > 10"
+             [ngClass]="{ 'up': isDropdownOpen }"
+             [src]="drop_down_icon"
+             alt="More" (click)="toggleDropdown()" />
     </div>
-    <div class="category-other-container-dropdown" [ngClass]="{ 'show': isDropdownOpen }">
-        <ul class="category-list">
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">3231</p>
-            </li>
-            <li class="category-item">
-                <p class="category-name-paragraph">Test</p>
-                <p class="category-company-amount">1321</p>
-            </li>
-        </ul>
+    <div class="paginator-dropdown"
+         [ngClass]="{ 'show': isDropdownOpen }">
+        <app-paginator
+                (paginatorChanged)="onPaginationChange()"
+                [pagination]="pagination"/>
     </div>
 </div>

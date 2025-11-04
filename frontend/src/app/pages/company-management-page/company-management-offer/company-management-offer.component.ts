@@ -51,13 +51,6 @@ export class CompanyManagementOfferComponent {
         itemsPerPageOptions: [5, 10, 25, 50]
     }
 
-    onPageChange(page: number) {
-        this.paginator.currentPage = page;
-    }
-
-    onItemsPerPageChange(num: number) {
-        this.paginator.itemsPerPage = num;
-    }
 
     onSortChange($event: SortBy) {
         console.log($event);

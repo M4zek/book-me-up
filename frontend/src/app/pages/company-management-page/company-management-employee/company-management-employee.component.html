@@ -35,9 +35,7 @@
     </div>
 
 
-    <app-paginator [pagination]="pagination"
-                   (itemsPerPageChange)="onItemsPerPageChange($event)"
-                   (pageChange)="onPageChange($event)"></app-paginator>
+    <app-paginator [pagination]="pagination"></app-paginator>
 </div>
 
 <app-company-add-employee-modal [isVisible]="isAddEmployeeModalOpen" (closeModal)="closeAddEmployeeModal()"></app-company-add-employee-modal>

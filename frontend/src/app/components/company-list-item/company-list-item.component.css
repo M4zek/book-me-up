@@ -8,9 +8,7 @@
     transition: all .2s ease;
 }
 
-.main-container:hover {
-    transform: scale(1.05);
-}
+
 
 .company-data{
     display: flex;
@@ -29,6 +27,7 @@
     width: 330px;
     height: 200px;
     border-radius: 5px 5px 0 0;
+    color: var(--white)
 }
 
 .company-name-paragraph{

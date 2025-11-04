@@ -24,9 +24,7 @@
                     </div>
                 </div>
 
-                <app-paginator [pagination]="paginator"
-                               (pageChange)="onPageChange($event)"
-                                (itemsPerPageChange)="onItemsPerPageChange($event)"></app-paginator>
+                <app-paginator [pagination]="paginator"></app-paginator>
             </div>
 
             <div class="added-employee-preview-list" *ngIf="selectedEmployee.length > 0">

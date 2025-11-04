@@ -1,74 +1,92 @@
-.main-list-container{
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    flex-flow: column wrap;
-    margin: 10px 0 10px 0;
-    padding: 20px;
-    align-items: center;
-    justify-content: space-between;
-    height: auto;
+.list-row {
     position: relative;
+    margin: 10px 0 0 0;
+}
+
+.row-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.05rem;
 }
 
 
-.list-row-container{
-    width: 96%;
+.track {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px;
+    height: fit-content;
+}
+
+
+.track.dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+}
+
+
+.card {
+    flex: 0 0 auto;
+    width: fit-content;
+    border-radius: 8px;
     overflow: hidden;
-    display: flex;
+    background: #111;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    user-select: none;
+    transition: all .2s ease;
 }
 
-.row-items-container{
+.card:hover {
+    transform: scale(1.025);
+}
+
+.card img {
+    display: block;
     width: 100%;
-    display: flex;
-    flex-flow: row;
-    gap: 15px;
-    transition: transform 0.5s ease;
+    object-fit: cover;
 }
 
-.list-button-container{
+
+.card-title {
+    padding: 0.4rem;
+    font-size: 0.85rem;
+    color: #eee;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+
+.nav {
     position: absolute;
-    width: calc(100% + 30px);
-    top: calc(50% - 15px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 56px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-}
-
-.circle-left, .circle-right {
-    width: 40px;
-    height: 40px;
-    background-color: transparent;
-    border-radius: 50%;
-    transition: .3s ease-in-out;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    position: absolute;
-    top: calc(50% - 20px);
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+}
+.nav.left { left: 6px; }
+.nav.right { right: 6px; }
+
+
+.nav:hover{
+    background-color: var(--pink_10);
 }
 
-.circle-right{
-    right: 0;
+.nav:active {
+    background-color: var(--pink_50);
 }
 
-.circle-left{
-    left: 0;
-}
-
-.circle-left img, .circle-right img{
-    width: 30px;
-    height: 30px;
-}
-
-.circle-left:hover, .circle-right:hover{
-    background-color: var(--light-blue-85);
-    transition: .3s ease-in-out;
-}
-
-.circle-left:active, .circle-right:active{
-    background-color: var(--pink);
-    transition: .1s ease-in-out;
-}
 
 

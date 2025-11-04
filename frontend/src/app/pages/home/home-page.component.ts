@@ -17,31 +17,14 @@ import {SearchCompanyResult} from "../../model/search/search.model";
   styleUrl: './home-page.component.css'
 })
 export class HomePage {
-    constructor(private router: Router) {}
+    constructor() {}
 
     nameValue: string = '';
     placeValue: string = '';
     categoryValue: string = '';
 
     onSearch() {
-        const params: SearchCompanyResult = {}
 
-        if(this.nameValue.length > 0){
-            params.name = this.nameValue;
-        }
-
-        if(this.placeValue.length > 0){
-            params.place = this.placeValue ;
-        }
-
-        if(this.categoryValue.length > 0 && this.categoryValue != 'None'){
-            params.category = this.categoryValue ;
-        }
-
-        this.router.navigate(
-            ['guest/home/search'],
-            { queryParams: params }
-        )
     }
 
     changeCategory($event: DropDownListItem) {

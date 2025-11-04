@@ -16,9 +16,7 @@
     <div class="offer-card-container">
         <app-company-management-offer-item *ngFor="let offer of offers" [offer]="offer"/>
     </div>
-    <app-paginator [pagination]="paginator"
-                   (itemsPerPageChange)="onItemsPerPageChange($event)"
-                   (pageChange)="onPageChange($event)"/>
+    <app-paginator [pagination]="paginator"/>
 </div>
 
 

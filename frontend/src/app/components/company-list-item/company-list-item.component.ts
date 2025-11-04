@@ -1,16 +1,28 @@
-import {Component} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {CompanySummaryResponse} from "../../model/response.model";
 
 @Component({
-  selector: 'app-company-list-item',
-  imports: [],
-  templateUrl: './company-list-item.component.html',
-  styleUrl: './company-list-item.component.css'
+    selector: 'app-company-list-item',
+    imports: [],
+    templateUrl: './company-list-item.component.html',
+    styleUrl: './company-list-item.component.css'
 })
-export class CompanyListItemComponent {
-  company_logo_url: string = '/images/default_logo_company.png'
-  star_icon: string = '/icons/star_icon.svg'
-  company_name: string = 'Company Name';
-  company_address: string = 'Company Address';
-  rating: number = 0.0;
-  number_of_opinions: number = 0;
+export class CompanyListItemComponent implements OnChanges {
+
+    @Input() company: CompanySummaryResponse = {
+        id: 0, name: '',
+        address: {id: 0, city: '', postalCode: '', street: '', buildingNumber: '',},
+        rating: 0, numberOfReviews: 0, logo: '',
+    }
+    company_logo_url: string = '/images/default_logo_company.png'
+    star_icon: string = '/icons/star_icon.svg'
+
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if(changes['company']) {
+            if(!this.company.logo) {
+                this.company.logo = this.company_logo_url
+            }
+        }
+    }
 }
