@@ -16,6 +16,6 @@ public class CompanySummaryResponse {
     private AddressResponse address;
     private double rating;
     private int numberOfReviews;
-    private byte[] logo;
+    private String logo;
 
 }

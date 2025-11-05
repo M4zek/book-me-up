@@ -8,6 +8,7 @@ import com.m4zek.backend.security.service.MyUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ public class UserMapper {
                 .id(user.getId())
                 .firstName(userData.getFirstName())
                 .lastName(userData.getLastName())
-                .avatar(userData.getPhoto())
+                .avatar(ImageMapper.byteImageToBase64(userData.getPhoto()))
                 .build();
     }
 

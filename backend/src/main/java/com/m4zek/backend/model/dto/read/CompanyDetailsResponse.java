@@ -16,11 +16,11 @@ public class CompanyDetailsResponse {
     private int id;
     private String name;
     private String description;
-    private byte[] logo;
     private AddressResponse address;
     private List<CompanyHoursResponse> companyHours;
     private ReviewStatisticsResponse reviewStatistics;
     private EmployeeSummaryResponse owner;
     private List<EmployeeSummaryResponse> employees;
+    private String logo;
 
 }

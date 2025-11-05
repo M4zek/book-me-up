@@ -16,7 +16,7 @@ public class CompanyMapper {
         return CompanySummaryResponse.builder()
                 .id(company.getId())
                 .name(company.getName())
-                .logo(company.getLogo())
+                .logo(ImageMapper.byteImageToBase64(company.getLogo()))
                 .address(AddressMapper.addressToAddressResponse(company.getAddress()))
                 .rating(
                         company.getCompanyOffers().stream()
@@ -38,7 +38,7 @@ public class CompanyMapper {
                 .id(company.getId())
                 .name(company.getName())
                 .description(company.getDescription())
-                .logo(company.getLogo())
+                .logo(ImageMapper.byteImageToBase64(company.getLogo()))
                 .address(AddressMapper.addressToAddressResponse(company.getAddress()))
                 .companyHours(company.getCompanyHoursList().stream()
                         .map(CompanyHoursMapper::companyHoursToCompanyHoursResponse)

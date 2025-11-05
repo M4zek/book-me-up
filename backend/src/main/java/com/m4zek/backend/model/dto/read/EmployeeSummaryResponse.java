@@ -15,6 +15,6 @@ public class EmployeeSummaryResponse {
     private int id;
     private String firstName;
     private String lastName;
-    private byte[] avatar;
+    private String avatar;
 
 }
