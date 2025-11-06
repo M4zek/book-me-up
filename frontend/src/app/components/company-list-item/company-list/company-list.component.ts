@@ -3,6 +3,7 @@ import {CompanyListItemComponent} from "../company-list-item.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {CompanySummaryResponse} from "../../../model/response.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-company-list',
@@ -26,6 +27,7 @@ export class CompanyListComponent {
 
     ngOnInit(): void {}
 
+    constructor(private router: Router) {}
 
     scrollByDirection(direction: 'left' | 'right') {
         const el = this.trackRef.nativeElement;
@@ -77,7 +79,7 @@ export class CompanyListComponent {
 
 
     onItemCLick(company: CompanySummaryResponse) {
-        console.log(company);
+        this.router.navigate(['guest/company', company.id]);
     }
 
 

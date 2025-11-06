@@ -11,7 +11,10 @@
             <input type="text" placeholder="Search by place" class="input-search" [(ngModel)]="placeValue">
         </div>
         <div class="category-drop-down-container">
-            <app-drop-down-list [placeholder]="'Select category'" (valueChanged)="changeCategory($event)"></app-drop-down-list>
+            <app-drop-down-list
+                    [options]="dropDownListItems"
+                    [placeholder]="'Select category'"
+                    (valueChanged)="changeCategory($event)"/>
         </div>
         <div class="action-container">
             <p>Search</p>

@@ -1,9 +1,10 @@
 <div class="map-container">
-    <div class="map-localization" *ngIf="!isAddressComplete(currentAddress) && !this.isAddressFound">
+    <div class="map-localization" *ngIf="!this.isAddressFound">
         <img alt="Address not found" [src]="'images/no_content_localization.png'"/>
     </div>
     <div class="map"
-         *ngIf="this.isAddressComplete(currentAddress) || this.isAddressFound"
+         *ngIf="this.isAddressComplete(currentAddress)"
+         [class.show]="isAddressFound"
          leaflet
          (leafletMapReady)="onMapReady($event)"
          [leafletOptions]="options"

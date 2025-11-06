@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgForOf} from "@angular/common";
+import {EmployeeSummaryResponse} from "../../model/response.model";
 
 @Component({
   selector: 'app-company-employee-list',
@@ -11,11 +12,6 @@ import {NgForOf} from "@angular/common";
 })
 export class CompanyEmployeeListComponent {
 
-  companyEmployees: string[] = [
-    'John Doe',
-    'John Doe',
-    'John Doe',
-    'John Doe',
-  ]
+  @Input() companyEmployees: EmployeeSummaryResponse[] = []
 
 }

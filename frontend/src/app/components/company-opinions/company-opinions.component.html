@@ -2,13 +2,14 @@
     <h2>Opinions</h2>
     <div class="star-container">
         <div class="overall-opinions">
-            <p class="overall-value-opinion">{{opinionsDetails.overallRating}} / 5</p>
-            <app-rating-stars [rating]="opinionsDetails.overallRating"></app-rating-stars>
-            <p class="overall-number-value">Based on {{opinionsDetails.overallOpinions}} opinions</p>
+            <p class="overall-value-opinion">{{opinionsDetails.rating | number:'1.1-1'}} / 5</p>
+            <app-rating-stars [rating]="opinionsDetails.rating"></app-rating-stars>
+            <p class="overall-number-value">Based on {{opinionsDetails.totalReviews}} opinions</p>
         </div>
         <div class="detailed-opinions">
-            <div class="bar" *ngFor="let detail of opinionsDetails.details">
-                <app-rating-bar [rating]="detail[0]" [count]="detail[1]" [total]="opinionsDetails.overallOpinions"></app-rating-bar>
+            <div class="bar"
+                 *ngFor="let rating of this.opinionsDetails.ratingCounts[0] | keyvalue">
+                    <app-rating-bar [rating]="+rating.key" [count]="rating.value" [total]="opinionsDetails.totalReviews"/>
             </div>
         </div>
     </div>

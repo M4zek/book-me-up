@@ -3,7 +3,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {CategoryResponse} from "../../model/response.model";
 import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 import {CategoryService} from "../../service/category.service";
-import {Page, Pagination} from "../../model/search/search.model";
+import {Pagination} from "../../model/search/search.model";
 import {PaginatorComponent} from "../paginator/paginator.component";
 import {interval, Subscription, take} from "rxjs";
 
@@ -53,16 +53,24 @@ export class CategoryListComponent implements OnInit {
 
         this.categoryList = [];
 
-        this.categoryService.getCategories(this.pagination).subscribe((response: Page<CategoryResponse>) => {
-            const categories = response.content;
-            this.pagination.totalItems = response.page.totalElements;
-            this.pagination.currentPage = response.page.number;
+        this.categoryService.getCategories(this.pagination).subscribe({
+            next: (response) =>{
+                if(response.status === 200 && response.body){
+                        const categories = response.body.content;
+                        this.pagination.totalItems = response.body.page.totalElements;
+                        this.pagination.currentPage = response.body.page.number;
 
-            this.categoryIntervalSub = interval(100)
-                .pipe(take(categories.length))
-                .subscribe(i => {
-                    this.categoryList.push(categories[i]);
-                });
-        });
+                        this.categoryIntervalSub = interval(100)
+                            .pipe(take(categories.length))
+                            .subscribe(i => {
+                                this.categoryList.push(categories[i]);
+                            });
+                }
+            },
+            error: (error) => {
+                const message = error.error;
+                console.log(message);
+            }
+        })
     }
 }

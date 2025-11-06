@@ -3,8 +3,8 @@
         <app-image-list></app-image-list>
         <div class="horizontal-container">
             <div class="vertical-container">
-                <p class="company-name-paragraph">{{companyName}}</p>
-                <p class="company-address-paragraph">{{companyAddress.city}}, {{companyAddress.street}} {{companyAddress.buildingNumber}}</p>
+                <p class="company-name-paragraph">{{company.name}}</p>
+                <p class="company-address-paragraph">{{getStringAddress()}}</p>
             </div>
             <div class="icon-container">
                 <svg class="share" width="23" height="30" viewBox="0 0 23 30" fill="none" (click)="shareCompany()">
@@ -17,20 +17,21 @@
             </div>
         </div>
         <div class="parent">
-            <app-company-offer-list></app-company-offer-list>
+            <app-double-spinner [text]="'Company offer loading'" *ngIf="!requestCompanyOfferSuccess"/>
+            <app-company-offer-list *ngIf="requestCompanyOfferSuccess"/>
         </div>
     </div>
 
     <div class="right-container">
-        <div class="company-address-map">
-            <app-map [currentAddress]="companyAddress"></app-map>
+        <div class="company-address-map" *ngIf="requestCompanySuccess">
+            <app-map [currentAddress]="companyAddress"/>
         </div>
         <div class="company-description">
             <p class="title-paragraph">About us</p>
-            <p class="company-desc-paragraph">{{companyDescription}}</p>
+            <p class="company-desc-paragraph">{{this.company.description}}</p>
         </div>
-        <app-company-employee-list></app-company-employee-list>
-        <app-company-business-hours></app-company-business-hours>
-        <app-company-opinions></app-company-opinions>
+        <app-company-employee-list [companyEmployees]="company.employees"></app-company-employee-list>
+        <app-company-business-hours [openingHours]="company.companyHours"></app-company-business-hours>
+        <app-company-opinions [opinionsDetails]="company.reviewStatistics"></app-company-opinions>
     </div>
 </div>

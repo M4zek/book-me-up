@@ -26,21 +26,18 @@ export class DropDownListComponent implements OnChanges {
   @Input() placeholder: string = 'Select option'
 
   menuOpen: boolean = false;
-  @Input() selectedOption: DropDownListItem = {id: -1, content: ''};
 
+  @Input() selectedOption: DropDownListItem = {id: -1, content: ''};
   @Input() options: DropDownListItem[] = []
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['options']) {
-      let defaultOptions: DropDownListItem = {
-        content: 'None',
+      if (changes['options']) {
+          const defaultOptions: DropDownListItem = {content: 'None'};
+          this.options = [defaultOptions, ...this.options].map((item: DropDownListItem, index: number) => ({
+              ...item,
+              id: item.id ?? index,
+          }));
       }
-      this.options = [defaultOptions, ...this.options];
-      this.options = this.options.map((item, index) => ({
-        ...item,
-        id: item.id ?? index,
-      }));
-    }
   }
 
   select(option: DropDownListItem): any {

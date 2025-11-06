@@ -7,7 +7,7 @@
         </div>
         <div class="reviews-data">
             <div class="reviews-rating">
-                <p class="rating-paragraph">{{company.rating}}</p>
+                <p class="rating-paragraph">{{company.rating | number:'1.1-1'}}</p>
                 <img [src]="star_icon" alt="star"/>
             </div>
             <p class="number-reviews-paragraph">{{company.numberOfReviews}} opinions</p>

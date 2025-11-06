@@ -36,7 +36,7 @@ export const routes: Routes = [
                 { path: 'search', component: SearchResultComponent},
                 { path: '**', component: PageNotFoundComponent },
             ]},
-            { path: 'company', component: CompanyViewComponent },
+            { path: 'company/:id', component: CompanyViewComponent },
         ] },
     {
         path: 'app',
@@ -50,7 +50,7 @@ export const routes: Routes = [
                     { path: 'search', component: SearchResultComponent},
                     { path: '**', component: PageNotFoundComponent },
                 ]},
-            { path: 'company', component: CompanyViewComponent},
+            { path: 'company/:id', component: CompanyViewComponent},
             { path: 'company-management', component: CompanyManagementPageComponent,
             children: [
                 { path: '', redirectTo: "home", pathMatch: 'full' },

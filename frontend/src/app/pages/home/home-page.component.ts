@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CategoryListComponent} from "../../components/category-list/category-list.component";
-import {Router, RouterOutlet} from "@angular/router";
+import {RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {DropDownListComponent, DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
-import {SearchCompanyResult} from "../../model/search/search.model";
+import {CategoryService} from "../../service/category.service";
+import {CategoryResponse, ErrorMessage} from "../../model/response.model";
 
 @Component({
   selector: 'app-home',
@@ -16,12 +17,18 @@ import {SearchCompanyResult} from "../../model/search/search.model";
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
 })
-export class HomePage {
-    constructor() {}
+export class HomePage implements OnInit {
+    dropDownListItems: DropDownListItem[] = [];
 
     nameValue: string = '';
     placeValue: string = '';
     categoryValue: string = '';
+
+    constructor(private categoryService: CategoryService) {}
+
+    ngOnInit(): void {
+        this.getCategoriesFromApi();
+    }
 
     onSearch() {
 
@@ -29,5 +36,29 @@ export class HomePage {
 
     changeCategory($event: DropDownListItem) {
         this.categoryValue = $event.content;
+        console.log(this.categoryValue);
     }
+
+    protected getCategoriesFromApi() {
+        this.dropDownListItems = [];
+        this.categoryService.getCategories().subscribe({
+            next: (response) => {
+                if(response.status === 200 && response.body) {
+                    const categories: CategoryResponse[] = response.body.content;
+                    this.dropDownListItems = categories.map((category: CategoryResponse) => {
+                        return {
+                            id: category.id,
+                            content: category.name,
+                        }
+                    })
+                }
+            }, error: (error) => {
+                const message: ErrorMessage = error.error;
+                console.error(message);
+            }
+        })
+    }
+
+
+
 }

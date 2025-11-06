@@ -1,3 +1,10 @@
+export interface ErrorMessage{
+    statusCode: number;
+    description: string;
+    timestamp: string;
+    message: string | string[];
+}
+
 export interface CategoryResponse{
     id: number,
     name: string,
@@ -18,5 +25,37 @@ export interface CompanySummaryResponse{
     address: AddressResponse,
     rating: number,
     numberOfReviews: number,
+    logo: string,
+}
+
+export interface CompanyHours{
+    dayOfWeek: string,
+    openTime: string,
+    closeTime: string,
+    open: boolean,
+}
+
+export interface CompanyReviewStatistics{
+    rating: number,
+    totalReviews: number,
+    ratingCounts: [{[key: number]: number}],
+}
+
+export interface EmployeeSummaryResponse{
+    id: number,
+    firstName: string,
+    lastName: string,
+    avatar: string
+}
+
+export interface CompanyDetailsResponse {
+    id: number,
+    name: string,
+    description: string,
+    address: AddressResponse,
+    reviewStatistics: CompanyReviewStatistics,
+    companyHours: CompanyHours[],
+    owner: EmployeeSummaryResponse,
+    employees: EmployeeSummaryResponse[],
     logo: string,
 }

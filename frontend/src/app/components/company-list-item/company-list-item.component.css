@@ -2,7 +2,7 @@
     display: flex;
     flex-flow: column;
     background-color: var(--black-50);
-    height: 250px;
+    height: 100%;
     width: 330px;
     border-radius: 5px;
     transition: all .2s ease;
@@ -15,6 +15,16 @@
     flex-flow: row;
     justify-content: space-between;
     margin:5px;
+}
+
+.name-address-data-container{
+    width: 70%;
+}
+
+.reviews-data{
+    width: 30%;
+    align-items: end;
+    justify-content: center;
 }
 
 .reviews-rating{
@@ -40,7 +50,7 @@
 .company-address-paragraph{
     padding: 0;
     font: bold 12px "Roboto", sans-serif;
-    color: var(--white-75);
+    color: var(--white-50);
     margin: 5px 0 0;
 }
 
@@ -48,10 +58,12 @@
     color: var(--white-75);
     font: bold 12px "Arial", sans-serif;
     margin: 5px 0 0;
+    text-align: end;
 }
 
 .rating-paragraph{
     font-size: 14px;
+    font-weight: bold;
     color: var(--white);
     margin: 0;
 }
