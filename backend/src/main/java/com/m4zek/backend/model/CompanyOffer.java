@@ -1,7 +1,6 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -74,15 +73,6 @@ public class CompanyOffer extends BaseEntity {
 
     public List<Reservation> getReservations() {
         return reservations;
-    }
-
-    public CompanyOfferResponse toReadModel() {
-        return CompanyOfferResponse.builder()
-                .name(this.name)
-                .description(this.description)
-                .price(this.price)
-                .duration(this.duration)
-                .build();
     }
 
 }

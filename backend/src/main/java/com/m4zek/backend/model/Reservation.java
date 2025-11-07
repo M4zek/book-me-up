@@ -1,7 +1,5 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.mapper.UserMapper;
-import com.m4zek.backend.model.dto.read.ReservationResponse;
 import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
@@ -43,14 +41,6 @@ public class Reservation extends BaseEntity {
         return this.reservationDate;
     }
 
-    public ReservationResponse toReadModel() {
-        return ReservationResponse.builder()
-                .customer(UserMapper.toUserResponse(this.user))
-                .status(this.reservationStatus.toString())
-                .companyOffer(this.companyOffer.toReadModel())
-                .reservationNumber(this.reservationNumber)
-                .reservationDate(this.reservationDate)
-                .build();
-    }
+
 
 }

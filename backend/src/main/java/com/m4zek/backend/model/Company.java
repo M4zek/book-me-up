@@ -1,7 +1,7 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.*;
+import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -91,6 +91,10 @@ public class Company extends BaseEntity{
 
     public Set<CompanyUserRole> getUsers() {
         return users;
+    }
+
+    public int getPortfolioImagesSize() {
+        return portfolioImages.size();
     }
 
     public ReviewStatisticsResponse getCompanyReviewStatistics() {

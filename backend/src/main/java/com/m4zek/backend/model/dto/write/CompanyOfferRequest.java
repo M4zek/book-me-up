@@ -1,7 +1,5 @@
 package com.m4zek.backend.model.dto.write;
 
-import com.m4zek.backend.model.Company;
-import com.m4zek.backend.model.CompanyOffer;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,14 +29,6 @@ public class CompanyOfferRequest {
     private int duration;
 
 
-    public CompanyOffer toEntity(Company company){
-        return new CompanyOffer(
-                this.name,
-                this.description,
-                this.price,
-                this.duration,
-                company);
-    }
 }
 
 

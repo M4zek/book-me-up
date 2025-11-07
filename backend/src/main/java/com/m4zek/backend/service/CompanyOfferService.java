@@ -1,16 +1,20 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.mapper.CompanyOfferMapper;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.CompanyOffer;
 import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import com.m4zek.backend.model.dto.write.CompanyOfferRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.CompanyRepository;
+import jakarta.persistence.EntityExistsException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyOfferService {
@@ -24,17 +28,28 @@ public class CompanyOfferService {
     }
 
 
-    public List<CompanyOfferResponse> getAllCompanyOffers(int companyId) {
+    public Page<CompanyOfferResponse> getAllCompanyOffers(int companyId, Pageable pageable) {
         Company company = getCompanyById(companyId);
-        List<CompanyOffer> companyOffers = companyOfferRepository.findAllByCompany(company);
-        return companyOffers.stream().map(CompanyOffer::toReadModel).collect(Collectors.toList());
+
+        Page<CompanyOffer> companyOffers = companyOfferRepository.findAllByCompany(company, pageable);
+        List<CompanyOfferResponse> companyOfferResponseList = companyOffers.stream()
+                .map(CompanyOfferMapper::companyOfferToCompanyOfferResponse)
+                .toList();
+
+        return new PageImpl<>(companyOfferResponseList, pageable, companyOffers.getTotalElements());
     }
 
 
     public CompanyOfferResponse createNewOffer(CompanyOfferRequest companyOfferRequest, int companyId) {
         Company company = getCompanyById(companyId);
-        CompanyOffer newOffer = companyOfferRequest.toEntity(company);
-        return this.companyOfferRepository.save(newOffer).toReadModel();
+
+        if(this.companyOfferRepository.existsByCompanyAndName(company, companyOfferRequest.getName())) {
+            throw new EntityExistsException("Company Offer with name " + companyOfferRequest.getName() + " already exists");
+        }
+
+        CompanyOffer newOffer = CompanyOfferMapper.companyOfferRequestToCompanyOffer(companyOfferRequest, company);
+        CompanyOffer savedCompanyOffer = companyOfferRepository.save(newOffer);
+        return CompanyOfferMapper.companyOfferToCompanyOfferResponse(savedCompanyOffer);
     }
 
 

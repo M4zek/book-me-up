@@ -1,8 +1,10 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.exception.PortfolioImageLimitExceededException;
 import com.m4zek.backend.exception.ImageException;
 import com.m4zek.backend.exception.ImageNotFoundException;
+import com.m4zek.backend.mapper.PortfolioImageMapper;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.PortfolioImage;
 import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
@@ -32,15 +34,21 @@ public class PortfolioImagesService {
     public List<PortfolioImageResponse> saveImages(int companyId, List<MultipartFile> portfolioImages) {
         Company company = getCompanyById(companyId);
 
+        if (company.getPortfolioImagesSize() >= 10){
+            throw new PortfolioImageLimitExceededException();
+        }
+
          return portfolioImages.stream()
                 .map(image -> {
                     try {
                         String filename = image.getOriginalFilename();
                         byte[] imageBytes = image.getBytes();
 
-                        PortfolioImage newImage = new PortfolioImage(imageBytes, filename, company);
-                        newImage = portfolioImageRepository.save(newImage);
-                        return newImage.toReadModel();
+                        return PortfolioImageMapper.portfolioImageToPortfolioImageResponse(
+                                portfolioImageRepository.save(
+                                        new PortfolioImage(imageBytes, filename, company)
+                                )
+                        );
                     } catch (IOException exception){
                         throw new ImageException(exception.getMessage());
                     }
@@ -52,7 +60,7 @@ public class PortfolioImagesService {
         Page<PortfolioImage> images = portfolioImageRepository.findAllByCompany(company, pageable);
 
         List<PortfolioImageResponse> readModels = images.stream()
-                .map(PortfolioImage::toReadModel)
+                .map(PortfolioImageMapper::portfolioImageToPortfolioImageResponse)
                 .toList();
 
         return new PageImpl<>(readModels, pageable, images.getTotalElements());
@@ -64,10 +72,9 @@ public class PortfolioImagesService {
         portfolioImageRepository.delete(portfolioImage);
     }
 
-    public PortfolioImageResponse getImageById(int imageId) {
-        return portfolioImageRepository.findById(imageId)
-                .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"))
-                .toReadModel();
+    public PortfolioImage getImageById(int imageId) {
+       return portfolioImageRepository.findById(imageId)
+               .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"));
     }
 
     // Private method

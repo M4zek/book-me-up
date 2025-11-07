@@ -1,20 +1,11 @@
 package com.m4zek.backend.service;
 
-import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.exception.ReservationExistsException;
-import com.m4zek.backend.exception.UserNotFoundException;
-import com.m4zek.backend.model.CompanyOffer;
-import com.m4zek.backend.model.Reservation;
-import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.dto.read.ReservationResponse;
-import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 @Service
 public class ReservationService {
@@ -33,43 +24,43 @@ public class ReservationService {
 
 
 
-    public ReservationResponse createNewReservation(ReservationRequest reservationRequest) {
-
-        Optional<Reservation> reservation = this.reservationRepository.findByUserIdAndCompanyOfferId(
-                reservationRequest.getUser_id(),
-                reservationRequest.getCompany_offer_id()
-        );
-
-        if (reservation.isPresent()) {
-            ZonedDateTime reservationTime = reservation.get().getReservationDate();
-            ZonedDateTime writeReservationDate = reservationRequest.getReservation_date();
-            if(reservationTime.isEqual(writeReservationDate)) {
-                throw new ReservationExistsException("Reservation already exists");
-            }
-        }
-
-        User user = this.userRepository.findById(reservationRequest.getUser_id())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        CompanyOffer companyOffer = this.companyOfferRepository.findById(reservationRequest.getCompany_offer_id())
-                .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
-
-        String reservationNumber = this.createReservationNumber(
-                reservationRequest.getReservation_date(),
-                reservationRequest.getCompany_offer_id(),
-                reservationRequest.getUser_id()
-        );
-
-        Reservation newReservation = this.reservationRepository.save(
-                new Reservation(
-                        reservationRequest.getReservation_date(),
-                        reservationNumber,
-                        user,
-                        companyOffer
-                )
-        );
-        return newReservation.toReadModel();
-    }
+//    public ReservationResponse createNewReservation(ReservationRequest reservationRequest) {
+//
+//        Optional<Reservation> reservation = this.reservationRepository.findByUserIdAndCompanyOfferId(
+//                reservationRequest.getUser_id(),
+//                reservationRequest.getCompany_offer_id()
+//        );
+//
+//        if (reservation.isPresent()) {
+//            ZonedDateTime reservationTime = reservation.get().getReservationDate();
+//            ZonedDateTime writeReservationDate = reservationRequest.getReservation_date();
+//            if(reservationTime.isEqual(writeReservationDate)) {
+//                throw new ReservationExistsException("Reservation already exists");
+//            }
+//        }
+//
+//        User user = this.userRepository.findById(reservationRequest.getUser_id())
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        CompanyOffer companyOffer = this.companyOfferRepository.findById(reservationRequest.getCompany_offer_id())
+//                .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
+//
+//        String reservationNumber = this.createReservationNumber(
+//                reservationRequest.getReservation_date(),
+//                reservationRequest.getCompany_offer_id(),
+//                reservationRequest.getUser_id()
+//        );
+//
+//        Reservation newReservation = this.reservationRepository.save(
+//                new Reservation(
+//                        reservationRequest.getReservation_date(),
+//                        reservationNumber,
+//                        user,
+//                        companyOffer
+//                )
+//        );
+//        return newReservation.toReadModel();
+//    }
 
 
 

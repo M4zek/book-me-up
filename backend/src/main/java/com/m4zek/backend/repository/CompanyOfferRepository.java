@@ -2,8 +2,10 @@ package com.m4zek.backend.repository;
 
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.CompanyOffer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+
 import java.util.Optional;
 
 public interface CompanyOfferRepository {
@@ -12,5 +14,7 @@ public interface CompanyOfferRepository {
 
     CompanyOffer save(CompanyOffer companyOffer);
 
-    List<CompanyOffer> findAllByCompany(Company company);
+    Page<CompanyOffer> findAllByCompany(Company company, Pageable pageable);
+
+    boolean existsByCompanyAndName(Company company, String name);
 }

@@ -1,6 +1,7 @@
 package com.m4zek.backend.advice;
 
 import com.m4zek.backend.exception.*;
+import jakarta.persistence.EntityExistsException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -196,5 +197,27 @@ class GlobalExceptionHandler {
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(true));
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleEntityExists(EntityExistsException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ExceptionHandler(PortfolioImageLimitExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handlePortfolioImageLimitExceededException(PortfolioImageLimitExceededException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
     }
 }

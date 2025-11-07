@@ -10,5 +10,5 @@ public class PortfolioImageResponse {
     private int id;
     private String filename;
     private String downloadUrl;
-    private byte[] image;
+    private String image;
 }
