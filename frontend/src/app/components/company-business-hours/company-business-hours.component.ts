@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {CompanyHours} from "../../model/response.model";
+import {CompanyHours} from "../../model/response/company-response.model";
 
 @Component({
   selector: 'app-company-business-hours',

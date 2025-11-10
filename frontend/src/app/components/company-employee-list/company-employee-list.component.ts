@@ -1,11 +1,12 @@
 import {Component, Input} from '@angular/core';
-import {NgForOf} from "@angular/common";
-import {EmployeeSummaryResponse} from "../../model/response.model";
+import {NgForOf, NgIf} from "@angular/common";
+import {EmployeeSummaryResponse} from "../../model/response/company-response.model";
 
 @Component({
   selector: 'app-company-employee-list',
     imports: [
-        NgForOf
+        NgForOf,
+        NgIf
     ],
   templateUrl: './company-employee-list.component.html',
   styleUrl: './company-employee-list.component.css'

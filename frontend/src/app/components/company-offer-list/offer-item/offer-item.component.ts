@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
 import {ReservationModalComponent} from "../../modals/reservation-modal/reservation-modal.component";
+import {CompanyOffersResponse} from "../../../model/response/company-response.model";
 
 @Component({
   selector: 'app-offer-item',
@@ -12,10 +13,14 @@ import {ReservationModalComponent} from "../../modals/reservation-modal/reservat
   styleUrl: './offer-item.component.css'
 })
 export class OfferItemComponent {
-  @Input() title: string = 'Offer title';
-  @Input() description: string = 'Description';
-  @Input() price: number = 30.00;
-  @Input() duration: number = 10;
+
+    @Input() offerItem: CompanyOffersResponse = {
+        id: 0,
+        name: 'template',
+        description: 'template',
+        duration: 0,
+        price: 0,
+    };
 
   isReservationVisible: boolean = false;
 

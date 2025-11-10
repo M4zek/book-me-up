@@ -1,6 +1,6 @@
 <div class="company-container">
     <div class="left-container">
-        <app-image-list></app-image-list>
+        <app-image-list [imageList]="portfolioItems"></app-image-list>
         <div class="horizontal-container">
             <div class="vertical-container">
                 <p class="company-name-paragraph">{{company.name}}</p>
@@ -18,12 +18,19 @@
         </div>
         <div class="parent">
             <app-double-spinner [text]="'Company offer loading'" *ngIf="!requestCompanyOfferSuccess"/>
-            <app-company-offer-list *ngIf="requestCompanyOfferSuccess"/>
+            <app-company-offer-list
+                    *ngIf="requestCompanyOfferSuccess"
+                    [offerItems]="offerItems"
+            />
+            <app-paginator
+                    *ngIf="requestCompanyOfferSuccess"
+                    [pagination]="pagination"
+                    (paginatorChanged)="onPaginatorOfferChanged()"/>
         </div>
     </div>
 
     <div class="right-container">
-        <div class="company-address-map" *ngIf="requestCompanySuccess">
+        <div class="company-address-map">
             <app-map [currentAddress]="companyAddress"/>
         </div>
         <div class="company-description">

@@ -1,7 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Page, Pagination} from "../model/search/search.model";
-import {CompanyDetailsResponse, CompanySummaryResponse} from "../model/response.model";
+import {
+    CompanyDetailsResponse,
+    CompanyOffersResponse, CompanyPortfolioResponse,
+    CompanySummaryResponse
+} from "../model/response/company-response.model";
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +25,23 @@ export class CompanyService {
 
   getCompanyDetailById(company_id: number){
       return this.http.get<CompanyDetailsResponse>(`/api/public/companies/${company_id}`, {observe: 'response'});
+  }
+
+  getCompanyOffersByCompanyId(company_id: number, pagination: Pagination){
+      let httpParams = new HttpParams()
+          .set('page', pagination.currentPage)
+          .set('size', pagination.itemsPerPage);
+
+      return this.http.get<Page<CompanyOffersResponse>>(`/api/public/company/${company_id}/offers`, {params: httpParams, observe: 'response'});
+  }
+
+  getCompanyPortfolioByCompanyId(company_id: number, pagination?: Pagination){
+      let httpParams = new HttpParams()
+        .set('page', pagination ? pagination.currentPage : 0)
+        .set('size', pagination ? pagination.itemsPerPage : 10);
+
+      return this.http.get<Page<CompanyPortfolioResponse>>(`/api/public/companies/${company_id}/portfolio-images`, {params: httpParams, observe: 'response'});
+
   }
 
 }

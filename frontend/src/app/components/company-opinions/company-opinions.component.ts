@@ -2,8 +2,8 @@ import {Component, Input} from '@angular/core';
 import {RatingStarsComponent} from "./rating-stars/rating-stars.component";
 import {DecimalPipe, KeyValuePipe, NgForOf} from "@angular/common";
 import {UserOpinionsListComponent} from "./user-opinions-list/user-opinions-list.component";
-import {CompanyReviewStatistics} from "../../model/response.model";
 import {RatingBarComponent} from "./rating-bar/rating-bar.component";
+import {CompanyReviewStatistics} from "../../model/response/company-response.model";
 
 @Component({
   selector: 'app-company-opinions',

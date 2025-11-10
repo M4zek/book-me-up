@@ -1,20 +1,10 @@
 <div class="offer-list-container">
     <div class="head-list">
         <p class="title">Offers</p>
-        <div class="search-input-container">
-            <img [src]="'icons/search_icon.svg'" alt="search" class="input-icon"/>
-            <input type="text" placeholder="Search for services or company" class="input-search">
-            <img [src]="'icons/confirm_icon.svg'" alt="confirm" class="input-icon"/>
-            <img [src]="'icons/reject_icon.svg'" alt="reject" class="input-icon"/>
-        </div>
     </div>
     <div class="items-container">
         <div *ngFor="let item of offerItems">
-            <app-offer-item
-                    [title]="item.title"
-                    [description]="item.description"
-                    [price]="item.price"
-                    [duration]="item.duration"/>
+            <app-offer-item [offerItem]="item"/>
         </div>
     </div>
 </div>

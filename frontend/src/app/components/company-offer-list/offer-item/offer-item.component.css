@@ -6,7 +6,7 @@
     border-bottom: solid 2px var(--pink);
     gap: 1rem;
     align-items: center;
-    padding: .5rem;
+    padding: 10px 10px;
     transition: .2s ease-in-out;
     user-select: none;
 }
@@ -24,6 +24,9 @@
 
 .desc-container{
     width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .price-time-container{
@@ -32,6 +35,7 @@
     flex-direction: column;
     justify-content: end;
     align-items: end;
+    align-self: start;
 }
 .offer-title-paragraph,
 .offer-description-paragraph,

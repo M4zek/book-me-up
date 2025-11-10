@@ -1,10 +1,3 @@
-export interface ErrorMessage{
-    statusCode: number;
-    description: string;
-    timestamp: string;
-    message: string | string[];
-}
-
 export interface CategoryResponse{
     id: number,
     name: string,
@@ -58,4 +51,20 @@ export interface CompanyDetailsResponse {
     owner: EmployeeSummaryResponse,
     employees: EmployeeSummaryResponse[],
     logo: string,
+}
+
+
+export interface CompanyOffersResponse{
+    id: number,
+    name: string,
+    description: string,
+    price: number,
+    duration: number
+}
+
+export interface CompanyPortfolioResponse{
+    id: number,
+    filename: string,
+    downloadUrl: string,
+    image: string,
 }

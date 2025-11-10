@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {CompanyListComponent} from "../../../components/company-list-item/company-list/company-list.component";
-import {CompanySummaryResponse} from "../../../model/response.model";
 import {Pagination} from "../../../model/search/search.model";
 import {CompanyService} from "../../../service/company.service";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {NgIf} from "@angular/common";
+import {CompanySummaryResponse} from "../../../model/response/company-response.model";
 
 @Component({
   selector: 'app-welcome',

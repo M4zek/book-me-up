@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {CategoryResponse} from "../../model/response.model";
 import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 import {CategoryService} from "../../service/category.service";
 import {Pagination} from "../../model/search/search.model";
 import {PaginatorComponent} from "../paginator/paginator.component";
 import {interval, Subscription, take} from "rxjs";
+import {CategoryResponse} from "../../model/response/company-response.model";
 
 @Component({
   selector: 'app-category-list',
