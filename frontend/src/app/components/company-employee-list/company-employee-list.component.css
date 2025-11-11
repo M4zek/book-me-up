@@ -13,16 +13,14 @@
 
 .employees{
     width: 100%;
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 .employee{
     display: flex;
     flex-flow: column;
     align-items: center;
+    padding: 5px;
     gap: 5px;
 }
 
@@ -42,4 +40,5 @@
     color: var(--white);
     padding: 0;
     margin: 0;
+    text-align: center;
 }
