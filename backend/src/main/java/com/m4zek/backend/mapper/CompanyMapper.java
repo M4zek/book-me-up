@@ -6,8 +6,6 @@ import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
 import com.m4zek.backend.model.dto.read.ReviewResponse;
 
-import java.util.stream.Collectors;
-
 public class CompanyMapper {
 
     private CompanyMapper(){}
@@ -51,9 +49,8 @@ public class CompanyMapper {
                         .orElse(null))
                 .employees(company.getUsers().stream()
                         .filter(user -> !user.getRole().getName().equals("COMPANY_OWNER"))
-                        .findAny()
                         .map(userRole ->  UserMapper.toEmployeeSummaryResponse(userRole.getUsers()))
-                        .stream().collect(Collectors.toList()))
+                        .toList().stream().toList())
                 .build();
     }
 
