@@ -173,6 +173,7 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleArgumentNotValidException(MethodArgumentNotValidException e, WebRequest request) {
         List<String> errors = e.getBindingResult()
                 .getFieldErrors()

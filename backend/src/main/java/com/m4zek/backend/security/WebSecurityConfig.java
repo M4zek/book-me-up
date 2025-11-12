@@ -81,7 +81,7 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://127.0.0.1")
+                        .allowedOrigins("http://127.0.0.1", "http://localhost:4200")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("Origin", "X-Requested-With", "Content-Type", "Accept")
                         .allowCredentials(true)

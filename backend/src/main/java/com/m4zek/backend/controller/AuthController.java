@@ -27,7 +27,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping(value = "api/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final TokenManager tokenManager;
