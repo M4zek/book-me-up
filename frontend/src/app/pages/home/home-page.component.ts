@@ -4,7 +4,7 @@ import {RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {DropDownListComponent, DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 import {CategoryService} from "../../service/category.service";
-import {ErrorMessage} from "../../model/response/response.model";
+import {ErrorMessage} from "../../model/response/error-response.model";
 import {CategoryResponse} from "../../model/response/company-response.model";
 
 @Component({

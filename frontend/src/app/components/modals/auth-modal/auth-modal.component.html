@@ -12,13 +12,17 @@
             <div class="content-container" [ngClass]="!isCheck ? 'sign-in-on' : 'sign-in-off'">
                 <div class="input-container">
                     <img [src]="email_icon" alt="email" class="input-icon"/>
-                    <input type="text" placeholder="Address email" class="input-field">
+                    <input type="text"
+                           placeholder="Address email"
+                           class="input-field"
+                           [(ngModel)]="login_model.email"
+                    >
                 </div>
 
                 <div class="input-container">
                     <img [src]="lock_icon" alt="pass" class="input-icon"/>
                     <input [type]="passwordFields['signIn'].visible ? 'text' : 'password'"
-                           placeholder="Password" class="input-field">
+                           placeholder="Password" class="input-field" [(ngModel)]="login_model.password">
                     <img [src]="passwordFields['signIn'].icon" alt="confirm"
                          [ngClass]="{'slash': !passwordFields['signIn'].visible}"
                          class="password-icon" (click)="togglePasswordVisibility('signIn')"/>
