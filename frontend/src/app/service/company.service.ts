@@ -14,12 +14,21 @@ export class CompanyService {
 
   constructor(private http: HttpClient) { }
 
-  getCompanySummary(pagination: Pagination){
+  getCompanyRecommended(pagination: Pagination, searchValueOptions?: SearchCompanyOptions) {
     let httpParams = new HttpParams()
       .set('page', pagination.currentPage)
       .set('size', pagination.itemsPerPage);
 
-      return this.http.get<Page<CompanySummaryResponse>>('/api/public/companies/recommended', {params: httpParams});
+      if (searchValueOptions) {
+          Object.entries(searchValueOptions).forEach(([key, value]) => {
+              if (value != null && value !== '') {
+                  if (key === 'companyName') return;
+                  httpParams = httpParams.set(key, value);
+              }
+          });
+      }
+
+      return this.http.get<Page<CompanySummaryResponse>>('/api/public/companies/recommended', {params: httpParams, observe: 'response'});
   }
 
 

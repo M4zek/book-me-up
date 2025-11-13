@@ -33,9 +33,12 @@ export class WelcomeComponent implements OnInit {
 
 
     getCompanyList() {
-        this.companyService.getCompanySummary(this.pagination)
-        .subscribe(result => {
-            this.recommendedCompanies = result.content;
+        this.companyService.getCompanyRecommended(this.pagination).subscribe({
+            next: (response) => {
+                if (response.status === 200 && response.body) {
+                    this.recommendedCompanies = response.body.content
+                }
+            }
         })
     }
 

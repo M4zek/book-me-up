@@ -37,7 +37,9 @@ export class SearchResultComponent implements OnInit {
   }
 
   companyList: CompanySummaryResponse[] = []
+  companyRecommendedList: CompanySummaryResponse[] = []
 
+  loadingRecommended: boolean = true;
   searchingCompanies: boolean = true;
   textRecommended: string = "Recommended";
   textSearch: string = "Search results";
@@ -59,6 +61,7 @@ export class SearchResultComponent implements OnInit {
                 companyName: params.get('companyName'),
             }
             this.searchCompany();
+            this.searchRecommended();
             this.createTitleTexts();
         });
   }
@@ -93,6 +96,19 @@ export class SearchResultComponent implements OnInit {
                   this.pagination.totalItems = response.body.page.totalElements;
               }
               this.searchingCompanies = false;
+          }
+      })
+  }
+
+  protected searchRecommended(){
+      this.companyRecommendedList = []
+      this.loadingRecommended = true
+      this.companyService.getCompanyRecommended(this.pagination, this.searchValueOptions).subscribe({
+          next: (response) => {
+              if (response.status === 200 && response.body) {
+                  this.companyRecommendedList = response.body.content
+              }
+              this.loadingRecommended = false;
           }
       })
   }
