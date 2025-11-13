@@ -48,6 +48,13 @@
     cursor: pointer;
 }
 
+.category-item.active{
+    color: var(--pink);
+    transition: .35s;
+    border: 1px solid var(--pink);
+    background-color: var(--pink_5);
+}
+
 .category-item p{
     padding: 0;
     margin: 0;

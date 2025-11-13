@@ -1,11 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {CategoryListComponent} from "../../components/category-list/category-list.component";
-import {RouterOutlet} from "@angular/router";
+import {Router, RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {DropDownListComponent, DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 import {CategoryService} from "../../service/category.service";
 import {ErrorMessage} from "../../model/response/error-response.model";
 import {CategoryResponse} from "../../model/response/company-response.model";
+import {UserContextService} from "../../service/user-context.service";
+import {SearchCompanyOptions} from "../../model/search/search.model";
+
 
 @Component({
   selector: 'app-home',
@@ -21,23 +24,41 @@ import {CategoryResponse} from "../../model/response/company-response.model";
 export class HomePage implements OnInit {
     dropDownListItems: DropDownListItem[] = [];
 
-    nameValue: string = '';
-    placeValue: string = '';
-    categoryValue: string = '';
+    searchOption: SearchCompanyOptions = {}
 
-    constructor(private categoryService: CategoryService) {}
+    constructor(private categoryService: CategoryService,
+                private router: Router,
+                private userContextService: UserContextService) {}
 
     ngOnInit(): void {
         this.getCategoriesFromApi();
     }
 
     onSearch() {
+        Object.keys(this.searchOption).forEach((key) => {
+            const value = this.searchOption[key as keyof SearchCompanyOptions];
+            if (value === '') {
+                this.searchOption[key as keyof SearchCompanyOptions] = null;
+            }
+        });
 
+        this.userContextService.isLoggedIn().subscribe(isLoggedIn => {
+            if (isLoggedIn) {
+                this.router.navigate(['/app/home/search'], {queryParams: this.searchOption})
+                    .then(r => console.log("Redirect to APP/home/search: ",r));
+            } else {
+                this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption})
+                    .then(r => console.log("Redirect to GUEST/home/search:: ",r));
+            }
+        })
     }
 
     changeCategory($event: DropDownListItem) {
-        this.categoryValue = $event.content;
-        console.log(this.categoryValue);
+        if ($event.content === "None") {
+            this.searchOption.category = null;
+        } else {
+            this.searchOption.category = $event.content;
+        }
     }
 
     protected getCategoriesFromApi() {

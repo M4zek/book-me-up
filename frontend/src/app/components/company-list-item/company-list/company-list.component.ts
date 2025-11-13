@@ -4,6 +4,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {Router} from "@angular/router";
 import {CompanySummaryResponse} from "../../../model/response/company-response.model";
+import {UserContextService} from "../../../service/user-context.service";
 
 @Component({
   selector: 'app-company-list',
@@ -27,7 +28,7 @@ export class CompanyListComponent {
 
     ngOnInit(): void {}
 
-    constructor(private router: Router) {}
+    constructor(private router: Router, private userContextService: UserContextService) {}
 
     scrollByDirection(direction: 'left' | 'right') {
         const el = this.trackRef.nativeElement;
@@ -79,7 +80,15 @@ export class CompanyListComponent {
 
 
     onItemCLick(company: CompanySummaryResponse) {
-        this.router.navigate(['guest/company', company.id]);
+        this.userContextService.isLoggedIn().subscribe(isLoggedIn => {
+            if (isLoggedIn) {
+                this.router.navigate(['app/company', company.id])
+                    .then(r => console.log("Redirect to APP/company: ",r));
+            } else {
+                this.router.navigate(['guest/company', company.id])
+                    .then(r => console.log("Redirect to GUEST/company/: ",r));
+            }
+        })
     }
 
 

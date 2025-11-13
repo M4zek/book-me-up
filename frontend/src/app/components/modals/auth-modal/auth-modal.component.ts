@@ -2,9 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgClass, NgIf} from "@angular/common";
 import {AuthRequest} from "../../../model/auth/auth.model";
 import {FormsModule} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../service/auth.service";
-import {concatMap, throwError} from "rxjs";
 import {ToastService} from "../../../service/toast.service";
 import {Router} from "@angular/router";
 import {UserContextService} from "../../../service/user-context.service";
@@ -69,7 +67,10 @@ export class AuthModalComponent {
     this.authService.authentication(this.login_model).subscribe(response => {
         if (response.success) {
             this.userContextService.setLoggedUser(response.loggedUser!)
-            this.router.navigate(['/', 'app']);
+
+            let currentUrl = this.router.url.replace("guest", "app");
+            this.router.navigateByUrl(currentUrl);
+
             this.toast.show("Logged in successfully", 'success');
         } else {
             if(response.errorMessage) {

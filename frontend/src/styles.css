@@ -5,6 +5,7 @@
     --black-25: rgba(0, 0, 0, 0.25);
     --black-50: rgba(0, 0, 0, 0.5);
     --black-75: rgba(0, 0, 0, 0.75);
+    --black: rgb(0, 0, 0);
 
     --gray: #1E1E1E;
 
@@ -213,4 +214,49 @@ body{
 .disabled {
     opacity: 0.4;
     pointer-events: none;
+}
+
+.gradient-background-hover {
+    position: relative;
+    overflow: hidden;
+}
+
+@property --deg {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+}
+
+.gradient-background-hover:hover {
+    padding: 2px;
+}
+
+
+.gradient-background-hover:hover::before,
+.gradient-background-hover:hover::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    aspect-ratio: 1/1;
+    width: 100%;
+    overflow: hidden;
+    background: conic-gradient(
+            from var(--deg) at center,
+            var(--pink),
+            var(--pink),
+            var(--light-blue),
+            var(--light-blue)
+    );
+    border-radius: 5px;
+    z-index: -1;
+    scale: 2;
+    animation: spin 2s infinite linear;
+}
+
+.gradient-background-hover:hover::after {
+    filter: blur(10px);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

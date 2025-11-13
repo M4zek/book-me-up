@@ -3,9 +3,7 @@
         <p class="title-paragraph">Book me up</p>
 
         <div class="nav-item-container">
-
             <div class="search-container" [class.active]="isActive">
-
                 <div class="search-icon-title-container" (click)="toggleSearch()">
                     <img class="search-icon"
                          [src]="'icons/search_icon.svg'"
@@ -45,8 +43,9 @@
 
             <ul class="dropdown-menu" *ngIf="menuOpen">
                 <li
-                    *ngFor="let item of NAVIGATION_USER"
-                    [routerLink]="item.path"
+                    *ngFor="let item of NAVIGATION_USER; let isLast = last"
+                    [routerLink]="!isLast ? item.path : null"
+                    (click)="isLast ? logout() : null"
                 >
                     <div class="nav-icon-container">
                         <img [src]="item.icon" alt="My appointments"/>

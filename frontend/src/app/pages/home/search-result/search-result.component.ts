@@ -1,45 +1,65 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 import {CompanyListComponent} from "../../../components/company-list-item/company-list/company-list.component";
 import {CompanyListItemComponent} from "../../../components/company-list-item/company-list-item.component";
-import {SearchCompanyResult} from "../../../model/search/search.model";
+import {Pagination, SearchCompanyOptions} from "../../../model/search/search.model";
 import {Subject, takeUntil} from "rxjs";
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
+import {CompanyService} from "../../../service/company.service";
+import {CompanySummaryResponse} from "../../../model/response/company-response.model";
+import {NgForOf, NgIf} from "@angular/common";
+import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
+import {UserContextService} from "../../../service/user-context.service";
 
 @Component({
   selector: 'app-search-result',
     imports: [
         CompanyListComponent,
         CompanyListItemComponent,
-        PaginatorComponent
+        PaginatorComponent,
+        NgForOf,
+        DoubleSpinnerComponent,
+        NgIf
     ],
   templateUrl: './search-result.component.html',
   styleUrl: './search-result.component.css'
 })
 export class SearchResultComponent implements OnInit {
-  @Input() searchValue: SearchCompanyResult = {}
+
   private destroy$ = new Subject<void>();
 
-  recommendedText: string = 'Recommended';
-  constructor(private route: ActivatedRoute) {}
+  searchValueOptions: SearchCompanyOptions = {}
+  pagination: Pagination = {
+      totalItems: 0,
+      itemsPerPage: 5,
+      currentPage: 0,
+      itemsPerPageOptions: [5, 10, 15, 20, 30]
+  }
+
+  companyList: CompanySummaryResponse[] = []
+
+  searchingCompanies: boolean = true;
+  textRecommended: string = "Recommended";
+  textSearch: string = "Search results";
+
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private userContextService: UserContextService,
+              private companyService: CompanyService) {}
+
 
   ngOnInit() {
     this.route.queryParamMap
         .pipe(takeUntil(this.destroy$))
         .subscribe(params => {
-          this.searchValue.name = params.get('name');
-          this.searchValue.place = params.get('place');
-          this.searchValue.category = params.get('category');
 
-          this.recommendedText = 'Recommended';
-          if (this.searchValue.category) this.recommendedText += ` ${this.searchValue.category}`;
-          if (this.searchValue.place) this.recommendedText += ` ${this.searchValue.place}`;
-
-          /*
-          TODO MAKE REQUEST TO THE BACKEND TO SEARCH FOR COMPANIES BY NAME,PLACE AND CATEGORY!
-          If the category has been added, download the best companies from this category in terms of reviews.
-          If not, download the best companies overall to the Recommended section.
-           */
+            this.searchValueOptions = {
+                category: params.get('category'),
+                city: params.get('city'),
+                companyName: params.get('companyName'),
+            }
+            this.searchCompany();
+            this.createTitleTexts();
         });
   }
 
@@ -47,4 +67,49 @@ export class SearchResultComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  private createTitleTexts(){
+      this.textRecommended = "Recommended";
+      this.textSearch = "Search results";
+
+      if (this.searchValueOptions) {
+          Object.entries(this.searchValueOptions).forEach(([key, value]) => {
+              if (value != null && value !== '') {
+                  this.textSearch += " - " + value;
+                  this.textRecommended += " - " + value;
+              }
+          });
+      }
+  }
+
+  protected searchCompany() {
+      this.companyList = []
+      this.searchingCompanies = true;
+      this.companyService.searchCompanyByCompanyNameOrCityOrCategory(this.pagination, this.searchValueOptions).subscribe({
+          next: (response) => {
+              if (response.status === 200 && response.body) {
+                  this.companyList = response.body.content
+                  this.pagination.currentPage = response.body.page.number;
+                  this.pagination.totalItems = response.body.page.totalElements;
+              }
+              this.searchingCompanies = false;
+          }
+      })
+  }
+
+    protected onPaginatorChanged() {
+        this.searchCompany();
+    }
+
+    onCompanyClick(company: CompanySummaryResponse) {
+        this.userContextService.isLoggedIn().subscribe(isLogged => {
+            if (isLogged) {
+                this.router.navigate(['app/company', company.id])
+                    .then(r => console.log("Redirect to APP/company/: ",r));
+            } else {
+                this.router.navigate(['guest/company', company.id])
+                    .then(r => console.log("Redirect to GUEST/company/: ",r));
+            }
+        })
+    }
 }

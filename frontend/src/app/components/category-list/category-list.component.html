@@ -4,7 +4,10 @@
          *ngIf="categoryList.length != 0"
     >
         <ul class="category-list">
-            <li class="category-item" *ngFor="let category of categoryList">
+            <li class="category-item" (click)="onCategoryClick(category.name)"
+                *ngFor="let category of categoryList"
+                [class.active]="router.url.includes(encodeURIComponent(category.name))"
+            >
                 <p class="category-name-paragraph">{{category.name}}</p>
                 <p class="category-company-amount">( {{category.numberOfCompanies}} )</p>
             </li>

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavigationUserComponent} from "../../components/navigation-user/navigation-user.component";
+import {NavigationUserComponent} from "./navigation-user/navigation-user.component";
 import {RouterOutlet} from "@angular/router";
 
 @Component({

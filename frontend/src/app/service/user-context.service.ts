@@ -54,6 +54,7 @@ export class UserContextService {
 
     public deleteUserFromStorage(): void {
         localStorage.clear();
+        this.currentUser$.next({loggedIn: false, userContext: undefined});
         this.router.navigate(['/', 'guest'])
     }
 

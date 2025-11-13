@@ -1,6 +1,7 @@
 import {Component, HostListener} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
+import {UserContextService} from "../../../service/user-context.service";
 
 
 export interface MainNavigation{
@@ -30,7 +31,7 @@ export class NavigationUserComponent {
   menuOpen: boolean = false;
   isActive = false;
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private userContextService: UserContextService) {}
 
   BAR_NAVIGATION: MainNavigation[] = [
     {
@@ -82,5 +83,9 @@ export class NavigationUserComponent {
     if (!target.closest('.drop-down-icon')) {
       this.menuOpen = false;
     }
+  }
+
+  protected logout(): void {
+      this.userContextService.deleteUserFromStorage();
   }
 }

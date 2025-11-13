@@ -1,6 +1,6 @@
-export interface SearchCompanyResult {
-    name?: string | null;
-    place?: string | null;
+export interface SearchCompanyOptions {
+    companyName?: string | null;
+    city?: string | null;
     category?: string | null;
 }
 

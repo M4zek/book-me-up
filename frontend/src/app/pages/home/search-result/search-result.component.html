@@ -1,25 +1,26 @@
 <div class="parent">
     <div class="first-container">
-        <h2>{{recommendedText}}</h2>
+        <h2>{{textRecommended}}</h2>
         <app-company-list></app-company-list>
     </div>
     <div class="second-container">
-        <h2>Search results</h2>
+        <h2>{{textSearch}}</h2>
+
+        <app-double-spinner *ngIf="searchingCompanies" [text]="'Searching companies'"/>
         <div class="result-list-container">
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
-            <app-company-list-item/>
+            <app-company-list-item
+                    (click)="onCompanyClick(company)"
+                    *ngFor="let company of companyList"
+                    [company]="company"
+            />
         </div>
-        <app-paginator/>
+        <div class="no-results-found"
+             *ngIf="!searchingCompanies && companyList.length === 0">
+            <img [src]="'images/no_result_found.png'" alt="No results found"/>
+        </div>
+        <app-paginator
+                *ngIf="companyList.length > 0"
+                [pagination]="pagination"
+                (paginatorChanged)="onPaginatorChanged()"/>
     </div>
 </div>

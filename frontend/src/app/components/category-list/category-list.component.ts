@@ -2,10 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 import {CategoryService} from "../../service/category.service";
-import {Pagination} from "../../model/search/search.model";
+import {Pagination, SearchCompanyOptions} from "../../model/search/search.model";
 import {PaginatorComponent} from "../paginator/paginator.component";
 import {interval, Subscription, take} from "rxjs";
 import {CategoryResponse} from "../../model/response/company-response.model";
+import {Router} from "@angular/router";
+import {UserContextService} from "../../service/user-context.service";
 
 @Component({
   selector: 'app-category-list',
@@ -20,19 +22,25 @@ import {CategoryResponse} from "../../model/response/company-response.model";
   styleUrl: './category-list.component.css'
 })
 export class CategoryListComponent implements OnInit {
-    drop_down_icon :string = 'icons/drop_down_arrow.png';
-    isDropdownOpen = false;
+    protected readonly encodeURIComponent = encodeURIComponent;
     private categoryIntervalSub?: Subscription;
 
-    categoryList: CategoryResponse[] = []
+    drop_down_icon :string = 'icons/drop_down_arrow.png';
 
+    isDropdownOpen = false;
+
+    searchOption: SearchCompanyOptions = {}
+    categoryList: CategoryResponse[] = []
     pagination: Pagination = {
         totalItems: 0,
         itemsPerPage: 10,
         currentPage: 0,
         itemsPerPageOptions: [5, 10, 15, 25]
     }
-    constructor(private categoryService: CategoryService) {}
+
+    constructor(private categoryService: CategoryService,
+                private userContextService: UserContextService,
+                protected router: Router) {}
 
     ngOnInit(): void {
         this.getCategories();
@@ -70,6 +78,21 @@ export class CategoryListComponent implements OnInit {
             error: (error) => {
                 const message = error.error;
                 console.log(message);
+            }
+        })
+    }
+
+    protected onCategoryClick(name: string) {
+
+        this.searchOption.category = name;
+
+        this.userContextService.isLoggedIn().subscribe(userLogged => {
+            if (userLogged) {
+                this.router.navigate(['/app/home/search'], {queryParams: this.searchOption})
+                    .then(r => console.log("Redirect to APP/home/search: ",r));
+            } else {
+                this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption})
+                    .then(r => console.log("Redirect to GUEST/home/search:: ",r));
             }
         })
     }

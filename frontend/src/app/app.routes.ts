@@ -21,6 +21,7 @@ import {
 import {MessagesPageComponent} from "./pages/messages-page/messages-page.component";
 import {UserAppointmentsPageComponent} from "./pages/user-appointments-page/user-appointments-page.component";
 import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
+import {AuthGuard} from "./auth.guard";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -41,6 +42,7 @@ export const routes: Routes = [
     {
         path: 'app',
         component: DashboardComponent,
+        canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: "home", pathMatch: 'full' },
             { path: 'home', component: HomePage,
