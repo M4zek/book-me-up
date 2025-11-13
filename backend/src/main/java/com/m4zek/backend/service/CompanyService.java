@@ -72,9 +72,9 @@ public class CompanyService {
     }
 
 
-    public Page<CompanySummaryResponse> readRecommendedCompany(Pageable pageable) {
+    public Page<CompanySummaryResponse> readRecommendedCompany(Pageable pageable, String city, String category) {
         Page<Company> recommendedCompaniesPage = this.companyRepository
-                .findAllOrderByAverageRatingDesc(pageable);
+                .findAllOrderByAverageRatingDesc(pageable, city, category);
 
         List<CompanySummaryResponse> companySummaryResponse = recommendedCompaniesPage.stream().map(
                 CompanyMapper::companyToCompanySummaryResponse
@@ -89,7 +89,7 @@ public class CompanyService {
 
     public Page<CompanySummaryResponse> searchCompaniesByNameCityCategory(Pageable pageable, String companyName, String city, String categoryName) {
 
-        Page<Company> resultPage = this.companyRepository.findCompaniesByNameContainingOrAddressCityContainingOrCategoryNameContaining(
+        Page<Company> resultPage = this.companyRepository.searchCompanyByNameAndCityAndCategoryName(
                 pageable, companyName, city, categoryName);
 
         List<CompanySummaryResponse> resultList = resultPage.stream().map(

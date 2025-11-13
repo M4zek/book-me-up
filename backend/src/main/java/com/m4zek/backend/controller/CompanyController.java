@@ -46,8 +46,12 @@ public class CompanyController {
 
     // Reading the recommended companies (basic data) based on the best reviews
     @GetMapping("/public/companies/recommended")
-    public ResponseEntity<Page<CompanySummaryResponse>> recommendedCompanies(Pageable pageable) {
-        return ResponseEntity.ok(this.companyService.readRecommendedCompany(pageable));
+    public ResponseEntity<Page<CompanySummaryResponse>> recommendedCompanies(
+            Pageable pageable,
+            @RequestParam(required = false) @Size(min = 1, message = "City name cannot be empty") String city,
+            @RequestParam(required = false) @Size(min = 1, message = "Category name cannot be empty") String category
+    ) {
+        return ResponseEntity.ok(this.companyService.readRecommendedCompany(pageable, city, category));
     }
 
     // Reading detailed company data based on the provided ID
