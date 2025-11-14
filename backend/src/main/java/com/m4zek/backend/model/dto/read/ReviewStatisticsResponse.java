@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -15,5 +14,5 @@ import java.util.Map;
 public class ReviewStatisticsResponse {
     private double rating;
     private int totalReviews;
-    private List<Map<Integer, Integer>> ratingCounts;
+    private Map<Integer, Integer> ratingCounts;
 }

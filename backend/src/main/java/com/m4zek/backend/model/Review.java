@@ -47,4 +47,25 @@ public class Review extends BaseEntity{
                 .build();
     }
 
+    //  METHODS
+
+    public int getId() {
+        return id;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public CompanyOffer getCompanyOffer() {
+        return companyOffer;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

@@ -4,14 +4,13 @@ import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.exception.CompanyNotFoundException;
 import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.mapper.CompanyMapper;
+import com.m4zek.backend.mapper.ReviewMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
+import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
-import com.m4zek.backend.repository.CategoryRepository;
-import com.m4zek.backend.repository.CompanyRepository;
-import com.m4zek.backend.repository.CompanyRoleRepository;
-import com.m4zek.backend.repository.UserRepository;
+import com.m4zek.backend.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +26,17 @@ public class CompanyService {
     private final CategoryRepository categoryRepository;
     private final CompanyRoleRepository companyRoleRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     public CompanyService(CompanyRepository companyRepository,
                           CategoryRepository categoryRepository,
                           CompanyRoleRepository companyRoleRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository, ReviewRepository reviewRepository) {
         this.companyRepository = companyRepository;
         this.categoryRepository = categoryRepository;
         this.companyRoleRepository = companyRoleRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public CompanyDetailsResponse saveCompany(CompanyRequest companyRequest) {
@@ -68,7 +69,7 @@ public class CompanyService {
 
         Company savedCompany = companyRepository.save(company);
 
-        return CompanyMapper.companyToCompanyDetailsResponse(savedCompany);
+        return CompanyMapper.companyToCompanyDetailsResponse(savedCompany, new ReviewStatisticsResponse());
     }
 
 
@@ -77,14 +78,19 @@ public class CompanyService {
                 .findAllOrderByAverageRatingDesc(pageable, city, category);
 
         List<CompanySummaryResponse> companySummaryResponse = recommendedCompaniesPage.stream().map(
-                CompanyMapper::companyToCompanySummaryResponse
+                company -> {
+                    var reviewStatisticsProjection = this.reviewRepository.findReviewStatsByCompanyId(company.getId());
+                    return CompanyMapper.companyToCompanySummaryResponse(company, reviewStatisticsProjection);
+                }
         ).toList();
         return new PageImpl<>(companySummaryResponse, pageable, recommendedCompaniesPage.getTotalElements());
     }
 
     public CompanyDetailsResponse readCompanyDetails(int companyId) {
         Company company = this.getCompany(companyId);
-        return CompanyMapper.companyToCompanyDetailsResponse(company);
+        List<Object[]> reviews = this.reviewRepository.findAllByCompanyId(companyId);
+        ReviewStatisticsResponse reviewStatisticsResponse = ReviewMapper.reviewsToReviewsResponse(reviews);
+        return CompanyMapper.companyToCompanyDetailsResponse(company, reviewStatisticsResponse);
     }
 
     public Page<CompanySummaryResponse> searchCompaniesByNameCityCategory(Pageable pageable, String companyName, String city, String categoryName) {
@@ -93,8 +99,10 @@ public class CompanyService {
                 pageable, companyName, city, categoryName);
 
         List<CompanySummaryResponse> resultList = resultPage.stream().map(
-                CompanyMapper::companyToCompanySummaryResponse
-        ).toList();
+                company -> {
+                    var reviewStatisticsProjection = this.reviewRepository.findReviewStatsByCompanyId(company.getId());
+                    return CompanyMapper.companyToCompanySummaryResponse(company, reviewStatisticsProjection);
+                }).toList();
         return new PageImpl<>(resultList, pageable, resultPage.getTotalElements());
     }
 

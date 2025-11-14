@@ -1,12 +1,12 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
 import jakarta.persistence.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity(name = "companies")
 public class Company extends BaseEntity{
@@ -97,35 +97,4 @@ public class Company extends BaseEntity{
         return portfolioImages.size();
     }
 
-    public ReviewStatisticsResponse getCompanyReviewStatistics() {
-        List<Review> allReviews = companyOffers.stream()
-                .flatMap(offer -> offer.getReviews().stream())
-                .filter(r -> r.toReadModel().getRating() != null)
-                .toList();
-
-        int totalReviews = allReviews.size();
-
-        double averageRating = allReviews.stream()
-                .mapToInt(review -> review.toReadModel().getRating())
-                .average()
-                .orElse(0.0);
-
-        Map<Integer, Long> ratingCountMap = allReviews.stream()
-                .collect(Collectors.groupingBy(review -> review.toReadModel().getRating(), Collectors.counting()));
-
-        Map<Integer, Integer> completeRatingMap = IntStream.rangeClosed(1, 5)
-                .boxed()
-                .collect(Collectors.toMap(
-                        i -> i,
-                        i -> ratingCountMap.getOrDefault(i, 0L).intValue()
-                ));
-
-        List<Map<Integer, Integer>> ratingCounts = List.of(completeRatingMap);
-
-        return ReviewStatisticsResponse.builder()
-                .rating(averageRating)
-                .totalReviews(totalReviews)
-                .ratingCounts(ratingCounts)
-                .build();
-    }
 }

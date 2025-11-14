@@ -1,37 +1,27 @@
 package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.model.Company;
-import com.m4zek.backend.model.Review;
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
-import com.m4zek.backend.model.dto.read.ReviewResponse;
+import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
+import com.m4zek.backend.model.projection.ReviewStatisticsProjection;
 
 public class CompanyMapper {
 
     private CompanyMapper(){}
 
-    public static CompanySummaryResponse companyToCompanySummaryResponse(Company company){
+    public static CompanySummaryResponse companyToCompanySummaryResponse(Company company, ReviewStatisticsProjection reviewStatisticsProjection){
         return CompanySummaryResponse.builder()
                 .id(company.getId())
                 .name(company.getName())
                 .logo(ImageMapper.byteImageToBase64(company.getLogo()))
                 .address(AddressMapper.addressToAddressResponse(company.getAddress()))
-                .rating(
-                        company.getCompanyOffers().stream()
-                                .flatMap(offer -> offer.getReviews().stream())
-                                .map(Review::toReadModel)
-                                .mapToInt(ReviewResponse::getRating)
-                                .average()
-                                .orElse(0.0)
-                )
-                .numberOfReviews(company.getCompanyOffers()
-                        .stream()
-                        .mapToInt(offer -> offer.getReviews().size())
-                        .sum())
+                .rating(reviewStatisticsProjection.getAverageRating())
+                .numberOfReviews(Integer.parseInt(reviewStatisticsProjection.getTotalReviews().toString()))
                 .build();
     }
 
-    public static CompanyDetailsResponse companyToCompanyDetailsResponse(Company company){
+    public static CompanyDetailsResponse companyToCompanyDetailsResponse(Company company, ReviewStatisticsResponse reviewStatisticsResponse){
         return CompanyDetailsResponse.builder()
                 .id(company.getId())
                 .name(company.getName())
@@ -41,7 +31,7 @@ public class CompanyMapper {
                 .companyHours(company.getCompanyHoursList().stream()
                         .map(CompanyHoursMapper::companyHoursToCompanyHoursResponse)
                         .toList())
-                .reviewStatistics(company.getCompanyReviewStatistics())
+                .reviewStatistics(reviewStatisticsResponse)
                 .owner(company.getUsers().stream()
                         .filter(item -> item.getRole().getName().equals("COMPANY_OWNER"))
                         .findFirst()

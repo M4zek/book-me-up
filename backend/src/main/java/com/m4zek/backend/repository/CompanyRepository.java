@@ -18,21 +18,23 @@ public interface CompanyRepository {
     @Query("""
         SELECT c
         FROM companies c
-        LEFT JOIN c.companyOffers o
-        LEFT JOIN o.reviews r
-            WHERE (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
-                AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
-        GROUP BY c
-        ORDER BY AVG(r.rating) DESC
+        WHERE (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
+          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
+            ORDER BY (
+                SELECT AVG(r.rating)
+                FROM reviews r
+                JOIN r.companyOffer o
+                WHERE o.company = c
+            ) DESC
     """)
     Page<Company> findAllOrderByAverageRatingDesc(Pageable pageable, @Param("city") String city, @Param("category") String category);
 
     @Query("""
-            SELECT c FROM companies c
-            WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
-              AND (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
-              AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
-        """)
+        SELECT c FROM companies c
+        WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
+          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
+    """)
     Page<Company> searchCompanyByNameAndCityAndCategoryName(
             Pageable pageable,
             @Param("name") String name,
