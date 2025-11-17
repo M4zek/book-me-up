@@ -8,7 +8,7 @@
         </div>
         <div class="detailed-opinions">
             <div class="bar"
-                 *ngFor="let rating of this.opinionsDetails.ratingCounts[0] | keyvalue">
+                 *ngFor="let rating of this.opinionsDetails.ratingCounts | keyvalue">
                     <app-rating-bar [rating]="+rating.key" [count]="rating.value" [total]="opinionsDetails.totalReviews"/>
             </div>
         </div>

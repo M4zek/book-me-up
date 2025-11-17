@@ -2,13 +2,16 @@ import {Component, Input} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
 import {ReservationModalComponent} from "../../modals/reservation-modal/reservation-modal.component";
 import {CompanyOffersResponse} from "../../../model/response/company-response.model";
+import {UserContextService} from "../../../service/user-context.service";
+import {AuthModalComponent} from "../../modals/auth-modal/auth-modal.component";
 
 @Component({
   selector: 'app-offer-item',
-  imports: [
-    DecimalPipe,
-    ReservationModalComponent
-  ],
+    imports: [
+        DecimalPipe,
+        ReservationModalComponent,
+        AuthModalComponent
+    ],
   templateUrl: './offer-item.component.html',
   styleUrl: './offer-item.component.css'
 })
@@ -23,13 +26,26 @@ export class OfferItemComponent {
     };
 
   isReservationVisible: boolean = false;
+  isAuthModalVisible: boolean = false;
+
+  constructor(private userContextService: UserContextService) {
+  }
 
   openReservationDialog() {
-    this.isReservationVisible = true;
+      this.userContextService.isLoggedIn().subscribe(isLoggedIn => {
+          if (isLoggedIn) {
+              this.isReservationVisible = true;
+          } else {
+              this.isAuthModalVisible = true;
+          }
+      })
   }
 
   hideReservationDialog() {
     this.isReservationVisible = false;
   }
 
+  protected hideAuthModal() {
+      this.isAuthModalVisible = false;
+  }
 }

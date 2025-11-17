@@ -60,7 +60,7 @@ export class CompanyViewComponent implements OnInit {
       },
       reviewStatistics: {
           rating: 0, totalReviews: 0,
-          ratingCounts: [{ 1:0 }]
+          ratingCounts: { 1:0 }
       },
       companyHours: [],
       owner: {

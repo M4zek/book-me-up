@@ -25,7 +25,7 @@ export class CompanyOpinionsComponent {
   @Input() opinionsDetails: CompanyReviewStatistics = {
       rating: 0,
       totalReviews: 0,
-      ratingCounts: [{ 1:0 }]
+      ratingCounts: { 1:0 }
   };
 
 

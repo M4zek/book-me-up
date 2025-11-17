@@ -31,7 +31,7 @@ export interface CompanyHours{
 export interface CompanyReviewStatistics{
     rating: number,
     totalReviews: number,
-    ratingCounts: [{[key: number]: number}],
+    ratingCounts: {[key: number]: number},
 }
 
 export interface EmployeeSummaryResponse{
