@@ -5,6 +5,8 @@ import com.m4zek.backend.model.dto.read.CompanyHoursResponse;
 import com.m4zek.backend.model.dto.write.CompanyHoursRequest;
 import com.m4zek.backend.service.CompanyHoursService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +14,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("api/v1/company-hours")
+@RequestMapping("api/v1/companies")
 public class CompanyHoursController {
 
     private final CompanyHoursService companyHoursService;
@@ -21,15 +23,17 @@ public class CompanyHoursController {
         this.companyHoursService = companyHoursService;
     }
 
-    @PostMapping("/{companyId}")
+    @PostMapping("/{companyId}/hours")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public List<CompanyHoursResponse> addCompanyHours(
-            @PathVariable Long companyId,
+            @Positive(message = "Company id must be positive number") @PathVariable Long companyId,
             @RequestBody @Valid List<CompanyHoursRequest> companyHours) {
         return this.companyHoursService.setCompanyHours(companyId, companyHours);
     }
 
-    @GetMapping("/{companyId}")
-    public List<CompanyHoursResponse> readCompanyHours(@PathVariable Long companyId) {
+    @GetMapping("/{companyId}/hours")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    public List<CompanyHoursResponse> readCompanyHours(@Positive(message = "Company id must be positive number") @PathVariable Long companyId) {
         return this.companyHoursService.readCompanyHours(companyId);
     }
 

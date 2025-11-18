@@ -5,9 +5,11 @@ import com.m4zek.backend.exception.CompanyNotFoundException;
 import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.mapper.CompanyMapper;
 import com.m4zek.backend.mapper.ReviewMapper;
+import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
+import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
 import com.m4zek.backend.repository.*;
@@ -104,6 +106,14 @@ public class CompanyService {
                     return CompanyMapper.companyToCompanySummaryResponse(company, reviewStatisticsProjection);
                 }).toList();
         return new PageImpl<>(resultList, pageable, resultPage.getTotalElements());
+    }
+
+    public List<EmployeeSummaryResponse> findEmployeesByCompanyId(int companyId) {
+        Company company = this.getCompany(companyId);
+        return company.getUsers().stream()
+                .map(
+                        item -> UserMapper.toEmployeeSummaryResponse(item.getUsers())
+                ).toList();
     }
 
 

@@ -11,12 +11,12 @@ import java.time.ZonedDateTime;
 public class ReservationResponse {
 
     private int id;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private ZonedDateTime reservationDate;
     private String reservationNumber;
     private String status;
     private UserResponse customer;
+    private EmployeeSummaryResponse preferredEmployee;
     private CompanyOfferResponse companyOffer;
 
 

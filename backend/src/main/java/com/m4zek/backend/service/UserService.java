@@ -14,9 +14,11 @@ import com.m4zek.backend.repository.RefreshTokenRepository;
 import com.m4zek.backend.repository.RoleRepository;
 import com.m4zek.backend.repository.UserDateRepository;
 import com.m4zek.backend.repository.UserRepository;
+import com.m4zek.backend.security.service.MyUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+    }
+
+
+    public UserResponse findLoggedInUser() {
+        MyUserDetails myUserDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User loggedUser = findUserByEmail(myUserDetails.getEmail());
+        return UserMapper.toUserResponse(loggedUser);
     }
 
 

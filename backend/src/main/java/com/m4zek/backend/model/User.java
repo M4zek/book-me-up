@@ -31,6 +31,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reservation> reservations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "preferredUser")
+    private List<Reservation> preferredReservations = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

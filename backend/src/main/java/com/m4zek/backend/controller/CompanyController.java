@@ -2,6 +2,7 @@ package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
+import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
 import com.m4zek.backend.service.CompanyService;
 import jakarta.transaction.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +31,6 @@ public class CompanyController {
     }
 
     // --------------- PRIVATE ENDPOINTS ---------------
-
     @Transactional
     @PostMapping("/v1/companies")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
@@ -41,6 +42,13 @@ public class CompanyController {
         URI location = URI.create("/api/public/companies/" + companyId);
         return ResponseEntity.created(location).body(company);
     }
+
+    @GetMapping("/v1/companies/{company_id}/employees")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<EmployeeSummaryResponse>> findEmployeesByCompanyId(@Positive(message = "Company id must be positive number") @PathVariable int company_id){
+        return ResponseEntity.ok(this.companyService.findEmployeesByCompanyId(company_id));
+    }
+
 
     // --------------- PUBLIC ENDPOINTS ---------------
 

@@ -20,6 +20,9 @@ public class ReservationRequest {
     @Min(value = 0, message = "User id must be a positive number")
     private int user_id;
 
+    @Min(value = 0, message = "Employee id must be a positive number")
+    private int preferred_employee_id;
+
     @NotNull(message = "Reservation date cannot be null")
     @Future(message = "Reservation date must be in the future")
     private ZonedDateTime reservation_date;
