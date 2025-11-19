@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 private toast: ToastService) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if(!request.url.includes('api/auth/')) {
+        if(request.url.includes('/api/v1/')) {
             let token: string = '';
             this.userContextService.getUserToken().subscribe(JWT => token = "Bearer " + JWT);
             if (token.length > 7) {
@@ -75,7 +75,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 return next.handle(repliedRequest);
             }),
             catchError((err) => {
-                console.error(err);
+                // console.error(err);
                 return throwError(err);
             })
         )

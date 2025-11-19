@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
 import {UserContextService} from "../../../service/user-context.service";
@@ -21,7 +21,7 @@ export interface MainNavigation{
   templateUrl: './navigation-user.component.html',
   styleUrl: './navigation-user.component.css'
 })
-export class NavigationUserComponent {
+export class NavigationUserComponent implements OnInit {
   user_avatar: string = 'images/user_default_avatar.png';
   user_name: string = 'John Doe';
   drop_down_icon: string = 'icons/drop_down_arrow.png';
@@ -32,6 +32,16 @@ export class NavigationUserComponent {
   isActive = false;
 
   constructor(public router: Router, private userContextService: UserContextService) {}
+
+    ngOnInit(): void {
+        this.userContextService.getUserData().subscribe(user => {
+            this.user_name = `${user.firstName} ${user.lastName}`;
+            if (user.avatar) {
+                this.user_avatar = `data:image/jpeg;base64,${user.avatar}`
+            }
+        })
+    }
+
 
   BAR_NAVIGATION: MainNavigation[] = [
     {

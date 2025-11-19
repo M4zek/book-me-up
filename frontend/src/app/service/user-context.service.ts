@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, filter, map, Observable} from "rxjs";
 import {UserContextModel, UserContextWrapper} from "../model/auth/auth.model";
 import {Router} from "@angular/router";
+import {UserResponse} from "../model/response/user-response.model";
 
 @Injectable({
   providedIn: 'root'
@@ -9,16 +10,32 @@ import {Router} from "@angular/router";
 export class UserContextService {
 
     protected readonly userKey: string = 'userSession'
+    protected readonly userDataKey: string = 'userData'
 
     private currentUser$: BehaviorSubject<UserContextWrapper> =
         new BehaviorSubject<UserContextWrapper>({loggedIn: false});
 
 
+    private userData$: BehaviorSubject<UserResponse> = new BehaviorSubject<UserResponse>({
+        id: 0,
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        birthdate: "",
+        avatar: ""
+    })
+
     constructor(private router: Router) {
         const userSession: string | null =  localStorage.getItem(this.userKey);
+        const userData: string | null = localStorage.getItem(this.userDataKey);
         if(userSession != null){
             const parsedData: UserContextWrapper = JSON.parse(userSession);
             this.currentUser$ = new BehaviorSubject<UserContextWrapper>(parsedData);
+        }
+        if(userData != null){
+            const parsedData: UserResponse = JSON.parse(userData);
+            this.userData$ = new BehaviorSubject<UserResponse>(parsedData);
         }
     }
 
@@ -33,6 +50,16 @@ export class UserContextService {
             }
         });
         localStorage.setItem(this.userKey, JSON.stringify(this.currentUser$.value));
+    }
+
+
+    public setLoggedUserData(userData: UserResponse): void {
+        this.userData$.next(userData);
+        localStorage.setItem(this.userDataKey, JSON.stringify(this.userData$.value));
+    }
+
+    public getUserData(): Observable<UserResponse> {
+        return this.userData$.pipe();
     }
 
     public updateTokens(accessToken: string, refreshToken: string){

@@ -24,7 +24,7 @@ export class OfferItemComponent {
         duration: 0,
         price: 0,
     };
-
+    @Input() companyId: number = 0;
   isReservationVisible: boolean = false;
   isAuthModalVisible: boolean = false;
 

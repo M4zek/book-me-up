@@ -21,6 +21,7 @@
             <app-company-offer-list
                     *ngIf="requestCompanyOfferSuccess"
                     [offerItems]="offerItems"
+                    [companyId]="company.id"
             />
             <app-paginator
                     *ngIf="requestCompanyOfferSuccess"

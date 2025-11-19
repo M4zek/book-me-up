@@ -28,7 +28,7 @@ export class AuthService {
     refreshToken(): Observable<RefreshTokenResponse> {
         let refreshToken: string | undefined;
         this.userContextService.getUserRefreshToken().subscribe(token => refreshToken = token);
-        return this.http.post<RefreshTokenResponse>(`/api/auth/${refreshToken}`, null);
+        return this.http.post<RefreshTokenResponse>(`/api/auth/refreshToken/${refreshToken}`, null);
     }
 
 

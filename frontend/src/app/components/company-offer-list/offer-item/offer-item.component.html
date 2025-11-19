@@ -9,5 +9,9 @@
     </div>
 </div>
 
-<app-reservation-modal [isVisible]="isReservationVisible" (closeModal)="hideReservationDialog()"/>
+<app-reservation-modal
+        [offer]="offerItem"
+        [companyId]="companyId"
+        [isVisible]="isReservationVisible"
+        (closeModal)="hideReservationDialog()"/>
 <app-auth-modal [isVisible]="isAuthModalVisible" (closeModal)="hideAuthModal()"/>

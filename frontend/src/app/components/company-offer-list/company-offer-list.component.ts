@@ -17,6 +17,7 @@ import {CompanyOffersResponse} from "../../model/response/company-response.model
 })
 export class CompanyOfferListComponent {
 
-    @Input() offerItems: CompanyOffersResponse[] = []
+    @Input() offerItems: CompanyOffersResponse[] = [];
+    @Input() companyId: number = 0;
 
 }

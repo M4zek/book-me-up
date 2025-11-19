@@ -6,6 +6,8 @@ import {AuthService} from "../../../service/auth.service";
 import {ToastService} from "../../../service/toast.service";
 import {Router} from "@angular/router";
 import {UserContextService} from "../../../service/user-context.service";
+import {concatMap, throwError} from "rxjs";
+import {UserService} from "../../../service/user.service";
 
 @Component({
   selector: 'app-auth-modal',
@@ -43,6 +45,7 @@ export class AuthModalComponent {
   constructor(private router: Router,
               private authService: AuthService,
               private userContextService: UserContextService,
+              private userService: UserService,
               private toast: ToastService) {}
 
   close() {
@@ -62,29 +65,33 @@ export class AuthModalComponent {
   }
 
   sign_in() {
-      // TODO Validate data
+      this.authService.authentication(this.login_model).pipe(
+          concatMap(response => {
+              if(response.success){
+                  this.userContextService.setLoggedUser(response.loggedUser!)
 
-    this.authService.authentication(this.login_model).subscribe(response => {
-        if (response.success) {
-            this.userContextService.setLoggedUser(response.loggedUser!)
+                  return this.userService.readLoggedInUserData();
+              } else {
+                  if(response.errorMessage) {
+                      const messages = Array.isArray(response.errorMessage.message)
+                          ? response.errorMessage.message
+                          : [response.errorMessage.message];
 
-            let currentUrl = this.router.url.replace("guest", "app");
-            this.router.navigateByUrl(currentUrl);
-
-            this.toast.show("Logged in successfully", 'success');
-        } else {
-            if(response.errorMessage) {
-                const messages = Array.isArray(response.errorMessage.message)
-                    ? response.errorMessage.message
-                    : [response.errorMessage.message];
-
-                messages.forEach(msg => {
-                    const [, text] = msg.split(':');
-                    this.toast.show(text?.trim() || msg, 'warning');
-                });
-            }
-        }
-    });
+                      messages.forEach(msg => {
+                          const [, text] = msg.split(':');
+                          this.toast.show(text?.trim() || msg, 'warning');
+                      });
+                  }
+                  return throwError(response.errorMessage);
+              }
+          })).subscribe(response => {
+              if (response.status === 200 && response.body){
+                this.userContextService.setLoggedUserData(response.body);
+                let currentUrl = this.router.url.replace("guest", "app");
+                this.router.navigateByUrl(currentUrl);
+                this.toast.show("Logged in successfully", 'success');
+              }
+      });
 
   }
 }

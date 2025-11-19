@@ -26,6 +26,7 @@
     display: flex;
     align-items: center;
     justify-content: end;
+    gap: 10px;
 }
 
 .drop-down-icon{
@@ -33,7 +34,6 @@
     height: 25px;
     object-fit: cover;
     padding: 5px;
-    margin-left: 5px;
     transition: .2s ease-in-out;
 }
 
@@ -43,10 +43,12 @@
 }
 
 .user-avatar{
-    width: 45px;
+    width: 35px;
     height: 35px;
     object-fit: cover;
-    padding-right: 10px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    border: 1px solid var(--white);
 }
 
 .user-name-paragraph{
