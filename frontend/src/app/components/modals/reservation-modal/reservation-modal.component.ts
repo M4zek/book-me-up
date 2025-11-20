@@ -3,29 +3,13 @@ import {NgIf} from "@angular/common";
 import {DateReservationPickerComponent} from "../../date-reservation-picker/date-reservation-picker.component";
 import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
 import {FormsModule} from "@angular/forms";
-import {
-    CompanyHours,
-    CompanyOffersResponse,
-    EmployeeSummaryResponse
-} from "../../../model/response/company-response.model";
+import {CompanyOffersResponse, EmployeeSummaryResponse} from "../../../model/response/company-response.model";
 import {UserResponse} from "../../../model/response/user-response.model";
 import {UserContextService} from "../../../service/user-context.service";
 import {CompanyService} from "../../../service/company.service";
 import {ReservationService} from "../../../service/reservation.service";
+import {ReservationRequest} from "../../../model/request/reservation-request.model";
 
-export interface ReservationData {
-    user_id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    offer: {
-        id: number;
-        name: string;
-        duration: number;
-        price: number;
-    }
-}
 
 @Component({
     selector: 'app-reservation-modal',
@@ -53,11 +37,16 @@ export class ReservationModalComponent implements OnChanges {
   }
   userData!: UserResponse;
   preferredEmployees: DropDownListItem[] = []
-  companyHours: CompanyHours[] = []
 
   startDate: string = 'No selected'
   isConfirmedRegistrationDetails: boolean = false;
 
+  reservationRequest: ReservationRequest = {
+      company_offer_id: 0,
+      user_id: 0,
+      reservation_date: undefined,
+      preferred_employee_id: undefined,
+  }
 
   constructor(private companyService: CompanyService,
               private reservationService: ReservationService,
@@ -68,9 +57,10 @@ export class ReservationModalComponent implements OnChanges {
           if(this.isVisible){
               this.userContextService.getUserData().subscribe(user => {
                   this.userData = user;
+                  this.reservationRequest.user_id = this.userData.id;
+                  this.reservationRequest.company_offer_id = this.offer.id;
+                  this.readEmployeeListFromBackend(this.companyId);
               })
-              this.readEmployeeListFromBackend(this.companyId);
-              this.readCompanyHours(this.companyId);
           }
       }
   }
@@ -84,14 +74,22 @@ export class ReservationModalComponent implements OnChanges {
   onDateChange($event: any) {
     let date: Date = $event.start;
     this.startDate = this.createTextWithReservationDate(date);
-
+    this.reservationRequest.reservation_date = new Date(this.startDate);
   }
 
   changePreferredEmployee($event: DropDownListItem) {
-      console.log($event);
+      if($event.content == "None")
+          this.reservationRequest.preferred_employee_id = undefined;
+      else
+        this.reservationRequest.preferred_employee_id = $event.id;
   }
 
   confirmReservation() {
+      if (this.reservationRequest.reservation_date) {
+          console.log(this.reservationRequest);
+      } else {
+          // TODO SHOW ERROR
+      }
   }
 
 
@@ -107,8 +105,9 @@ export class ReservationModalComponent implements OnChanges {
         this.companyService.getCompanyEmployees(companyId).subscribe(response => {
           if (response.status === 200 && response.body) {
               let users: EmployeeSummaryResponse[] = response.body;
+              let dropDownEmployeeList: DropDownListItem[] = [];
               for (let user of users) {
-                  this.preferredEmployees.push(
+                  dropDownEmployeeList.push(
                       {
                           id: user.id,
                           content: `${user.firstName} ${user.lastName}`,
@@ -116,21 +115,10 @@ export class ReservationModalComponent implements OnChanges {
                       }
                   )
               }
+              this.preferredEmployees = dropDownEmployeeList;
           }  else {
               console.log("Error");
           }
         })
-    }
-
-
-    private readCompanyHours(companyId: number) {
-      this.companyService.getCompanyBusinessHours(companyId).subscribe(response => {
-          if (response.status === 200 && response.body) {
-              this.companyHours = response.body;
-          } else {
-              console.log("Error");
-          }
-      })
-
     }
 }

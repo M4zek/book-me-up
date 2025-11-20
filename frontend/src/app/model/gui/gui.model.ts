@@ -52,3 +52,9 @@ export interface OfferManagementItem {
     price: number;
     duration: number;
 }
+
+export interface ReservationAvailability {
+    companyId: number;
+    fromDate: Date;
+    toDate: Date;
+}

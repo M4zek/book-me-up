@@ -19,7 +19,7 @@
                 >
                     <div class="weekday">{{ d.weekDay }}</div>
                     <div class="day">{{ d.day }}</div>
-                    <div class="status" [ngClass]="d.status"></div>
+                    <div class="status" [ngClass]="d.status" *ngIf="!isClosed(d.date)"></div>
                 </div>
             </div>
 

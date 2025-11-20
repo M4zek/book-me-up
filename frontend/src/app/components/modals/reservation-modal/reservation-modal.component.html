@@ -1,24 +1,25 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <app-date-reservation-picker (changeDate)="onDateChange($event)"
+                                     [companyId]="companyId"
                                      [duration]="offer.duration"/>
         <div class="white-line"></div>
         <div class="user-reservation-information">
             <div class="user-data">
                 <img [src]="'icons/user_icon.svg'" alt="icon"/>
-                <input [value]="userData.firstName" placeholder="First name" class="input-con">
+                <input [value]="userData.firstName" placeholder="First name" class="input-con" disabled>
             </div>
             <div class="user-data">
                 <img [src]="'icons/user_icon.svg'" alt="icon"/>
-                <input [value]="userData.lastName" placeholder="Last name" class="input-con">
+                <input [value]="userData.lastName" placeholder="Last name" class="input-con" disabled>
             </div>
             <div class="user-data">
                 <img [src]="'icons/phone_icon.svg'" alt="icon"/>
-                <input [value]="userData.phoneNumber" placeholder="Phone number" class="input-con">
+                <input [value]="userData.phoneNumber" placeholder="Phone number" class="input-con" disabled>
             </div>
             <div class="user-data">
                 <img [src]="'icons/envelope_icon.svg'" alt="icon"/>
-                <input [value]="userData.email" placeholder="Email" class="input-con">
+                <input [value]="userData.email" placeholder="Email" class="input-con" disabled>
             </div>
         </div>
         <div class="white-line"></div>
