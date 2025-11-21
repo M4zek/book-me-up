@@ -7,6 +7,6 @@ export interface UserResponse {
     email: string;
     birthdate: string;
     phoneNumber: string;
-    avatar: string;
+    avatar: string | null;
 }
 

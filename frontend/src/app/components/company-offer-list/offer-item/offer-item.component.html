@@ -1,4 +1,4 @@
-<div class="offer-item-container" (click)="openReservationDialog()">
+<div class="offer-item-container">
     <div class="desc-container">
         <p class="offer-title-paragraph">{{offerItem.name}}</p>
         <p class="offer-description-paragraph">{{offerItem.description}}</p>
@@ -8,10 +8,3 @@
         <p class="offer-duration-paragraph">{{offerItem.duration}} min</p>
     </div>
 </div>
-
-<app-reservation-modal
-        [offer]="offerItem"
-        [companyId]="companyId"
-        [isVisible]="isReservationVisible"
-        (closeModal)="hideReservationDialog()"/>
-<app-auth-modal [isVisible]="isAuthModalVisible" (closeModal)="hideAuthModal()"/>

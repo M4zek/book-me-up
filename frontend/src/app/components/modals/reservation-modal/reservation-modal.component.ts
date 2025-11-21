@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {DateReservationPickerComponent} from "../../date-reservation-picker/date-reservation-picker.component";
 import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
@@ -9,6 +9,9 @@ import {UserContextService} from "../../../service/user-context.service";
 import {CompanyService} from "../../../service/company.service";
 import {ReservationService} from "../../../service/reservation.service";
 import {ReservationRequest} from "../../../model/request/reservation-request.model";
+import {ReservationResponse} from "../../../model/response/reservation-response.model";
+import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
+import {ToastService} from "../../../service/toast.service";
 
 
 @Component({
@@ -17,40 +20,57 @@ import {ReservationRequest} from "../../../model/request/reservation-request.mod
         NgIf,
         DateReservationPickerComponent,
         DropDownListComponent,
-        FormsModule
+        FormsModule,
+        DoubleSpinnerComponent
     ],
     templateUrl: './reservation-modal.component.html',
     styleUrl: './reservation-modal.component.css'
 })
-export class ReservationModalComponent implements OnChanges {
+export class ReservationModalComponent implements OnChanges, OnDestroy {
 
   @Input() isVisible = false;
   @Output() closeModal = new EventEmitter<void>();
 
   @Input() companyId: number = 0;
   @Input() offer: CompanyOffersResponse = {
-      id: 0,
-      name: '' ,
-      description: '',
-      duration: 45,
-      price: 30,
+      id: 0, name: '' , description: '', duration: 45, price: 30,
   }
   userData!: UserResponse;
   preferredEmployees: DropDownListItem[] = []
+  reservationResponse!: ReservationResponse;
 
   startDate: string = 'No selected'
-  isConfirmedRegistrationDetails: boolean = false;
+  isReservationConfirmed: boolean = false;
 
   reservationRequest: ReservationRequest = {
-      company_offer_id: 0,
-      user_id: 0,
-      reservation_date: undefined,
-      preferred_employee_id: undefined,
+      company_offer_id: 0, user_id: 0,
+      reservation_date: undefined, preferred_employee_id: undefined,
   }
 
+  protected responseStatus: number | undefined = undefined;
+  protected loadingStatus: boolean = false;
+
+
   constructor(private companyService: CompanyService,
+              private toast: ToastService,
               private reservationService: ReservationService,
               private userContextService: UserContextService) {}
+
+  ngOnDestroy(): void {
+      this.reservationRequest = {
+          company_offer_id: 0,
+          user_id: 0,
+          reservation_date: undefined,
+          preferred_employee_id: undefined,
+      };
+
+      this.startDate = 'No selected';
+      this.isReservationConfirmed = false;
+      this.preferredEmployees = [];
+      this.responseStatus = undefined;
+      this.loadingStatus = false;
+
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['isVisible']) {
@@ -66,9 +86,9 @@ export class ReservationModalComponent implements OnChanges {
   }
 
 
-
   close() {
-    this.closeModal.emit();
+      this.ngOnDestroy();
+      this.closeModal.emit();
   }
 
   onDateChange($event: any) {
@@ -85,10 +105,20 @@ export class ReservationModalComponent implements OnChanges {
   }
 
   confirmReservation() {
-      if (this.reservationRequest.reservation_date) {
-          console.log(this.reservationRequest);
-      } else {
-          // TODO SHOW ERROR
+      this.loadingStatus = true
+      if (this.isReservationConfirmed && this.isReservationDataValid()) {
+          this.reservationService.makeAnReservation(this.reservationRequest).subscribe(response => {
+              if (response.status == 200 && response.body) {
+                  this.reservationResponse = response.body;
+                  this.responseStatus = response.status;
+
+                  console.log(this.reservationResponse.preferredEmployee?.email);
+                  this.toast.show("Reservation successfully created", "success");
+              } else {
+                  this.responseStatus = response.status;
+              }
+              this.loadingStatus = false
+          })
       }
   }
 
@@ -120,5 +150,13 @@ export class ReservationModalComponent implements OnChanges {
               console.log("Error");
           }
         })
+    }
+
+    protected isReservationDataValid() {
+        return (
+            this.reservationRequest.company_offer_id !== 0 &&
+            this.reservationRequest.user_id !== 0 &&
+            this.reservationRequest.reservation_date !== undefined
+        );
     }
 }

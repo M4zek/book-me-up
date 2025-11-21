@@ -1,63 +1,124 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-        <app-date-reservation-picker (changeDate)="onDateChange($event)"
-                                     [companyId]="companyId"
-                                     [duration]="offer.duration"/>
-        <div class="white-line"></div>
-        <div class="user-reservation-information">
-            <div class="user-data">
-                <img [src]="'icons/user_icon.svg'" alt="icon"/>
-                <input [value]="userData.firstName" placeholder="First name" class="input-con" disabled>
-            </div>
-            <div class="user-data">
-                <img [src]="'icons/user_icon.svg'" alt="icon"/>
-                <input [value]="userData.lastName" placeholder="Last name" class="input-con" disabled>
-            </div>
-            <div class="user-data">
-                <img [src]="'icons/phone_icon.svg'" alt="icon"/>
-                <input [value]="userData.phoneNumber" placeholder="Phone number" class="input-con" disabled>
-            </div>
-            <div class="user-data">
-                <img [src]="'icons/envelope_icon.svg'" alt="icon"/>
-                <input [value]="userData.email" placeholder="Email" class="input-con" disabled>
-            </div>
-        </div>
-        <div class="white-line"></div>
-        <div class="offer-reservation-information">
-            <div class="horizontal-info-container">
-                <p class="offer-name">{{offer.name}}</p>
-                <div class="vertical-container-information">
-                    <p class="price">{{offer.price}} PLN</p>
-                    <p class="time">{{offer.duration}} min</p>
+
+        <div class="reservation-form" *ngIf="responseStatus != 200 && !loadingStatus">
+            <app-date-reservation-picker (changeDate)="onDateChange($event)"
+                                         [companyId]="companyId"
+                                         [duration]="offer.duration"/>
+            <div class="white-line"></div>
+            <div class="user-reservation-information">
+                <div class="user-data">
+                    <img [src]="'icons/user_icon.svg'" alt="icon"/>
+                    <input [value]="userData.firstName" placeholder="First name" class="input-con" disabled>
+                </div>
+                <div class="user-data">
+                    <img [src]="'icons/user_icon.svg'" alt="icon"/>
+                    <input [value]="userData.lastName" placeholder="Last name" class="input-con" disabled>
+                </div>
+                <div class="user-data">
+                    <img [src]="'icons/phone_icon.svg'" alt="icon"/>
+                    <input [value]="userData.phoneNumber" placeholder="Phone number" class="input-con" disabled>
+                </div>
+                <div class="user-data">
+                    <img [src]="'icons/envelope_icon.svg'" alt="icon"/>
+                    <input [value]="userData.email" placeholder="Email" class="input-con" disabled>
                 </div>
             </div>
-            <div class="white-line-25"></div>
-            <app-drop-down-list
-                    [options]="preferredEmployees"
-                    [placeholder]="'Preferred employee'"
-                    (valueChanged)="changePreferredEmployee($event)"></app-drop-down-list>
-        </div>
-        <div class="white-line"></div>
-        <div class="reservation-summary">
-            <div class="summary-content">
-                <p class="title-summary">Date:</p>
-                <p class="summary-par">{{startDate}}</p>
+            <div class="white-line"></div>
+            <div class="offer-reservation-information">
+                <div class="horizontal-info-container">
+                    <p class="offer-name">{{offer.name}}</p>
+                    <div class="vertical-container-information">
+                        <p class="price">{{offer.price}} PLN</p>
+                        <p class="time">{{offer.duration}} min</p>
+                    </div>
+                </div>
+                <div class="white-line-25"></div>
+                <app-drop-down-list
+                        [options]="preferredEmployees"
+                        [placeholder]="'Preferred employee'"
+                        (valueChanged)="changePreferredEmployee($event)"></app-drop-down-list>
             </div>
-            <div class="summary-content">
-                <p class="title-summary">Price:</p>
-                <p class="summary-par">{{offer.price}} PLN</p>
+            <div class="white-line"></div>
+            <div class="reservation-summary">
+                <div class="summary-content">
+                    <p class="title-summary">Date:</p>
+                    <p class="summary-par">{{startDate}}</p>
+                </div>
+                <div class="summary-content">
+                    <p class="title-summary">Price:</p>
+                    <p class="summary-par">{{offer.price}} PLN</p>
+                </div>
+                <div class="summary-content">
+                    <p class="title-summary">Time:</p>
+                    <p class="summary-par">{{ offer.duration }} min</p>
+                </div>
             </div>
-            <div class="summary-content">
-                <p class="title-summary">Time:</p>
-                <p class="summary-par">{{ offer.duration }} min</p>
+            <div class="checkbox-container">
+                <input type="checkbox" class="checkbox" [(ngModel)]="isReservationConfirmed">
+                <p>I confirm the registration details</p>
+            </div>
+
+            <div class="btn-confirm"
+                 [class.disabled]="!isReservationConfirmed || !isReservationDataValid()"
+                 (click)="confirmReservation()"
+            >
+                <p>Confirm reservation</p>
             </div>
         </div>
-        <div class="checkbox-container">
-            <input type="checkbox" class="checkbox">
-            <p>I confirm the registration details</p>
+
+        <app-double-spinner *ngIf="loadingStatus"/>
+
+        <div class="reservation-response" *ngIf="responseStatus === 200 && !loadingStatus" >
+            <h2>Reservation created</h2>
+
+            <div class="reservation-data custom">
+                <p>Reservation</p>
+                <span>{{reservationResponse.reservationNumber}}</span>
+                <span>{{reservationResponse.reservationDate}}</span>
+                <span>{{reservationResponse.status}}</span>
+            </div>
+
+
+            <div class="con">
+                <div class="users-data custom">
+                    <p>Customer</p>
+                    <img [src]="'data:image/jpeg;base64,' + reservationResponse.customer.avatar"
+                         *ngIf="reservationResponse.customer.avatar" alt="avatar"/>
+                    <img [src]="'images/user_default_avatar.png'" *ngIf="!reservationResponse.customer.avatar" alt="img"/>
+                    <div class="horizontal">
+                        <span>{{reservationResponse.customer.firstName}} {{reservationResponse.customer.lastName}}</span>
+                        <span>{{reservationResponse.customer.email}}</span>
+                        <span>{{reservationResponse.customer.phoneNumber}}</span>
+                    </div>
+                </div>
+                <div class="users-data custom" *ngIf="reservationResponse.preferredEmployee != null">
+                    <p>Preferred employee</p>
+                    <img [src]="'data:image/jpeg;base64,' + reservationResponse.preferredEmployee.avatar"
+                         *ngIf="reservationResponse.preferredEmployee.avatar" alt="avatar"/>
+                    <img [src]="'images/user_default_avatar.png'" *ngIf="!reservationResponse.preferredEmployee.avatar" alt="img"/>
+                    <div class="horizontal">
+                        <span>{{reservationResponse.preferredEmployee.firstName}} {{reservationResponse.preferredEmployee.lastName}}</span>
+                        <span>{{reservationResponse.preferredEmployee.email}}</span>
+                        <span>{{reservationResponse.preferredEmployee.phoneNumber}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="offer-data custom">
+                <p>Offer</p>
+                <div>
+                    <h1>{{reservationResponse.companyOffer.name}}</h1>
+                    <span>{{reservationResponse.companyOffer.price}} PLN</span>
+                    <span>{{reservationResponse.companyOffer.duration}} min</span>
+                </div>
+                <span>{{reservationResponse.companyOffer.description}}</span>
+            </div>
+
+            <div class="button-container" (click)="close()">
+                <span>OK</span>
+            </div>
         </div>
-        <div class="btn-confirm" (click)="confirmReservation()">
-            <p>Confirm reservation</p>
-        </div>
+
     </div>
 </div>

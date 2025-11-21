@@ -4,7 +4,16 @@
     </div>
     <div class="items-container">
         <div *ngFor="let item of offerItems">
-            <app-offer-item [companyId]="companyId" [offerItem]="item"/>
+            <app-offer-item [offerItem]="item" (click)="offerItemClick(item)"/>
         </div>
     </div>
 </div>
+
+<app-reservation-modal
+        *ngIf="selectedOffer"
+        [offer]="selectedOffer"
+        [companyId]="companyId"
+        [isVisible]="isReservationModalOpen"
+        (closeModal)="hideReservationDialog()"/>
+
+<app-auth-modal [isVisible]="isAuthModalOpen" (closeModal)="hideAuthModal()"/>

@@ -19,6 +19,6 @@ export interface ReservationResponse {
     reservationNumber: string;
     status: string;
     customer: UserResponse,
-    preferredEmployee?: UserResponse,
+    preferredEmployee: UserResponse | null,
     companyOffer: CompanyOffersResponse
 }
