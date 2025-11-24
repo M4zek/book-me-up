@@ -64,10 +64,10 @@ public class ReservationService {
                     ));
 
 
-            Map<ZonedDateTime, List<Reservation>> reservationsByDate = reservationsCompany.stream()
-                    .collect(Collectors.groupingBy(Reservation::getReservationDate));
+            Map<LocalDate, List<Reservation>> reservationsByDate = reservationsCompany.stream()
+                    .collect(Collectors.groupingBy(item -> item.getReservationDate().toLocalDate()));
 
-            for (ZonedDateTime date : reservationsByDate.keySet()) {
+            for (LocalDate date : reservationsByDate.keySet()) {
 
                 List<Reservation> reservationsForDay = reservationsByDate.get(date);
 
@@ -76,7 +76,7 @@ public class ReservationService {
                 if (totalMinutes == 0) {
 
                     response.add(ReservationAvailabilityResponse.builder()
-                            .dateOfBooked(date.toOffsetDateTime())
+                            .dateOfBooked(date.atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime())
                             .bookedCompanyHours(Collections.emptyList())
                             .freeTimePercentage(0)
                             .build());
@@ -108,7 +108,7 @@ public class ReservationService {
                         (int) (((double) (totalMinutes - bookedMinutes) / totalMinutes) * 100);
 
                 response.add(ReservationAvailabilityResponse.builder()
-                        .dateOfBooked(date.toOffsetDateTime())
+                        .dateOfBooked(date.atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime())
                         .bookedCompanyHours(bookedHours)
                         .freeTimePercentage(freeMinutesPercentage)
                         .build());
@@ -172,7 +172,7 @@ public class ReservationService {
         PRIVATE METHODS
      */
 
-    private int calculateTotalMinutes(ZonedDateTime date, Map<DayOfWeek, CompanyHours> hoursMap) {
+    private int calculateTotalMinutes(LocalDate date, Map<DayOfWeek, CompanyHours> hoursMap) {
 
         DayOfWeek dow = date.getDayOfWeek();
         CompanyHours ch = hoursMap.get(dow);
