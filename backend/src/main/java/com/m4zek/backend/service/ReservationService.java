@@ -1,6 +1,7 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.exception.ReservationBadRequestException;
 import com.m4zek.backend.exception.ReservationExistsException;
 import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.mapper.ReservationMapper;
@@ -8,17 +9,19 @@ import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.BookedCompanyHoursResponse;
 import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
 import com.m4zek.backend.model.dto.read.ReservationResponse;
-import com.m4zek.backend.model.dto.write.ReservationAvailabilityRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +32,8 @@ public class ReservationService {
     private final CompanyOfferRepository companyOfferRepository;
     private final UserRepository userRepository;
 
+    @Value("${app.time-zone}")
+    private String TIME_ZONE;
 
     public ReservationService(ReservationRepository reservationRepository, CompanyOfferRepository companyOfferRepository, UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
@@ -37,14 +42,15 @@ public class ReservationService {
     }
 
 
-    public List<ReservationAvailabilityResponse> getCompanyReservationAvailability(ReservationAvailabilityRequest request) {
-        ZonedDateTime fromDate = request.getFromDate().atStartOfDay(ZoneId.of("Europe/Warsaw"));
-        ZonedDateTime toDate = request.getToDate().atTime(23, 59, 59).atZone(ZoneId.of("Europe/Warsaw"));
+    public List<ReservationAvailabilityResponse> getCompanyReservationAvailability(int companyId, LocalDate from, LocalDate to) {
+        ZonedDateTime fromDate = from.atStartOfDay(ZoneId.of("Europe/Warsaw"));
+        ZonedDateTime toDate = to.atTime(23, 59, 59).atZone(ZoneId.of(TIME_ZONE));
 
         List<Reservation> reservationsCompany = this.reservationRepository.findByCompanyIdAndDateBetween(
-                        request.getCompanyId(),
-                        fromDate,
-                        toDate);
+                companyId,
+                fromDate,
+                toDate
+        );
 
         List<ReservationAvailabilityResponse> response = new ArrayList<>();
 
@@ -58,18 +64,19 @@ public class ReservationService {
                     ));
 
 
-            Map<LocalDate, List<Reservation>> reservationsByDate = reservationsCompany.stream()
-                    .collect(Collectors.groupingBy(reservation -> reservation.getReservationDate().toLocalDate()));
+            Map<ZonedDateTime, List<Reservation>> reservationsByDate = reservationsCompany.stream()
+                    .collect(Collectors.groupingBy(Reservation::getReservationDate));
 
-            for (LocalDate date : reservationsByDate.keySet()) {
+            for (ZonedDateTime date : reservationsByDate.keySet()) {
 
                 List<Reservation> reservationsForDay = reservationsByDate.get(date);
 
                 int totalMinutes = calculateTotalMinutes(date, hoursMap);
 
                 if (totalMinutes == 0) {
+
                     response.add(ReservationAvailabilityResponse.builder()
-                            .dateOfBooked(Date.from(date.atStartOfDay(ZoneId.of("Europe/Warsaw")).toInstant()))
+                            .dateOfBooked(date.toOffsetDateTime())
                             .bookedCompanyHours(Collections.emptyList())
                             .freeTimePercentage(0)
                             .build());
@@ -78,22 +85,21 @@ public class ReservationService {
 
                 List<BookedCompanyHoursResponse> bookedHours = reservationsForDay.stream()
                         .map(r -> {
-                            LocalTime start = r.getReservationDate().toLocalTime();
-                            LocalTime end = r.getReservationDate()
-                                    .plusMinutes(r.getCompanyOffer().getDuration())
-                                    .toLocalTime();
+                            OffsetDateTime start = r.getReservationDate().toOffsetDateTime().atZoneSameInstant(ZoneId.of(TIME_ZONE)).toOffsetDateTime();
+                            OffsetDateTime end = r.getReservationDate().toOffsetDateTime().atZoneSameInstant(ZoneId.of(TIME_ZONE)).toOffsetDateTime()
+                                    .plusMinutes(r.getCompanyOffer().getDuration());
 
                             return BookedCompanyHoursResponse.builder()
-                                    .startTimeBooked(start.format(DateTimeFormatter.ofPattern("HH:mm")))
-                                    .endTimeBooked(end.format(DateTimeFormatter.ofPattern("HH:mm")))
+                                    .startTimeBooked(start)
+                                    .endTimeBooked(end)
                                     .build();
                         })
                         .toList();
 
                 int bookedMinutes = bookedHours.stream().mapToInt(b ->
                         (int) ChronoUnit.MINUTES.between(
-                                LocalTime.parse(b.getStartTimeBooked()),
-                                LocalTime.parse(b.getEndTimeBooked())
+                                OffsetDateTime.parse(b.getStartTimeBooked().toString()),
+                                OffsetDateTime.parse(b.getEndTimeBooked().toString())
                         )
                 ).sum();
 
@@ -102,7 +108,7 @@ public class ReservationService {
                         (int) (((double) (totalMinutes - bookedMinutes) / totalMinutes) * 100);
 
                 response.add(ReservationAvailabilityResponse.builder()
-                        .dateOfBooked(Date.from(date.atStartOfDay(ZoneId.of("Europe/Warsaw")).toInstant()))
+                        .dateOfBooked(date.toOffsetDateTime())
                         .bookedCompanyHours(bookedHours)
                         .freeTimePercentage(freeMinutesPercentage)
                         .build());
@@ -119,11 +125,21 @@ public class ReservationService {
         User user = this.userRepository.findById(reservationRequest.getUser_id())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        companyOffer.getCompany().getCompanyHoursList()
+                .forEach(ch -> {
+                    String reservationDayName = reservationRequest.getReservation_date().getDayOfWeek().name().toUpperCase();
+                    if (ch.getDayOfWeek().toUpperCase().equals(reservationDayName) && !ch.isOpen()) {
+                        throw new ReservationBadRequestException("Company is closed on " + reservationDayName);
+                    }
+                });
+
         User preferredEmployee = this.userRepository.findById(reservationRequest.getPreferred_employee_id())
                 .orElse(null);
 
-        ZonedDateTime fromDate = reservationRequest.getReservation_date();
-        ZonedDateTime toDate = reservationRequest.getReservation_date().plusMinutes(companyOffer.getDuration());
+        ZonedDateTime fromDate = reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE));
+        ZonedDateTime toDate = reservationRequest.getReservation_date()
+                .atZoneSameInstant(ZoneId.of(TIME_ZONE))
+                .plusMinutes(companyOffer.getDuration());
 
         if (this.reservationRepository.existsReservationByCompanyOffer_IdAndUserIdAndReservationDateBetween(
                 reservationRequest.getCompany_offer_id(),
@@ -135,14 +151,14 @@ public class ReservationService {
         }
 
         String reservationNumber = this.createReservationNumber(
-                reservationRequest.getReservation_date(),
+                reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE)),
                 reservationRequest.getCompany_offer_id(),
                 reservationRequest.getUser_id()
         );
 
         return ReservationMapper.reserevationToReservationResponse(
                 this.reservationRepository.save(new Reservation(
-                    reservationRequest.getReservation_date(),
+                    reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE)),
                     reservationNumber,
                     user,
                     companyOffer,
@@ -156,7 +172,7 @@ public class ReservationService {
         PRIVATE METHODS
      */
 
-    private int calculateTotalMinutes(LocalDate date, Map<DayOfWeek, CompanyHours> hoursMap) {
+    private int calculateTotalMinutes(ZonedDateTime date, Map<DayOfWeek, CompanyHours> hoursMap) {
 
         DayOfWeek dow = date.getDayOfWeek();
         CompanyHours ch = hoursMap.get(dow);

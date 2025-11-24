@@ -15,6 +15,7 @@ public class ReservationMapper {
                 UserMapper.toEmployeeSummaryResponse(reservation.getPreferredUser()) : null;
 
         return ReservationResponse.builder()
+                .id(reservation.getId())
                 .reservationDate(reservation.getReservationDate())
                 .reservationNumber(reservation.getReservationNumber())
                 .status(reservation.getReservationStatus())

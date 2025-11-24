@@ -106,6 +106,17 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ReservationBadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleReservationExists(ReservationBadRequestException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(EmailExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorMessage handleEmailExists(EmailExistsException e, WebRequest request) {
