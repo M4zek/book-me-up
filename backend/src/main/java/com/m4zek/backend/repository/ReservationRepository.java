@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface ReservationRepository {
 
-    Optional<Reservation> findByUserIdAndCompanyOfferId(int userId, long companyOfferId);
+    Optional<Reservation> findByIdAndUserId(int id, int userId);
 
     Reservation save(Reservation reservation);
 

@@ -57,4 +57,10 @@ public class ReservationController {
         return ResponseEntity.ok(this.reservationService.getUserReservations(pageable, userId, status, name));
     }
 
+    @PatchMapping("/reservations/{id}/cancel")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<UserReservationResponse> cancelReservationById(@PathVariable int id){
+        return ResponseEntity.ok(this.reservationService.cancelReservation(id));
+    }
+
 }

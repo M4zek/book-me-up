@@ -1,9 +1,6 @@
 package com.m4zek.backend.service;
 
-import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.exception.ReservationBadRequestException;
-import com.m4zek.backend.exception.ReservationExistsException;
-import com.m4zek.backend.exception.UserNotFoundException;
+import com.m4zek.backend.exception.*;
 import com.m4zek.backend.mapper.ReservationMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.BookedCompanyHoursResponse;
@@ -14,10 +11,12 @@ import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
+import com.m4zek.backend.security.service.MyUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -64,6 +63,25 @@ public class ReservationService {
         }
     }
 
+    public UserReservationResponse cancelReservation(int reservationId) {
+        MyUserDetails myUserDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int loggedUserId = myUserDetails.getId();
+
+        Reservation reservation = this.reservationRepository.findByIdAndUserId(reservationId, loggedUserId)
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with id: " + reservationId));
+
+        if (reservation.getReservationStatus().equals(ReservationStatus.COMPLETED.name())) {
+            throw new ReservationBadRequestException("Completed reservation cannot be cancelled");
+        } else if (reservation.getReservationStatus().equals(ReservationStatus.CANCELLED.name())) {
+            throw new ReservationBadRequestException("Reservation is already cancelled");
+        } else if (reservation.getReservationStatus().equals(ReservationStatus.REJECTED.name())) {
+            throw new ReservationBadRequestException("Reservation is already rejected");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservation = this.reservationRepository.save(reservation);
+        return ReservationMapper.reservationToUserReservationResponse(reservation);
+    }
 
     public List<ReservationAvailabilityResponse> getCompanyReservationAvailability(int companyId, LocalDate from, LocalDate to) {
         ZonedDateTime fromDate = from.atStartOfDay(ZoneId.of("Europe/Warsaw"));
