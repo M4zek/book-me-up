@@ -1,10 +1,7 @@
 package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.model.Reservation;
-import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
-import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
-import com.m4zek.backend.model.dto.read.ReservationResponse;
-import com.m4zek.backend.model.dto.read.UserResponse;
+import com.m4zek.backend.model.dto.read.*;
 
 public class ReservationMapper {
 
@@ -38,5 +35,21 @@ public class ReservationMapper {
                         .build())
                 .build();
     }
+
+
+    public static UserReservationResponse reservationToUserReservationResponse(Reservation reservation) {
+        return UserReservationResponse.builder()
+                .id(reservation.getId())
+                .companyName(reservation.getCompanyOffer().getCompany().getName())
+                .reservationNumber(reservation.getReservationNumber())
+                .address(AddressMapper.addressToAddressResponse(reservation.getCompanyOffer().getCompany().getAddress()))
+                .offerName(reservation.getCompanyOffer().getName())
+                .offerPrice(reservation.getCompanyOffer().getPrice())
+                .status(reservation.getReservationStatus())
+                .reservationDate(reservation.getReservationDate().toOffsetDateTime())
+                .companyLogo(ImageMapper.byteImageToBase64(reservation.getCompanyOffer().getCompany().getLogo()))
+                .build();
+    }
+
 
 }

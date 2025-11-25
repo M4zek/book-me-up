@@ -16,7 +16,7 @@ public class Reservation extends BaseEntity {
     private String reservationNumber;
 
     @Enumerated(EnumType.STRING)
-    private ReservationStatus reservationStatus;
+    private ReservationStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -38,7 +38,7 @@ public class Reservation extends BaseEntity {
         this.user = user;
         this.companyOffer = companyOffer;
         this.preferredUser = preferredUser;
-        this.reservationStatus = ReservationStatus.PENDING;
+        this.status = ReservationStatus.PENDING;
     }
 
 
@@ -61,7 +61,7 @@ public class Reservation extends BaseEntity {
     }
 
     public String getReservationStatus() {
-        return reservationStatus.name();
+        return status.name();
     }
 
     public User getUser() {

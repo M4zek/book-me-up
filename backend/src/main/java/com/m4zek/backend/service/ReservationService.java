@@ -9,11 +9,15 @@ import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.BookedCompanyHoursResponse;
 import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
 import com.m4zek.backend.model.dto.read.ReservationResponse;
+import com.m4zek.backend.model.dto.read.UserReservationResponse;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -39,6 +43,25 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
         this.companyOfferRepository = companyOfferRepository;
         this.userRepository = userRepository;
+    }
+
+    public Page<UserReservationResponse> getUserReservations(Pageable pageable, int userId, String status, String name) {
+        try{
+            Page<Reservation> userReservations = null;
+            if(status != null) {
+                ReservationStatus reservationStatus = ReservationStatus.valueOf(status.toUpperCase());
+                userReservations = this.reservationRepository.findAllByUserIdAndStatus(userId, reservationStatus , name, pageable);
+            } else {
+                userReservations = this.reservationRepository.findAllByUserId(userId, pageable, name);
+            }
+
+            List<UserReservationResponse> userReservationResponses = userReservations.stream()
+                    .map(ReservationMapper::reservationToUserReservationResponse).toList();
+
+            return new PageImpl<>(userReservationResponses, pageable, userReservations.getTotalElements());
+        } catch (IllegalArgumentException exception){
+            throw new ReservationBadRequestException("Wrong reservation status: " + status);
+        }
     }
 
 
