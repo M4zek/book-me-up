@@ -20,3 +20,10 @@ export interface Page<T> {
         totalPages: number;
     };
 }
+
+export interface UserReservationSearch {
+    user_id: number;
+    sort: string | undefined;
+    status: string | undefined;
+    offerName: string | undefined;
+}

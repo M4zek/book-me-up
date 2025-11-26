@@ -1,22 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {SearchAndSortBarComponent, SortBy} from "../../components/search-bar/search-and-sort-bar.component";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {Address} from "../../model/gui/gui.model";
+import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 import {AddOpinionModalComponent} from "../../components/modals/add-opinion-modal/add-opinion-modal.component";
+import {UserReservationResponse} from "../../model/response/reservation-response.model";
+import {ReservationService} from "../../service/reservation.service";
+import {Pagination, UserReservationSearch} from "../../model/search/search.model";
+import {UserContextService} from "../../service/user-context.service";
+import {concatMap} from "rxjs";
+import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
 
-// Temporary interface
-export interface UserAppointmentItem{
-  id: number;
-  companyName: string;
-  companyLogo: string;
-  status: string;
-  address: Address;
-  date: Date;
-  offerName: string;
-  price: number;
-}
 
 export interface Status{
   status: string;
@@ -31,76 +25,133 @@ export interface Status{
         NgForOf,
         NgClass,
         NgIf,
-        AddOpinionModalComponent
+        AddOpinionModalComponent,
+        DatePipe,
+        DoubleSpinnerComponent
     ],
   templateUrl: './user-appointments-page.component.html',
   styleUrl: './user-appointments-page.component.css'
 })
 export class UserAppointmentsPageComponent implements OnInit {
 
-  ngOnInit(): void {
-      this.createList(10)
-  }
-
-  tmpList:Status [] = []
-
-  isAddModalOpen = false;
+  statusList:Status [] = [
+      {status: 'PENDING', image: 'icons/pending_icon.svg'},
+      {status: 'ACCEPTED', image: 'icons/accepted_icon.svg'},
+      {status: 'COMPLETED', image: 'icons/realized_icon.svg'},
+      {status: 'CANCELLED', image: 'icons/canceled_icon.svg'},
+      {status: 'REJECTED', image: 'icons/reject_icon.svg'},
+  ]
 
   filterByItems: DropDownListItem[] = [
-    { content: 'Pending', image:'icons/pending_icon.svg' },
-    { content: 'Realized', image:'icons/realized_icon.svg' },
-    { content: 'Rejected', image:'icons/reject_icon.svg' },
-    { content: 'Canceled', image:'icons/canceled_icon.svg' },
-    { content: 'Accepted', image:'icons/accepted_icon.svg' },
+      { content: 'Pending', image:'icons/pending_icon.svg' },
+      { content: 'Completed', image:'icons/realized_icon.svg' },
+      { content: 'Rejected', image:'icons/reject_icon.svg' },
+      { content: 'Cancelled', image:'icons/canceled_icon.svg' },
+      { content: 'Accepted', image:'icons/accepted_icon.svg' },
   ]
 
   sortByItems: DropDownListItem[] = [
-    {content: 'Date', image: 'icons/sort_number_asc_icon.svg', option: 'asc'},
-    {content: 'Date', image: 'icons/sort_number_desc_icon.svg', option: 'desc'},
-    {content: 'Price', image: 'icons/sort_number_asc_icon.svg', option: 'asc'},
-    {content: 'Price', image: 'icons/sort_number_desc_icon.svg', option: 'desc'}
+      {content: 'Reservation date', image: 'icons/sort_number_asc_icon.svg', option: 'reservationDate,asc'},
+      {content: 'Reservation date', image: 'icons/sort_number_desc_icon.svg', option: 'reservationDate,desc'},
   ]
 
-  status: Status[] = [
-    { status: 'Pending', image: 'icons/pending_icon.svg'},
-    {status: 'Accepted', image: 'icons/accepted_icon.svg'},
-    {status: 'Realized', image: 'icons/realized_icon.svg'},
-    {status: 'Canceled', image: 'icons/canceled_icon.svg'},
-    {status: 'Rejected', image: 'icons/reject_icon.svg'},
-  ]
+  pagination: Pagination = {
+      totalItems: 0,
+      itemsPerPage: 5,
+      currentPage: 0,
+      itemsPerPageOptions: [5, 10, 15, 25, 30]
+  }
 
-  getRandomStatus(){
-    return this.status[Math.floor(Math.random() * this.status.length)];
+  reservationSearch: UserReservationSearch = {
+      user_id: 0,
+      sort: 'None',
+      status: 'None',
+      offerName: '',
+  }
+
+  isReservationLoading = false;
+  isAddModalOpen = false;
+
+  reservationList: UserReservationResponse[] = []
+
+
+  constructor(private reservationService: ReservationService, private userContextService: UserContextService) {
+  }
+
+  ngOnInit(): void {
+    this.isReservationLoading = true;
+    this.userContextService.getUserData().pipe(
+        concatMap(res  => {
+            this.reservationSearch.user_id = res.id;
+            return this.reservationService.readUserReservations(this.pagination, this.reservationSearch);
+        })
+    ).subscribe(response => {
+        if(response.status == 200 && response.body){
+            this.reservationList = response.body.content
+            this.pagination.currentPage = response.body.page.number;
+            this.pagination.totalItems = response.body.page.totalElements;
+        }
+        this.isReservationLoading = false;
+    })
+  }
+
+  protected readReservationsFromApi(): void {
+      this.reservationList = []
+      this.isReservationLoading = true;
+      this.reservationService.readUserReservations(this.pagination, this.reservationSearch)
+            .subscribe(response => {
+                    if(response.status == 200 && response.body){
+                        this.reservationList = response.body.content
+                        this.pagination.currentPage = response.body.page.number;
+                        this.pagination.totalItems = response.body.page.totalElements;
+                    }
+                    this.isReservationLoading = false;
+            })
   }
 
 
-  createList(max: number){
-    for (let i = 0; i < max; i++) {
-      this.tmpList.push(this.getRandomStatus());
-    }
+  getImage(status: string): string {
+      return this.statusList.find(s => s.status === status)?.image || '';
   }
 
-  cancelReservation() {
-
+  cancelReservation(item: UserReservationResponse) {
+        this.reservationService.cancelUserReservation(item.id).subscribe(response => {
+            if(response.status == 200 && response.body) {
+                this.reservationList = this.reservationList.map(item => {
+                    return item.id === response.body?.id ? response.body : item;
+                })
+            }
+        })
   }
 
   onFilterChange($event: string) {
-    console.log($event);
+    this.reservationSearch.status = $event;
+    this.readReservationsFromApi();
   }
 
   onSortChange($event: SortBy) {
-    console.log($event);
+    this.reservationSearch.sort = $event.sorting;
+    this.readReservationsFromApi();
   }
 
   onSearchChanged($event: string) {
-    console.log($event);
+      this.reservationSearch.offerName = $event;
+      this.readReservationsFromApi();
   }
 
-  openAddOpinionModal() {
+  openAddOpinionModal(item: UserReservationResponse) {
     this.isAddModalOpen = true;
   }
 
   onAddOpinionModalClose() {
     this.isAddModalOpen = false;
+  }
+
+  protected onPaginatorChanged() {
+      this.readReservationsFromApi();
+  }
+
+  protected isCancelAvailable(status: string) {
+      return !(status.toLowerCase() == 'cancelled' || status.toLowerCase() == 'completed' || status.toLowerCase() == 'rejected');
   }
 }
