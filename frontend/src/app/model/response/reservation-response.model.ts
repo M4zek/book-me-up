@@ -30,7 +30,7 @@ export interface UserReservationResponse {
     reservationNumber: string;
     status: string;
     address: AddressResponse;
-    offerName: string;
-    offerPrice: number;
+    offer: CompanyOffersResponse;
+    hasUserRatedOffer: boolean;
     companyLogo: string;
 }
