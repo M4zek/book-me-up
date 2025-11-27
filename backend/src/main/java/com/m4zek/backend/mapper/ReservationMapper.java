@@ -1,6 +1,7 @@
 package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.model.Reservation;
+import com.m4zek.backend.model.ReservationStatus;
 import com.m4zek.backend.model.dto.read.*;
 
 public class ReservationMapper {
@@ -43,11 +44,17 @@ public class ReservationMapper {
                 .companyName(reservation.getCompanyOffer().getCompany().getName())
                 .reservationNumber(reservation.getReservationNumber())
                 .address(AddressMapper.addressToAddressResponse(reservation.getCompanyOffer().getCompany().getAddress()))
-                .offerName(reservation.getCompanyOffer().getName())
-                .offerPrice(reservation.getCompanyOffer().getPrice())
+                .offer(CompanyOfferMapper.companyOfferToCompanyOfferResponse(reservation.getCompanyOffer()))
                 .status(reservation.getReservationStatus())
                 .reservationDate(reservation.getReservationDate().toOffsetDateTime())
                 .companyLogo(ImageMapper.byteImageToBase64(reservation.getCompanyOffer().getCompany().getLogo()))
+                .hasUserRatedOffer(
+                        //If the reservation has a status other than COMPLETED, the user could not add a rating.
+                        // If it is completed, it checks whether the user has added a review.
+                        reservation.getReservationStatus().equals(ReservationStatus.COMPLETED.name()) &&
+                                reservation.getCompanyOffer().getReviews().stream()
+                                        .anyMatch(review -> review.getUser().getId() == reservation.getUser().getId())
+                )
                 .build();
     }
 

@@ -18,10 +18,9 @@ public class UserReservationResponse {
     private String companyName;
     private String reservationNumber;
     private AddressResponse address;
-    private String offerName;
-    private double offerPrice;
+    private CompanyOfferResponse offer;
     private String status;
     private OffsetDateTime reservationDate;
     private String companyLogo;
-
+    private boolean hasUserRatedOffer;
 }
