@@ -108,7 +108,18 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ReservationBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleReservationExists(ReservationBadRequestException e, WebRequest request) {
+    public ErrorMessage handleReservationBadRequest(ReservationBadRequestException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ExceptionHandler(ReviewBadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleReviewBadRequest(ReviewBadRequestException e, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),

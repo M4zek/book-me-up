@@ -1,7 +1,10 @@
 package com.m4zek.backend.mapper;
 
+import com.m4zek.backend.model.Review;
 import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
+import com.m4zek.backend.model.dto.read.UserReviewResponse;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,5 +35,19 @@ public class ReviewMapper {
                 .ratingCounts(ratingCounts)
                 .build();
     }
+
+    public static UserReviewResponse reviewsToUserReviewResponse(Review review) {
+        return UserReviewResponse.builder()
+                .id(review.getId())
+                .comment(review.getComment())
+                .rating(review.getRating())
+                .created_at(review.getCreatedDate().atZone(ZoneId.of("Europe/Warsaw")).toOffsetDateTime())
+                .updated_at(review.getModifiedDate().atZone(ZoneId.of("Europe/Warsaw")).toOffsetDateTime())
+                .author(UserMapper.toUserResponse(review.getUser()))
+                .offer(CompanyOfferMapper.companyOfferToCompanyOfferResponse(review.getCompanyOffer()))
+                .build();
+    }
+
+
 
 }

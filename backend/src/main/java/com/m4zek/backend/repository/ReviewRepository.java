@@ -2,6 +2,8 @@ package com.m4zek.backend.repository;
 
 import com.m4zek.backend.model.Review;
 import com.m4zek.backend.model.projection.ReviewStatisticsProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,8 +14,6 @@ public interface ReviewRepository {
     boolean existsByUserIdAndCompanyOfferId(int userId, long companyOfferId);
 
     Review save(Review newReview);
-
-    List<Review> readAllByCompanyOfferId(long companyOfferId);
 
     @Query("""
         SELECT DISTINCT new com.m4zek.backend.model.projection.ReviewStatisticsProjection(
@@ -33,4 +33,12 @@ public interface ReviewRepository {
         GROUP BY r.rating
     """)
     List<Object[]> findAllByCompanyId(@Param("companyId") int companyId);
+
+
+    @Query("""
+        SELECT r from reviews r
+        JOIN r.companyOffer o
+        WHERE o.company.id = :companyId
+        """)
+    Page<Review> findAllByCompanyId(@Param("companyId") int companyId, Pageable pageable);
 }

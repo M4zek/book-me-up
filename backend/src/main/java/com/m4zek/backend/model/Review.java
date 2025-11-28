@@ -1,7 +1,6 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.dto.read.ReviewResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -38,14 +37,6 @@ public class Review extends BaseEntity{
         this.user = user;
     }
 
-    public ReviewResponse toReadModel() {
-        return ReviewResponse.builder()
-                .id(this.id)
-                .comment(this.comment)
-                .rating(this.rating)
-                .author_name(this.user.getUserData().getFirstName())
-                .build();
-    }
 
     //  METHODS
 
