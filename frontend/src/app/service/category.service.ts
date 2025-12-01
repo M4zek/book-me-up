@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Page, Pagination} from "../model/search/search.model";
-import {CategoryResponse} from "../model/response/company-response.model";
+import {CategoryResponse} from "../model/http/company.model";
 
 @Injectable({
   providedIn: 'root'

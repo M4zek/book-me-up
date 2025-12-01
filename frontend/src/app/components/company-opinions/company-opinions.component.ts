@@ -3,7 +3,7 @@ import {RatingStarsComponent} from "./rating-stars/rating-stars.component";
 import {DecimalPipe, KeyValuePipe, NgForOf} from "@angular/common";
 import {UserOpinionsListComponent} from "./user-opinions-list/user-opinions-list.component";
 import {RatingBarComponent} from "./rating-bar/rating-bar.component";
-import {CompanyReviewStatistics} from "../../model/response/company-response.model";
+import {CompanyReviewStatistics} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-company-opinions',

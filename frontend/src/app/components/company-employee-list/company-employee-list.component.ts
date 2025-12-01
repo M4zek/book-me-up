@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
-import {EmployeeSummaryResponse} from "../../model/response/company-response.model";
+import {EmployeeSummaryResponse} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-company-employee-list',

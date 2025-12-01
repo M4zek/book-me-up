@@ -3,7 +3,7 @@ import {CompanyListItemComponent} from "../company-list-item.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {Router} from "@angular/router";
-import {CompanySummaryResponse} from "../../../model/response/company-response.model";
+import {CompanySummaryResponse} from "../../../model/http/company.model";
 import {UserContextService} from "../../../service/user-context.service";
 import {take} from "rxjs";
 

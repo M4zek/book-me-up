@@ -5,7 +5,7 @@ import {
     CompanyDetailsResponse, CompanyHours,
     CompanyOffersResponse, CompanyPortfolioResponse,
     CompanySummaryResponse, EmployeeSummaryResponse
-} from "../model/response/company-response.model";
+} from "../model/http/company.model";
 
 @Injectable({
   providedIn: 'root'

@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {OfferItemComponent} from "./offer-item/offer-item.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CompanyOffersResponse} from "../../model/response/company-response.model";
+import {CompanyOffersResponse} from "../../model/http/company.model";
 import {AuthModalComponent} from "../modals/auth-modal/auth-modal.component";
 import {ReservationModalComponent} from "../modals/reservation-modal/reservation-modal.component";
 import {UserContextService} from "../../service/user-context.service";

@@ -4,7 +4,7 @@ import {Pagination} from "../../../model/search/search.model";
 import {CompanyService} from "../../../service/company.service";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {NgIf} from "@angular/common";
-import {CompanySummaryResponse} from "../../../model/response/company-response.model";
+import {CompanySummaryResponse} from "../../../model/http/company.model";
 
 @Component({
   selector: 'app-welcome',

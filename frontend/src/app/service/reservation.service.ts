@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
-import {
-    ReservationAvailabilityResponse,
-    ReservationResponse,
-    UserReservationResponse
-} from "../model/response/reservation-response.model";
+
 import {Observable} from "rxjs";
 import {ReservationAvailability} from "../model/gui/gui.model";
-import {ReservationRequest} from "../model/request/reservation-request.model";
+import {
+    ReservationAvailabilityResponse,
+    ReservationRequest,
+    ReservationResponse, UserReservationResponse
+} from "../model/http/reservation.model";
 import {Page, Pagination, UserReservationSearch} from "../model/search/search.model";
 
 @Injectable({
@@ -16,7 +16,6 @@ import {Page, Pagination, UserReservationSearch} from "../model/search/search.mo
 export class ReservationService {
 
   constructor(private http: HttpClient) { }
-
 
   getAvailabilityCalendar(availability: ReservationAvailability): Observable<HttpResponse<ReservationAvailabilityResponse[]>> {
       let url = `/api/v1/companies/${availability.companyId}/reservations`;

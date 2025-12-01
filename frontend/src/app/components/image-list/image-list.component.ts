@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
-import {CompanyPortfolioResponse} from "../../model/response/company-response.model";
+import {CompanyPortfolioResponse} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-image-list',

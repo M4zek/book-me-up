@@ -1,7 +1,7 @@
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {catchError, Observable, switchMap, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
-import {RefreshTokenResponse} from "./model/auth/auth.model";
+import {RefreshTokenResponse} from "./model/http/auth.model";
 import {UserContextService} from "./service/user-context.service";
 import {AuthService} from "./service/auth.service";
 import {ToastService} from "./service/toast.service";

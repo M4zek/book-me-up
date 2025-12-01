@@ -1,22 +1,42 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="top">
-            <img [src]="'images/default_logo_company.png'" alt="logo">
-            <span>Company Name - Offer name</span>
+            <img [src]="'data:image/jpeg;base64,' + inputData?.companyLogo" alt="logo" *ngIf="inputData?.companyLogo"/>
+            <img [src]="'images/default_logo_company.png'" alt="logo" *ngIf="!inputData?.companyLogo"/>
+            <div class="name-cont">
+                <span>{{ inputData?.companyNameToReview }}</span>
+                <span>{{ inputData?.offerToReview?.name }}</span>
+            </div>
         </div>
-        <div class="rating-input">
-            <app-rating-stars
-                    (ratingChanged)="onRatingChange($event)"
-                    [isEditing]="true"/>
-        </div>
-        <div class="opinion-content">
+        <form [formGroup]="reviewForm">
+
+            <div class="rating-input"
+                [class.invalid]="reviewForm.controls.rating.invalid"
+                >
+
+                <app-rating-stars
+                        (ratingChanged)="onRatingChange($event)"
+                        [isEditing]="true"/>
+            </div>
+
+            <div class="opinion-content"
+                 [class.invalid]="reviewForm.controls.comment.invalid"
+            >
             <textarea
-                    maxlength="1024"
+                    formControlName="comment"
+                    [maxLength]="MAX_COMMENT_LENGTH"
                     placeholder="Write your opinion here..."></textarea>
-        </div>
+                <span class="length-textarea">
+                    {{reviewForm.controls.comment.value ? reviewForm.controls.comment.value.length : '0'}} / {{MAX_COMMENT_LENGTH}}
+                </span>
+            </div>
+        </form>
+
         <div class="button"
+             [class.disabled]="reviewForm.invalid"
             (click)="confirm()">
             <span>Confirm</span>
+
         </div>
     </div>
 </div>

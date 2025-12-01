@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, filter, map, Observable} from "rxjs";
-import {UserContextModel, UserContextWrapper} from "../model/auth/auth.model";
+import {UserContextModel, UserContextWrapper} from "../model/http/auth.model";
 import {Router} from "@angular/router";
-import {UserResponse} from "../model/response/user-response.model";
+import {UserResponse} from "../model/http/user.model";
 
 @Injectable({
   providedIn: 'root'

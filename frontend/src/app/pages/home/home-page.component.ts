@@ -4,8 +4,8 @@ import {Router, RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {DropDownListComponent, DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
 import {CategoryService} from "../../service/category.service";
-import {ErrorMessage} from "../../model/response/error-response.model";
-import {CategoryResponse} from "../../model/response/company-response.model";
+import {ErrorMessage} from "../../model/http/error.model";
+import {CategoryResponse} from "../../model/http/company.model";
 import {UserContextService} from "../../service/user-context.service";
 import {SearchCompanyOptions} from "../../model/search/search.model";
 

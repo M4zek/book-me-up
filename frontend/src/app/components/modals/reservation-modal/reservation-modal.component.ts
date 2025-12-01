@@ -3,13 +3,12 @@ import {NgIf} from "@angular/common";
 import {DateReservationPickerComponent} from "../../date-reservation-picker/date-reservation-picker.component";
 import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
 import {FormsModule} from "@angular/forms";
-import {CompanyOffersResponse, EmployeeSummaryResponse} from "../../../model/response/company-response.model";
-import {UserResponse} from "../../../model/response/user-response.model";
+import {CompanyOffersResponse, EmployeeSummaryResponse} from "../../../model/http/company.model";
+import {UserResponse} from "../../../model/http/user.model";
 import {UserContextService} from "../../../service/user-context.service";
 import {CompanyService} from "../../../service/company.service";
 import {ReservationService} from "../../../service/reservation.service";
-import {ReservationRequest} from "../../../model/request/reservation-request.model";
-import {ReservationResponse} from "../../../model/response/reservation-response.model";
+import {ReservationRequest, ReservationResponse} from "../../../model/http/reservation.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {ToastService} from "../../../service/toast.service";
 

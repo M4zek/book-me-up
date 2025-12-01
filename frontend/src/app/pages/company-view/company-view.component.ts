@@ -14,7 +14,7 @@ import {
     CompanyDetailsResponse,
     CompanyOffersResponse,
     CompanyPortfolioResponse
-} from "../../model/response/company-response.model";
+} from "../../model/http/company.model";
 import {Pagination} from "../../model/search/search.model";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 

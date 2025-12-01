@@ -6,7 +6,7 @@ import {Pagination, SearchCompanyOptions} from "../../../model/search/search.mod
 import {Subject, takeUntil} from "rxjs";
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
 import {CompanyService} from "../../../service/company.service";
-import {CompanySummaryResponse} from "../../../model/response/company-response.model";
+import {CompanySummaryResponse} from "../../../model/http/company.model";
 import {NgForOf, NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {UserContextService} from "../../../service/user-context.service";

@@ -3,13 +3,16 @@ import {SearchAndSortBarComponent, SortBy} from "../../components/search-bar/sea
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {DropDownListItem} from "../../components/drop-down-list/drop-down-list.component";
-import {AddOpinionModalComponent} from "../../components/modals/add-opinion-modal/add-opinion-modal.component";
-import {UserReservationResponse} from "../../model/response/reservation-response.model";
+import {
+    AddOpinionModalComponent,
+    OpinionModalInput
+} from "../../components/modals/add-opinion-modal/add-opinion-modal.component";
 import {ReservationService} from "../../service/reservation.service";
 import {Pagination, UserReservationSearch} from "../../model/search/search.model";
 import {UserContextService} from "../../service/user-context.service";
 import {concatMap} from "rxjs";
 import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
+import {UserReservationResponse} from "../../model/http/reservation.model";
 
 
 export interface Status{
@@ -74,6 +77,7 @@ export class UserAppointmentsPageComponent implements OnInit {
 
   reservationList: UserReservationResponse[] = []
 
+  opinionModalInput: OpinionModalInput | null = null;
 
   constructor(private reservationService: ReservationService, private userContextService: UserContextService) {
   }
@@ -140,11 +144,25 @@ export class UserAppointmentsPageComponent implements OnInit {
   }
 
   openAddOpinionModal(item: UserReservationResponse) {
-    this.isAddModalOpen = true;
+      if(!item.hasUserRatedOffer && item.status.toLowerCase() === 'completed'){
+          this.opinionModalInput = {
+              offerToReview: item.offer,
+              companyNameToReview: item.companyName,
+              companyLogo: item.companyLogo,
+          }
+          this.isAddModalOpen = true;
+      }
   }
 
-  onAddOpinionModalClose() {
+  onAddOpinionModalClose($event: boolean) {
+    console.log($event);
+
+    if($event) {
+        this.readReservationsFromApi();
+    }
+
     this.isAddModalOpen = false;
+    this.opinionModalInput = null;
   }
 
   protected onPaginatorChanged() {

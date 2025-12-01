@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
-import {CompanyOffersResponse} from "../../../model/response/company-response.model";
+import {CompanyOffersResponse} from "../../../model/http/company.model";
 
 @Component({
   selector: 'app-offer-item',

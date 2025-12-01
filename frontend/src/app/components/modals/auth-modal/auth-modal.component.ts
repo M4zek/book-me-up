@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgClass, NgIf} from "@angular/common";
-import {AuthRequest} from "../../../model/auth/auth.model";
+import {AuthRequest} from "../../../model/http/auth.model";
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "../../../service/auth.service";
 import {ToastService} from "../../../service/toast.service";

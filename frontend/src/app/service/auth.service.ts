@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {UserContextService} from "./user-context.service";
-import {AuthRequest, LoginWrapper, RefreshTokenResponse, UserContextModel} from "../model/auth/auth.model";
+import {AuthRequest, LoginWrapper, RefreshTokenResponse, UserContextModel} from "../model/http/auth.model";
 import {catchError, map, Observable, of} from "rxjs";
 
 @Injectable({

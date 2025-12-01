@@ -77,4 +77,7 @@
     <app-paginator [pagination]="pagination" (paginatorChanged)="onPaginatorChanged()"/>
 </div>
 
-<app-add-opinion-modal [isVisible]="isAddModalOpen" (closeModal)="onAddOpinionModalClose()"/>
+<app-add-opinion-modal
+        [inputData]="opinionModalInput"
+        [isVisible]="isAddModalOpen"
+        (closeModal)="onAddOpinionModalClose($event)"/>

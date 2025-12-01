@@ -5,7 +5,7 @@ import {CategoryService} from "../../service/category.service";
 import {Pagination, SearchCompanyOptions} from "../../model/search/search.model";
 import {PaginatorComponent} from "../paginator/paginator.component";
 import {interval, Subscription, take} from "rxjs";
-import {CategoryResponse} from "../../model/response/company-response.model";
+import {CategoryResponse} from "../../model/http/company.model";
 import {Router} from "@angular/router";
 import {UserContextService} from "../../service/user-context.service";
 

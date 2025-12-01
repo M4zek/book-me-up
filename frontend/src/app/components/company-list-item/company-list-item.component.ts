@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
-import {CompanySummaryResponse} from "../../model/response/company-response.model";
+import {CompanySummaryResponse} from "../../model/http/company.model";
 
 @Component({
     selector: 'app-company-list-item',

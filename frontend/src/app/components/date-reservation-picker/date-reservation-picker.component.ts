@@ -3,8 +3,8 @@ import {concatMap, throwError} from 'rxjs';
 import {CompanyService} from "../../service/company.service";
 import {ReservationService} from "../../service/reservation.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {CompanyHours} from "../../model/response/company-response.model";
-import {ReservationAvailabilityResponse} from "../../model/response/reservation-response.model";
+import {CompanyHours} from "../../model/http/company.model";
+import {ReservationAvailabilityResponse} from "../../model/http/reservation.model";
 
 
 interface DateModel {
