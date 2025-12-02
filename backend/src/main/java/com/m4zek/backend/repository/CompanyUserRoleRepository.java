@@ -14,4 +14,5 @@ public interface CompanyUserRoleRepository {
 
     List<CompanyUserRole> findAllByCompanyId(int userId);
 
+    List<CompanyUserRole> findAllByUserId(int userId);
 }

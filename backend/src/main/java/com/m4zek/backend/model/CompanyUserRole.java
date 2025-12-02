@@ -36,5 +36,7 @@ public class CompanyUserRole {
     public User getUsers() {
         return this.user;
     }
+
+    public Company getCompany() {return this.company;}
 }
 

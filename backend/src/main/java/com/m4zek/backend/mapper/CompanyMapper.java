@@ -4,7 +4,10 @@ import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
 import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
+import com.m4zek.backend.model.dto.read.UserCompanyResponse;
 import com.m4zek.backend.model.projection.ReviewStatisticsProjection;
+
+import java.util.List;
 
 public class CompanyMapper {
 
@@ -45,4 +48,12 @@ public class CompanyMapper {
     }
 
 
+    public static UserCompanyResponse companyToUserCompanyResponse(Company company, List<String> roles) {
+        return UserCompanyResponse.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .logo(ImageMapper.byteImageToBase64(company.getLogo()))
+                .role(roles)
+                .build();
+    }
 }
