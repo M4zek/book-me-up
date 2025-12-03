@@ -68,3 +68,10 @@ export interface CompanyPortfolioResponse{
     downloadUrl: string,
     image: string,
 }
+
+export interface UserCompanyResponse{
+    id: number,
+    name: string,
+    logo: string,
+    roles: string[],
+}

@@ -2,9 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
-    CompanyDetailsResponse, CompanyHours,
-    CompanyOffersResponse, CompanyPortfolioResponse,
-    CompanySummaryResponse, EmployeeSummaryResponse
+    CompanyDetailsResponse,
+    CompanyHours,
+    CompanyOffersResponse,
+    CompanyPortfolioResponse,
+    CompanySummaryResponse,
+    EmployeeSummaryResponse,
+    UserCompanyResponse
 } from "../model/http/company.model";
 
 @Injectable({
@@ -80,4 +84,9 @@ export class CompanyService {
       const url = `/api/v1/companies/${companyId}/hours`;
       return this.http.get<CompanyHours[]>(url, {observe: 'response'});
     }
+
+  getUserCompanies(){
+      const request_url = `/api/v1/users/me/companies`;
+      return this.http.get<UserCompanyResponse[]>(request_url, {observe: 'response'});
+  }
 }
