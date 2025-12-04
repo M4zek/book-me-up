@@ -2,6 +2,7 @@ package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.model.User;
 import com.m4zek.backend.model.UserData;
+import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
 import com.m4zek.backend.security.service.MyUserDetails;
@@ -24,6 +25,20 @@ public class UserMapper {
                 .lastName(userData.getLastName())
                 .avatar(ImageMapper.byteImageToBase64(userData.getPhoto()))
                 .build();
+    }
+
+    public static EmployeeDetailsResponse toEmployeeDetailsResponse(User user, String role) {
+        UserData userData = user.getUserData();
+        return EmployeeDetailsResponse.builder()
+                .id(user.getId())
+                .email(user.getAddressEmail())
+                .firstName(userData.getFirstName())
+                .lastName(userData.getLastName())
+                .phone(userData.getPhoneNumber())
+                .role_in_company(role)
+                .avatar(ImageMapper.byteImageToBase64(userData.getPhoto()))
+                .build();
+
     }
 
 

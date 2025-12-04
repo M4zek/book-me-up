@@ -7,10 +7,7 @@ import com.m4zek.backend.mapper.CompanyMapper;
 import com.m4zek.backend.mapper.ReviewMapper;
 import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
-import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
-import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
-import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
-import com.m4zek.backend.model.dto.read.ReviewStatisticsResponse;
+import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
 import com.m4zek.backend.repository.*;
 import org.springframework.data.domain.Page;
@@ -29,16 +26,18 @@ public class CompanyService {
     private final CompanyRoleRepository companyRoleRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final CompanyUserRoleRepository companyUserRoleRepository;
 
     public CompanyService(CompanyRepository companyRepository,
                           CategoryRepository categoryRepository,
                           CompanyRoleRepository companyRoleRepository,
-                          UserRepository userRepository, ReviewRepository reviewRepository) {
+                          UserRepository userRepository, ReviewRepository reviewRepository, CompanyUserRoleRepository companyUserRoleRepository) {
         this.companyRepository = companyRepository;
         this.categoryRepository = categoryRepository;
         this.companyRoleRepository = companyRoleRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.companyUserRoleRepository = companyUserRoleRepository;
     }
 
     public CompanyDetailsResponse saveCompany(CompanyRequest companyRequest) {
@@ -114,6 +113,18 @@ public class CompanyService {
                 .map(
                         item -> UserMapper.toEmployeeSummaryResponse(item.getUsers())
                 ).toList();
+    }
+
+    public Page<EmployeeDetailsResponse> findEmployeesDetailsByCompanyId(int companyId, Pageable pageable) {
+        Page<CompanyUserRole> companyUserRoles = this.companyUserRoleRepository.findAllByCompanyId(companyId, pageable);
+        List<EmployeeDetailsResponse> responseList = companyUserRoles.stream()
+                .map(userRole ->
+                        UserMapper.toEmployeeDetailsResponse(
+                            userRole.getUsers(),
+                            userRole.getRole().getName())
+                )
+                .toList();
+        return new PageImpl<>(responseList, pageable, companyUserRoles.getTotalElements());
     }
 
 

@@ -2,6 +2,7 @@ package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
+import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
 import com.m4zek.backend.service.CompanyService;
@@ -49,6 +50,14 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.findEmployeesByCompanyId(company_id));
     }
 
+    @GetMapping("/v1/companies/{company_id}/employees/details")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<Page<EmployeeDetailsResponse>> findEmployeesDetailsByCompanyId(
+            @Positive(message = "Company id must be positive number") @PathVariable int company_id,
+            Pageable pageable
+    ){
+        return ResponseEntity.ok(this.companyService.findEmployeesDetailsByCompanyId(company_id, pageable));
+    }
 
     // --------------- PUBLIC ENDPOINTS ---------------
 
