@@ -73,5 +73,5 @@ export interface UserCompanyResponse{
     id: number,
     name: string,
     logo: string,
-    roles: string[],
+    role: string[],
 }

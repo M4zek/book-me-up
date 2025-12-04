@@ -1,3 +1,5 @@
+import {CompanyHours, CompanyReviewStatistics} from "../http/company.model";
+
 export interface Address{
     city: string;
     street: string;
@@ -57,4 +59,15 @@ export interface ReservationAvailability {
     companyId: number;
     fromDate: Date;
     toDate: Date;
+}
+
+
+export interface CompanyHomeManagementModel {
+    id: number;
+    description: string;
+    portfolio: PortfolioModel[];
+    name_logo: CompanyNameAndLogo;
+    address: Address;
+    hours: CompanyHours[];
+    opinions: CompanyReviewStatistics;
 }

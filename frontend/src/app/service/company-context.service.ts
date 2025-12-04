@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {UserCompanyResponse} from "../model/http/company.model";
-import { BehaviorSubject } from "rxjs";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +17,16 @@ export class CompanyContextService {
     }
 
     get roles(): string[] {
-        return this.currentCompanySubject.value?.roles ?? [];
+        return this.currentCompanySubject.value?.role ?? [];
     }
 
     hasRole(role: string): boolean {
         return this.roles.includes(role);
     }
 
+    hasAnyRole(...roles: string[]): boolean {
+        return roles.some(r => this.roles.includes(r));
+    }
 
     getCompany(){
         return this.currentCompanySubject.value;

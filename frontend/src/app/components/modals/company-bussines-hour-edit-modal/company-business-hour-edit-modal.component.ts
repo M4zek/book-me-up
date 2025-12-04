@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
+import {CompanyHours} from "../../../model/http/company.model";
 
 @Component({
   selector: 'app-company-business-hour-edit-modal',
@@ -17,27 +18,26 @@ export class CompanyBusinessHourEditModalComponent {
   @Input() isVisible = false;
   @Output() closeModal = new EventEmitter<void>();
 
-  @Input() days = [
-    { name: 'Monday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Tuesday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Wednesday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Thursday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Friday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Saturday', openHour: 10, openMinute: 0, closeHour: 12, closeMinute: 0, closed: false },
-    { name: 'Sunday', openHour: 0, openMinute: 0, closeHour: 0, closeMinute: 0, closed: true },
-  ];
+    @Input() days: CompanyHours[] = [];
 
-  adjustTime(day: any, field: string, delta: number) {
-    day[field] += delta;
+    adjustTime(companyHours: CompanyHours, field: 'openTime' | 'closeTime', part: 'hour' | 'minute', delta: number) {
+        const [hourStr, minuteStr] = companyHours[field].split(':');
+        let hour = Number(hourStr);
+        let minute = Number(minuteStr);
 
-    if (field.includes('Hour')) {
-      if (day[field] > 23) day[field] = 0;
-      if (day[field] < 0) day[field] = 23;
-    } else {
-      if (day[field] >= 60) day[field] = 0;
-      if (day[field] < 0) day[field] = 55;
+        if (part === 'hour') {
+            hour += delta;
+            if (hour > 23) hour = 0;
+            if (hour < 0) hour = 23;
+        } else {
+            minute += delta;
+            if (minute >= 60) minute = 0;
+            if (minute < 0) minute = 55;
+        }
+
+        companyHours[field] =
+            `${hour.toString().padStart(2,'0')}:${minute.toString().padStart(2,'0')}`;
     }
-  }
 
   close() {
     this.closeModal.emit();

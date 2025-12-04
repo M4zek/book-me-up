@@ -1,93 +1,54 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CompanyOpinionsComponent} from "../../../components/company-opinions/company-opinions.component";
 import {
-  CompanyPortfolioListComponent
+    CompanyPortfolioListComponent
 } from "../../../components/company-portfolio-list/company-portfolio-list.component";
 import {MapComponent} from "../../../components/map/map.component";
 import {
-  CompanyBusinessHoursComponent
+    CompanyBusinessHoursComponent
 } from "../../../components/company-business-hours/company-business-hours.component";
 import {
-  CompanyDescriptionEditModalComponent
+    CompanyDescriptionEditModalComponent
 } from "../../../components/modals/company-description-edit-modal/company-description-edit-modal.component";
 import {
-  CompanyAddressEditModalComponent
+    CompanyAddressEditModalComponent
 } from "../../../components/modals/company-address-edit-modal/company-address-edit-modal.component";
-import {Address, CompanyNameAndLogo, PortfolioModel} from "../../../model/gui/gui.model";
+import {CompanyHomeManagementModel, PortfolioModel} from "../../../model/gui/gui.model";
 import {
-  CompanyNameLogoEditModalComponent
+    CompanyNameLogoEditModalComponent
 } from "../../../components/modals/company-name-logo-edit-modal/company-name-logo-edit-modal.component";
 import {
-  CompanyBusinessHourEditModalComponent
+    CompanyBusinessHourEditModalComponent
 } from "../../../components/modals/company-bussines-hour-edit-modal/company-business-hour-edit-modal.component";
 import {
-  CompanyPortfolioAddModalComponent
+    CompanyPortfolioAddModalComponent
 } from "../../../components/modals/company-portfolio-add-modal/company-portfolio-add-modal.component";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyDetailsResponse} from "../../../model/http/company.model";
+import {CompanyService} from "../../../service/company.service";
+import {concatMap} from "rxjs";
+import {NgIf} from "@angular/common";
+import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 
 @Component({
   selector: 'app-company-management-home',
-  imports: [
-    CompanyOpinionsComponent,
-    CompanyPortfolioListComponent,
-    MapComponent,
-    CompanyBusinessHoursComponent,
-    CompanyDescriptionEditModalComponent,
-    CompanyAddressEditModalComponent,
-    CompanyNameLogoEditModalComponent,
-    CompanyBusinessHourEditModalComponent,
-    CompanyPortfolioAddModalComponent
-  ],
+    imports: [
+        CompanyOpinionsComponent,
+        CompanyPortfolioListComponent,
+        MapComponent,
+        CompanyBusinessHoursComponent,
+        CompanyDescriptionEditModalComponent,
+        CompanyAddressEditModalComponent,
+        CompanyNameLogoEditModalComponent,
+        CompanyBusinessHourEditModalComponent,
+        CompanyPortfolioAddModalComponent,
+        NgIf,
+        DoubleSpinnerComponent
+    ],
   templateUrl: './company-management-home.component.html',
   styleUrl: './company-management-home.component.css'
 })
-export class CompanyManagementHomeComponent {
-  description: string =
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ' +
-      'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, ' +
-      'when an unknown printer took a galley of type and scrambled it to make a type specimen book. ' +
-      'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ' +
-      'It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, ' +
-      'and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.' +
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ' +
-      'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, ' +
-      'when an unknown printer took a galley of type and scrambled it to make a type specimen book. ' +
-      'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ' +
-      'It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, ' +
-      'and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.' +
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ' +
-      'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, ' +
-      'when an unknown printer took a galley of type and scrambled it to make a type specimen book. ' +
-      'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ' +
-      'It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, ' +
-      'and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.' +
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ' +
-      'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, ' +
-      'when an unknown printer took a galley of type and scrambled it to make a type specimen book. ' +
-      'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ' +
-      'It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, ' +
-      'and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
-
-
-  portfolioList: PortfolioModel[] = [
-    {
-      id: 0,
-      name: 'image_1',
-      photo: 'images/default_logo_company.png'
-    }
-  ];
-
-  companyNameLogo: CompanyNameAndLogo = {
-    logo: 'images/default_logo_company.png',
-    logoName: 'logo.png',
-    companyName: 'Best barber'
-  }
-
-  companyAddress: Address = {
-    city: 'Warszawa',
-    postalCode: '00-901',
-    street: 'Defilad',
-    buildingNumber: '1'
-  };
+export class CompanyManagementHomeComponent implements OnInit {
 
   openEditDescriptionModal: boolean = false;
   openEditAddressModal: boolean = false;
@@ -95,25 +56,78 @@ export class CompanyManagementHomeComponent {
   openEditLogoNameModal: boolean = false;
   openAddPortfolioModal: boolean = false;
 
+  isCompanyDataLoading: boolean = false;
+  isDataEditable: boolean = false;
+
+  companyPortfolioData: PortfolioModel[] = []
+  companyGUIData: CompanyHomeManagementModel | null = null;
+
+  constructor(private companyContextService: CompanyContextService,
+              private companyService: CompanyService) {}
+
+  ngOnInit() {
+      this.companyContextService.currentCompany$.subscribe(company => {
+          if(company) {
+              this.isCompanyDataLoading = true;
+              this.companyService.getCompanyPortfolioByCompanyId(company.id)
+                  .pipe(
+                      concatMap(result => {
+                          let tmpList: PortfolioModel[] = [];
+                          if(result.body?.content){
+                              result.body.content.forEach(element => {
+                                  tmpList.push({
+                                      id: element.id,
+                                      name: element.filename,
+                                      photo: element.image
+                                  })
+                              })
+                              this.companyPortfolioData = tmpList;
+                          }
+
+                          return this.companyService.getCompanyDetailById(company.id);
+                      })
+                  ).subscribe(result => {
+                      if(result.status == 200 && result.body) {
+                          this.companyGUIData = this.createGUIModel(result.body);
+                      }
+
+                      this.isCompanyDataLoading = false;
+                      this.isDataEditable = this.companyContextService.hasAnyRole("COMPANY_OWNER")
+              })
+          } else {
+              this.companyGUIData = null;
+          }
+      })
+  }
+
+  ngOnDestroy() {
+      this.companyGUIData = null;
+      this.companyPortfolioData = []
+  }
+
 
   openEditModal(modalName: string) {
-    switch (modalName) {
-      case 'editDescriptionModal':
-        this.openEditDescriptionModal = true;
-        break;
-      case 'editAddressModal':
-        this.openEditAddressModal = true;
-        break;
-      case 'editHoursModal':
-        this.openEditHoursModal = true;
-        break;
-      case 'editLogoNameModal':
-        this.openEditLogoNameModal = true;
-        break;
-       case 'addPortfolioModal':
-         this.openAddPortfolioModal = true;
-         break;
-    }
+      if (!this.companyContextService.hasRole("COMPANY_EMPLOYEE")){
+          switch (modalName) {
+              case 'editDescriptionModal':
+                  this.openEditDescriptionModal = true;
+                  break;
+              case 'editAddressModal':
+                  this.openEditAddressModal = true;
+                  break;
+              case 'editHoursModal':
+                  this.openEditHoursModal = true;
+                  break;
+              case 'editLogoNameModal':
+                  this.openEditLogoNameModal = true;
+                  break;
+              case 'addPortfolioModal':
+                  this.openAddPortfolioModal = true;
+                  break;
+          }
+      } else {
+          console.error("You dont have permission to edit company data!")
+      }
   }
 
 
@@ -137,4 +151,27 @@ export class CompanyManagementHomeComponent {
     }
   }
 
+  private createGUIModel(response: CompanyDetailsResponse): CompanyHomeManagementModel {
+      return {
+          id: response.id,
+          description: response.description,
+          portfolio: this.companyPortfolioData,
+          name_logo: {
+              logo: response.logo,
+              logoName: 'none',
+              companyName: response.name
+          },
+          address: {
+              city: response.address.city,
+              postalCode: response.address.postalCode,
+              street: response.address.street,
+              buildingNumber: response.address.buildingNumber
+          },
+          hours: response.companyHours,
+          opinions: response.reviewStatistics
+      }
+  }
+
+
 }
+
