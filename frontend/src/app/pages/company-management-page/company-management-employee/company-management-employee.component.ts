@@ -1,12 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
 import {Pagination} from "../../../model/search/search.model";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {DropDownListComponent, DropDownListItem} from "../../../components/drop-down-list/drop-down-list.component";
-import {HiredEmployeeData, HiredEmployeeRole} from "../../../model/gui/gui.model";
+import {HiredEmployeeRole} from "../../../model/gui/gui.model";
 import {
     CompanyAddEmployeeModalComponent
 } from "../../../components/modals/company-add-employee-modal/company-add-employee-modal.component";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyService} from "../../../service/company.service";
+import {CompanyEmployeeDetailsResponse} from "../../../model/http/company.model";
+import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 
 
 @Component({
@@ -15,7 +19,9 @@ import {
         PaginatorComponent,
         NgForOf,
         DropDownListComponent,
-        CompanyAddEmployeeModalComponent
+        CompanyAddEmployeeModalComponent,
+        DoubleSpinnerComponent,
+        NgIf
     ],
   templateUrl: './company-management-employee.component.html',
   styleUrl: './company-management-employee.component.css'
@@ -23,67 +29,60 @@ import {
 export class CompanyManagementEmployeeComponent implements OnInit {
 
   isAddEmployeeModalOpen = false;
+  isEmployeesLoading = false;
+  isDataEditable = false;
 
   roles: DropDownListItem[] = []
 
-
   pagination: Pagination = {
     totalItems: 50,
-    itemsPerPage: 10,
-    currentPage: 1,
+    itemsPerPage: 5,
+    currentPage: 0,
     itemsPerPageOptions: [5, 10, 25, 50, 100],
   }
 
-  users: HiredEmployeeData[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      role: 'Admin',
-      email: 'someemail@@gm.com',
-      phone: '+45 222-333-444',
-      photo: 'images/user_default_avatar.png'
-    },
-    {
-      id: 2,
-      name: 'John Doe',
-      role: 'Owner',
-      email: 'someemail@@gm.com',
-      phone: '+45 222-333-444',
-      photo: 'images/user_default_avatar.png'
-    }
-  ];
+  employeeList: CompanyEmployeeDetailsResponse[] = [];
+
+  constructor(private ctx: CompanyContextService, private companyService: CompanyService) {
+  }
 
   ngOnInit() {
-    this.roles = Object.values(HiredEmployeeRole).map(role => ({
-      content: role
+    this.roles = Object.values(HiredEmployeeRole).map((role, index) => ({
+        id: index + 1,
+        content: role
     }));
 
-    this.pagination.totalItems = this.users.length;
-
+    this.isDataEditable = this.ctx.isOwnerLoggedIn();
+    this.initEmployeeList();
   }
 
-  onPageChange(page: number) {
-    this.pagination.currentPage = page;
-    console.log(this.pagination);
-  }
 
-  onItemsPerPageChange(count: number) {
-    this.pagination.itemsPerPage = count;
-    this.pagination.currentPage = 1;
-    console.log(this.pagination);
 
-  }
+   protected getEmployeeRole(role: string) {
+    role = role.toLowerCase().replace("company_", '');
+    let found = this.roles.find(item => item.content.toLowerCase().includes(role));
 
-  getEmployeeRole(role: string) {
-    let found = this.roles.find(item => item.content === role);
     if (found) {
       return found;
-    } else {
-      found = {
-        content: '',
-      }
-      return found;
     }
+
+    return { id:-1, content: '' };
+  }
+
+  protected initEmployeeList() {
+      this.isEmployeesLoading = true;
+      this.ctx.currentCompany$.subscribe(company => {
+          if(company) {
+              this.companyService.getCompanyEmployeesDetails(company.id, this.pagination).subscribe(response => {
+                  if(response.status == 200 && response.body) {
+                      this.employeeList = response.body.content;
+                      this.pagination.currentPage = response.body.page.number;
+                      this.pagination.totalItems = response.body.page.totalElements;
+                  }
+              })
+          }
+          this.isEmployeesLoading = false;
+      })
   }
 
   fireEmployee(id: number) {
@@ -96,5 +95,14 @@ export class CompanyManagementEmployeeComponent implements OnInit {
 
   closeAddEmployeeModal() {
       this.isAddEmployeeModalOpen = false;
+  }
+
+  protected onPaginationChanged() {
+      this.initEmployeeList();
+  }
+
+  protected onRoleChanged($event: DropDownListItem) {
+      const role: string = $event.content;
+      console.log(role);
   }
 }

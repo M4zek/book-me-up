@@ -36,9 +36,9 @@ export interface HiredEmployeeData {
 }
 
 export enum HiredEmployeeRole{
-    admin = 'Admin',
     owner = 'Owner',
     employee = 'Employee',
+    manager = 'Manager'
 }
 
 export interface PortfolioModel {

@@ -32,4 +32,7 @@ export class CompanyContextService {
         return this.currentCompanySubject.value;
     }
 
+    isOwnerLoggedIn(){
+        return this.roles.includes("COMPANY_OWNER");
+    }
 }

@@ -24,7 +24,8 @@ export class DropDownListComponent implements OnChanges {
 
   @Output() valueChanged = new EventEmitter<DropDownListItem>();
   @Input() placeholder: string = 'Select option'
-
+  @Input() noneValue: boolean = true;
+  @Input() disabled: boolean = false;
   menuOpen: boolean = false;
 
   @Input() selectedOption: DropDownListItem = {id: -1, content: ''};
@@ -32,11 +33,19 @@ export class DropDownListComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['options']) {
-          const defaultOptions: DropDownListItem = {content: 'None'};
-          this.options = [defaultOptions, ...this.options].map((item: DropDownListItem, index: number) => ({
-              ...item,
-              id: item.id ?? index,
-          }));
+          if(this.noneValue) {
+              const defaultOptions: DropDownListItem = {content: 'None'};
+              this.options = [defaultOptions, ...this.options].map((item: DropDownListItem, index: number) => ({
+                  ...item,
+                  id: item.id ?? index,
+              }));
+          } else {
+              this.options = this.options.map((item: DropDownListItem, index: number) => ({
+                  ...item,
+                  id: item.id ?? index,
+              }));
+          }
+
       }
   }
 
@@ -46,6 +55,7 @@ export class DropDownListComponent implements OnChanges {
     } else {
       this.selectedOption = option;
     }
+
     this.valueChanged.emit(this.selectedOption);
     this.toggleMenu();
   }

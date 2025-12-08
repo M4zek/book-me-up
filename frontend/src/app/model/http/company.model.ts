@@ -75,3 +75,13 @@ export interface UserCompanyResponse{
     logo: string,
     role: string[],
 }
+
+export interface CompanyEmployeeDetailsResponse{
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string,
+    role_in_company: string,
+    avatar: string,
+}

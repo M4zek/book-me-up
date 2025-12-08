@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
-    CompanyDetailsResponse,
+    CompanyDetailsResponse, CompanyEmployeeDetailsResponse,
     CompanyHours,
     CompanyOffersResponse,
     CompanyPortfolioResponse,
@@ -89,4 +89,15 @@ export class CompanyService {
       const request_url = `/api/v1/users/me/companies`;
       return this.http.get<UserCompanyResponse[]>(request_url, {observe: 'response'});
   }
+
+    getCompanyEmployeesDetails(companyId: number, pagination: Pagination) {
+        const request_url = `/api/v1/companies/${companyId}/employees/details`;
+
+        let httpParams = new HttpParams()
+            .set('page', pagination.currentPage)
+            .set('size', pagination.itemsPerPage)
+
+        return this.http.get<Page<CompanyEmployeeDetailsResponse>>(request_url, {params: httpParams, observe: 'response'});
+    }
+
 }
