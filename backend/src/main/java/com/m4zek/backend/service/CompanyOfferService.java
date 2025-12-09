@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyOfferService {
@@ -50,6 +51,27 @@ public class CompanyOfferService {
         CompanyOffer newOffer = CompanyOfferMapper.companyOfferRequestToCompanyOffer(companyOfferRequest, company);
         CompanyOffer savedCompanyOffer = companyOfferRepository.save(newOffer);
         return CompanyOfferMapper.companyOfferToCompanyOfferResponse(savedCompanyOffer);
+    }
+
+    public Page<CompanyOfferResponse> searchCompanyOfferByName(int companyId, Pageable pageable, String name) {
+        Page<CompanyOffer> offers = this.companyOfferRepository.searchCompanyOffersByCompanyIdAndName(companyId, name, pageable);
+        List<CompanyOfferResponse> responses = offers.stream()
+                .map(CompanyOfferMapper::companyOfferToCompanyOfferResponse)
+                .toList();
+        return new PageImpl<>(responses, pageable, offers.getTotalElements());
+    }
+
+    public CompanyOfferResponse updateOffer(CompanyOfferRequest req, int offerId, int companyId) {
+        CompanyOffer offer = this.companyOfferRepository.findByIdAndCompanyId(offerId, companyId)
+                .orElseThrow(() -> new CompanyNotFoundException("Offer with id " + offerId + " not found"));
+
+        Optional.ofNullable(req.getName()).ifPresent(offer::setName);
+        Optional.ofNullable(req.getDescription()).ifPresent(offer::setDescription);
+        Optional.ofNullable(req.getPrice()).filter(p -> p != 0.0).ifPresent(offer::setPrice);
+        Optional.ofNullable(req.getDuration()).filter(d -> d != 0).ifPresent(offer::setDuration);
+
+        offer = this.companyOfferRepository.save(offer);
+        return CompanyOfferMapper.companyOfferToCompanyOfferResponse(offer);
     }
 
 

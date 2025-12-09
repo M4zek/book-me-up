@@ -75,4 +75,19 @@ public class CompanyOffer extends BaseEntity {
         return reservations;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 }
