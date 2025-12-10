@@ -44,7 +44,7 @@
         <span>Description</span>
     </div>
 
-    <div class="button-container">
+    <div class="button-container" *ngIf="isEditable">
         <div class="btn-container bg-white"
              *ngIf="!toEdit"
              [class.disabled]="!isOfferChanged()"
@@ -84,6 +84,5 @@
                 <p class="btn-text">Remove</p>
             </div>
         </div>
-
     </div>
 </div>

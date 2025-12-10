@@ -27,3 +27,9 @@ export interface UserReservationSearch {
     status: string | undefined;
     offerName: string | undefined;
 }
+
+export interface CompanyOfferSearch {
+    company_id: number;
+    name?: string;
+    sort?: string;
+}

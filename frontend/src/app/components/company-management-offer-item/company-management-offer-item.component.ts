@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {OfferManagementItem} from "../../model/gui/gui.model";
+import {CompanyOffersResponse} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-company-management-offer-item',
@@ -16,7 +17,7 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
 
   toEdit = true;
 
-  @Input() offer: OfferManagementItem = {
+  @Input() offer: CompanyOffersResponse = {
     id: 1,
     name: 'Man Haircut',
     description: 'Description',
@@ -31,6 +32,8 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
     price: 0,
     duration: 0,
   }
+
+  @Input() isEditable = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['offer']) {

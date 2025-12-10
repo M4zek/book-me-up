@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
+import {CompanyOfferSearch, Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
     CompanyDetailsResponse, CompanyEmployeeDetailsResponse,
     CompanyHours,
@@ -100,4 +100,22 @@ export class CompanyService {
         return this.http.get<Page<CompanyEmployeeDetailsResponse>>(request_url, {params: httpParams, observe: 'response'});
     }
 
+
+  searchCompanyOffers(search: CompanyOfferSearch, pagination: Pagination) {
+      let url = `/api/v1/company/${search.company_id}/offers`;
+
+      let httpParams = new HttpParams()
+          .set('page', pagination.currentPage)
+          .set('size', pagination.itemsPerPage)
+
+      Object.entries(search).forEach(([key, value]) => {
+          if (key === 'company_id') return;
+
+          if (value != null && value !== '') {
+              httpParams = httpParams.set(key, value);
+          }
+      });
+
+      return this.http.get<Page<CompanyOffersResponse>>(url, {params: httpParams, observe: 'response'});
+  }
 }
