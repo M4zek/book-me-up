@@ -65,10 +65,13 @@
                     </div>
                 </div>
             </div>
-            <div class="button-container" (click)="onSubmit(offerForm)">
-                <div class="btn-container">
+            <div class="button-container"
+                 (click)="onSubmit(offerForm)">
+                <div class="btn-container"
+                     (click)="createOffer()"
+                     [class.disabled]="offerForm.invalid">
                     <img [src]="'icons/confirm_icon.svg'" alt="search" />
-                    <div class="expand">
+                    <div class="expand" >
                         <p class="btn-text">Confirm</p>
                     </div>
                 </div>
@@ -81,6 +84,5 @@
                 </div>
             </div>
         </form>
-
     </div>
 </div>

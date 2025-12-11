@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {CompanyOfferSearch, Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
     CompanyDetailsResponse, CompanyEmployeeDetailsResponse,
-    CompanyHours,
+    CompanyHours, CompanyOfferRequest,
     CompanyOffersResponse,
     CompanyPortfolioResponse,
     CompanySummaryResponse,
@@ -118,4 +118,10 @@ export class CompanyService {
 
       return this.http.get<Page<CompanyOffersResponse>>(url, {params: httpParams, observe: 'response'});
   }
+
+  createNewCompanyOffer(body: CompanyOfferRequest, company_id: number){
+      let req_url = `/api/v1/company/${company_id}/offers`;
+      return this.http.post<CompanyOffersResponse>(req_url, body, {observe: 'response'});
+  }
+
 }

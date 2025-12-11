@@ -62,6 +62,13 @@ export interface CompanyOffersResponse{
     duration: number
 }
 
+export interface CompanyOfferRequest{
+    name?: string,
+    description?: string,
+    price?: number,
+    duration?: number
+}
+
 export interface CompanyPortfolioResponse{
     id: number,
     filename: string,

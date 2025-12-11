@@ -6,7 +6,9 @@
                     (searchChanged)="onSearchChange($event)"
                     (sortChanged)="onSortChange($event)"/>
         </div>
-        <div class="add-button-container" (click)="openAddModal()">
+        <div class="add-button-container"
+             *ngIf="this.isEditable"
+             (click)="openAddModal()">
             <img [src]="'icons/plus_icon.svg'" alt="add"/>
             <div class="expand">
                 <span>Add new offer</span>
