@@ -57,10 +57,10 @@ export class CompanyManagementOfferComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isEditable = this.ctx.hasAnyRole("COMPANY_OWNER", "COMPANY_MANAGER");
         this.ctx.currentCompany$.subscribe(company => {
             if(company){
                 this.searchValue = { company_id: company.id };
+                this.isEditable = this.ctx.hasAnyRole("COMPANY_OWNER", "COMPANY_MANAGER")
                 this.searchOffers();
             }
         })

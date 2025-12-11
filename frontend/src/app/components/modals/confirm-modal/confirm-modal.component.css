@@ -1,0 +1,85 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--dark);
+    border-radius: 8px;
+    width: 50%;
+    max-width: 500px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    flex-flow: column;
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-elem{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 10px 0 10px;
+}
+
+.title-elem > span{
+    font: bold 14px/1.5 "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.message-elem{
+    width: 100%;
+    padding: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.message-elem > span{
+    color: var(--white);
+    text-align: center;
+}
+
+.button-elem{
+    display: flex;
+    flex-flow: row;
+}
+
+.left-btn, .right-btn{
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid var(--white-10);
+    transition: all .3s ease-in-out;
+}
+
+.left-btn{
+    border-right: 1px solid var(--white-10);
+}
+
+.right-btn{
+    border-left: 1px solid var(--white-10);
+}
+
+.left-btn > span, .right-btn > span{
+    color: var(--white);
+    cursor: auto;
+    user-select: none;
+}
+
+.left-btn:hover,
+.right-btn:hover{
+    background-color: var(--white-10);
+}

@@ -3,6 +3,7 @@ import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {OfferManagementItem} from "../../model/gui/gui.model";
 import {CompanyOffersResponse} from "../../model/http/company.model";
+import {ConfirmService} from "../../service/confirm.service";
 
 @Component({
   selector: 'app-company-management-offer-item',
@@ -35,14 +36,19 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
 
   @Input() isEditable = false;
 
+  constructor(private confirm: ConfirmService) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['offer']) {
       this.changesOffer = {...this.offer};
     }
   }
 
-  removeOffer() {
-
+  async removeOffer(offer: CompanyOffersResponse) {
+        const result = await this.confirm.open(`Are you sure to archive "${offer.name}"?`);
+        if(result) {
+            console.log(result);
+        }
   }
 
   cancelEdit() {
@@ -54,8 +60,11 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
     this.toEdit = false;
   }
 
-  confirmChanges() {
-
+  async confirmChanges() {
+    const result = await this.confirm.open(`Are you sure to change information?`);
+    if(result) {
+        console.log("Changed data!");
+    }
   }
 
 
