@@ -29,7 +29,7 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/companies/{companyId}/reservations")
+    @GetMapping("/companies/{companyId}/reservations/busy")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<List<ReservationAvailabilityResponse>> readReservationAvailability(
             @PathVariable @Positive(message = "Company id must be positive number") int companyId,
@@ -39,6 +39,18 @@ public class ReservationController {
         return ResponseEntity.ok(this.reservationService.getCompanyReservationAvailability(companyId, fromDate, toDate));
     }
 
+    @GetMapping("/companies/{companyId}/reservations")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<Page<ReservationResponse>> getCompanyReservations(
+            @PathVariable @Positive(message = "Company id must be positive number") int companyId,
+            @RequestParam(required = false) @Size(min = 1, message = "Offer name cannot be empty string") String name,
+            @RequestParam(required = false) @Size(min = 1, message = "Status name cannot be empty string") String status,
+            @RequestParam(required = false) @Positive(message = "User id must be positive number") Integer userId,
+            Pageable pageable
+            )
+    {
+        return ResponseEntity.ok(this.reservationService.getAllCompanyReservations(companyId, name, status, userId, pageable));
+    }
 
     @PostMapping("/companies/reservations")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")

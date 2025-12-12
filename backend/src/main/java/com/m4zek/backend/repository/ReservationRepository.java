@@ -50,4 +50,13 @@ public interface ReservationRepository {
                                                @Param("name")  String name,
                                                Pageable pageable);
 
+
+    @Query("""
+        SELECT r from reservations r
+                WHERE (r.companyOffer.company.id = :companyId)
+                AND (:name IS NULL OR LOWER(r.companyOffer.name) LIKE LOWER(CONCAT('%', :name, '%')))
+                AND (:status IS NULL OR LOWER(r.status) LIKE LOWER(CONCAT('%', :status, '%')))
+                AND (:userId IS NULL OR r.preferredUser.id = :userId)
+        """)
+    Page<Reservation> findAllByCompanyId(int companyId, String name, String status, Integer userId, Pageable pageable);
 }

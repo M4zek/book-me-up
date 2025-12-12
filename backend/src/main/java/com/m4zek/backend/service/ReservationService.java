@@ -209,6 +209,16 @@ public class ReservationService {
     }
 
 
+    public Page<ReservationResponse> getAllCompanyReservations(int companyId, String name,  String status, Integer userId, Pageable pageable) {
+        Page<Reservation> reservationPages = this.reservationRepository.findAllByCompanyId(companyId, name, status, userId, pageable);
+
+        List<ReservationResponse> reservationList = reservationPages.stream()
+                .map(ReservationMapper::reserevationToReservationResponse)
+                .toList();
+
+        return new PageImpl<>(reservationList, pageable, reservationPages.getTotalElements());
+    }
+
     /*
         PRIVATE METHODS
      */
@@ -248,5 +258,4 @@ public class ReservationService {
                 userId,
                 companyOfferId);
     }
-
 }
