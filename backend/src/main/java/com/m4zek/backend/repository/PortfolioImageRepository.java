@@ -11,6 +11,7 @@ public interface PortfolioImageRepository {
 
     Page<PortfolioImage> findAllByCompany(Company company, Pageable pageable);
 
+    Optional<PortfolioImage> findByIdAndCompanyId(Integer imageId, Integer companyId);
     Optional<PortfolioImage> findById(int id);
 
     PortfolioImage save(PortfolioImage portfolioImage);

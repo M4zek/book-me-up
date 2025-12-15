@@ -1,5 +1,6 @@
 package com.m4zek.backend.controller;
 
+import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.PortfolioImage;
 import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
 import com.m4zek.backend.service.PortfolioImagesService;
@@ -29,7 +30,7 @@ public class PortfolioImageController {
     // Private endpoints
     @PostMapping("/v1/companies/{companyId}/portfolio-images")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    // TODO Insert your own annotation checking that only Owner or Manager company can add a new portfolio images
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
     public ResponseEntity<List<PortfolioImageResponse>> uploadNewImage(
             @PathVariable("companyId") int companyId,
             List<MultipartFile> images)
@@ -41,11 +42,13 @@ public class PortfolioImageController {
     }
 
 
-    @DeleteMapping("/v1/companies/portfolio-images/{imageId}")
+    @DeleteMapping("/v1/companies/{companyId}/portfolio-images/{imageId}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    // TODO Insert your own annotation checking that only Owner or Manager company can remove a portfolio images
-    public ResponseEntity<HttpStatus> removeImage(@PathVariable("imageId") int imageId){
-        this.portfolioImagesService.deleteImage(imageId);
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
+    public ResponseEntity<HttpStatus> removeImage(
+            @PathVariable("companyId") int companyId,
+            @PathVariable("imageId") int imageId){
+        this.portfolioImagesService.deleteImage(imageId, companyId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -66,8 +66,8 @@ public class PortfolioImagesService {
         return new PageImpl<>(readModels, pageable, images.getTotalElements());
     }
 
-    public void deleteImage(int imageId) {
-        PortfolioImage portfolioImage = portfolioImageRepository.findById(imageId)
+    public void deleteImage(int imageId, int companyId) {
+        PortfolioImage portfolioImage = portfolioImageRepository.findByIdAndCompanyId(imageId, companyId)
                 .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"));
         portfolioImageRepository.delete(portfolioImage);
     }

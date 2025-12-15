@@ -17,4 +17,6 @@ public interface CompanyUserRoleRepository {
     Page<CompanyUserRole> findAllByCompanyId(int userId, Pageable pageable);
 
     List<CompanyUserRole> findAllByUserId(int userId);
+
+    boolean existsByUserIdAndCompanyIdAndRoleNameIn(int user_id, int company_id, List<String> roles);
 }

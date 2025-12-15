@@ -1,6 +1,7 @@
 package com.m4zek.backend.controller;
 
 
+import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import com.m4zek.backend.model.dto.write.CompanyOfferRequest;
 import com.m4zek.backend.service.CompanyOfferService;
@@ -27,7 +28,7 @@ public class CompanyOfferController {
 
     @PostMapping("/v1/company/{companyId}/offers")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    // TODO Insert your own annotation checking that only Owner or Manager company can add a new offer
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
     public ResponseEntity<CompanyOfferResponse> createCompanyOffer(@RequestBody @Valid CompanyOfferRequest companyOffer, @PathVariable int companyId) {
         CompanyOfferResponse companyOfferResponse = this.companyOfferService.createNewOffer(companyOffer, companyId);
         return ResponseEntity.ok(companyOfferResponse);
@@ -46,7 +47,7 @@ public class CompanyOfferController {
 
     @PatchMapping("/v1/company/{companyId}/offers/{offerId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    // TODO Insert your own annotation checking that only Owner or Manager company can add a new offer
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
     public ResponseEntity<CompanyOfferResponse> updateCompanyOffer(
             @PathVariable int companyId,
             @PathVariable int offerId,
