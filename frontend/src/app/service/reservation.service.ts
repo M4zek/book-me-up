@@ -8,7 +8,7 @@ import {
     ReservationRequest,
     ReservationResponse, UserReservationResponse
 } from "../model/http/reservation.model";
-import {Page, Pagination, UserReservationSearch} from "../model/search/search.model";
+import {CompanyReservationsSearch, Page, Pagination, UserReservationSearch} from "../model/search/search.model";
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +59,37 @@ export class ReservationService {
       let url = `/api/v1/reservations/${reservation_id}/cancel`;
       return this.http.patch<UserReservationResponse>(url,{}, {observe: 'response'});
   }
+
+
+  // COMPANY MANAGEMENT METHODS
+
+    // Read company reservations from backend to show it on company appointments view
+    getCompanyReservations(search: CompanyReservationsSearch, pagination: Pagination){
+        let url_request = `/api/v1/companies/${search.company_id}/reservations`;
+
+        let httpParams = new HttpParams()
+            .set('page', pagination.currentPage)
+            .set('size', pagination.itemsPerPage);
+
+        if(search.status && search.status != 'None'){
+            httpParams = httpParams.set("status", search.status.toUpperCase());
+        }
+
+        if(search.name && search.name != ''){
+            httpParams = httpParams.set("name", search.name);
+        }
+
+        if(search.userId){
+            httpParams = httpParams.set("userId", search.userId);
+        }
+
+        if(search.sort && search.sort != 'None'){
+            httpParams = httpParams.set("sort", search.sort);
+        }
+
+        return this.http.get<Page<ReservationResponse>>(url_request, {params: httpParams, observe: 'response'});
+    }
+
+  // **************************
 
 }

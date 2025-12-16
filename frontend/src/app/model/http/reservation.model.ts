@@ -10,6 +10,11 @@ export interface ReservationRequest{
 }
 
 
+export interface ReservationUpdateRequest{
+    reservation_id: number,
+    preferred_employee_id?: number,
+    status?: string
+}
 
 // RESPONSES
 

@@ -1,7 +1,8 @@
 <div class="dropdown-container"
-     [class.disabled]="disabled"
->
-    <img [src]="'data:image/jpeg;base64,' + selectedOption.image" alt="img" *ngIf="selectedOption.image" class="icon">
+     [class.disabled]="disabled">
+
+    <img [src]="selectedOption.image.includes('icons') ? selectedOption.image : 'data:image/jpeg;base64,' + selectedOption.image"
+         alt="img" *ngIf="selectedOption.image" class="icon">
 
     <input
        class="selected-input"
@@ -14,7 +15,9 @@
 
 <ul class="dropdown-menu" *ngIf="menuOpen" [class.disabled]="disabled">
     <li class="item" *ngFor="let item of options" (click)="select(item)">
-        <img [src]="'data:image/jpeg;base64,' + item.image" alt="img" *ngIf="item.image" class="icon">
+        <img [src]="item.image.includes('icons') ? item.image : 'data:image/jpeg;base64,' + item.image"
+             alt="img" *ngIf="item.image" class="icon">
+
         <p class="item-text"
            [ngClass]="item.id==selectedOption.id ? 'sel' : ''">{{item.content}}</p>
     </li>

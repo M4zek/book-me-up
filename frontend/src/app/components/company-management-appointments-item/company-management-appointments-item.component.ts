@@ -1,28 +1,28 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DropDownListComponent, DropDownListItem} from "../drop-down-list/drop-down-list.component";
 import {EmployeeDropDownItem} from "../../model/gui/gui.model";
-
-export interface AppointmentItem {
-  id: number;
-  name: string;
-  user: string;
-  date: string;
-  price: number;
-  preferredEmployee: DropDownListItem,
-  status: DropDownListItem,
-}
+import {ReservationResponse, ReservationUpdateRequest} from "../../model/http/reservation.model";
+import {DatePipe, NgIf} from "@angular/common";
+import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
+import {CompanyContextService} from "../../service/company-context.service";
+import {CompanyService} from "../../service/company.service";
+import {ConfirmService} from "../../service/confirm.service";
 
 
 @Component({
   selector: 'app-company-management-appointments-item',
     imports: [
-        DropDownListComponent
+        DropDownListComponent,
+        NgIf,
+        DoubleSpinnerComponent,
+        DatePipe
     ],
   templateUrl: './company-management-appointments-item.component.html',
   styleUrl: './company-management-appointments-item.component.css'
 })
-export class CompanyManagementAppointmentsItemComponent implements OnInit {
+export class CompanyManagementAppointmentsItemComponent implements OnChanges {
 
+  @Input() isEditable = false;
   @Input() selectedStatus: DropDownListItem = { content: ''};
   @Input() selectedEmployee: DropDownListItem = { content: '' };
 
@@ -40,37 +40,54 @@ export class CompanyManagementAppointmentsItemComponent implements OnInit {
     },
   ]
 
-  @Input() employeeDropDownList: EmployeeDropDownItem[] = [
-    {
-      id: 1, firstName: 'John', lastName: 'Doe', avatar: 'images/user_default_avatar.png'
-    }, {
-      id: 2, firstName: 'Max', lastName: 'Tree', avatar: 'images/user_default_avatar.png'
-    }, {
-      id: 3, firstName: 'Matty', lastName: 'Bush', avatar: 'images/user_default_avatar.png'
-    }, {
-      id: 4, firstName: 'Mathew', lastName: 'Jordan', avatar: 'images/user_default_avatar.png'
-    }, {
-      id: 5, firstName: 'Luis', lastName: 'Hamilton', avatar: 'images/user_default_avatar.png'
-    }
-  ]
+  @Input() employeeDropDownList: EmployeeDropDownItem[] = []
+  @Input() reservation!: ReservationResponse
 
 
-  ngOnInit(): void {
-    this.getRandomStatus()
-    this.getRandomEmployee()
+  reservationChanged: boolean = false;
+  reservationUpdateRequest: ReservationUpdateRequest = {
+      reservation_id: -1,
+      status: '',
+      preferred_employee_id: -1
+  };
+
+  company_id: number = -1;
+
+
+  constructor(
+      private confirmService: ConfirmService,
+      private ctx: CompanyContextService,
+      private companyService: CompanyService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+      if(changes['reservation'] && this.employeeDropDownList.length > 0) {
+        this.setSelectedStatusAndEmployee();
+        let company_id = this.ctx.getCompany()?.id;
+        if (company_id) {
+            this.company_id = company_id;
+            this.reservationUpdateRequest = {
+                reservation_id: this.reservation.id,
+                status: this.reservation.status,
+                preferred_employee_id: this.reservation.preferredEmployee?.id ? this.reservation.preferredEmployee.id : undefined
+            }
+        }
+      }
   }
 
-  getRandomStatus(){
-    this.selectedStatus = this.statusDropDownList[Math.floor(Math.random() * this.statusDropDownList.length)];
-  }
+  protected setSelectedStatusAndEmployee(){
+      let reservationStatus = this.reservation.status;
+      let prefEmpl = this.reservation.preferredEmployee;
 
-  getRandomEmployee(){
-    let employee = this.employeeDropDownList[Math.floor(Math.random() * this.employeeDropDownList.length)]
-    this.selectedEmployee = {
-      id: employee.id,
-      content: employee.firstName + ' ' + employee.lastName,
-      image: employee.avatar,
-    }
+      if(prefEmpl){
+            this.selectedEmployee = {id: prefEmpl.id, content: prefEmpl.firstName + " " + prefEmpl.lastName, image: prefEmpl.avatar ? prefEmpl.avatar : undefined};
+      } else {
+          this.selectedEmployee = {id: 0, content: 'None'};
+      }
+
+      let statusRes =  this.statusDropDownList.find(status => status.content.toLowerCase() === reservationStatus.toLowerCase());
+      this.selectedStatus = statusRes ? statusRes : {id: 0, content: ''};
+
+      this.reservationChanged = false;
   }
 
   toDropDownList() {
@@ -87,9 +104,28 @@ export class CompanyManagementAppointmentsItemComponent implements OnInit {
 
   onStatusChanged($event: DropDownListItem) {
     this.selectedStatus = $event;
+    this.reservationUpdateRequest.status = $event.content;
+
+    this.reservationChanged = this.reservationUpdateRequest.status?.toLowerCase() != this.reservation.status.toLowerCase();
   }
 
   onPreferredEmployeeChanged($event: DropDownListItem) {
     this.selectedEmployee = $event;
+    this.reservationUpdateRequest.preferred_employee_id = $event.id;
+
+    this.reservationChanged = this.reservationUpdateRequest.preferred_employee_id != this.reservation.preferredEmployee?.id;
+  }
+
+  protected async confirm() {
+      let result = await this.confirmService.open("Confirm to continue...");
+      if (result) {
+          console.log(this.reservationUpdateRequest);
+      } else {
+          this.setSelectedStatusAndEmployee();
+      }
+  }
+
+  protected reset() {
+      this.setSelectedStatusAndEmployee();
   }
 }

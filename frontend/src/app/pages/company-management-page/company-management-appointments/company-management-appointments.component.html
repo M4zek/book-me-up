@@ -1,12 +1,20 @@
 <div class="parent">
     <app-search-and-sort-bar
+            [showFilter]="true"
+            [sortByItems]="sortByList"
+            [filterByItems]="filterByList"
+            (filterChangeAllItem)="onFilterChanged($event)"
             (searchChanged)="onSearchChange($event)"
             (sortChanged)="onSortChange($event)"/>
-    <div class="appointment-card-container">
-        <app-company-management-appointments-item/>
-        <app-company-management-appointments-item/>
-        <app-company-management-appointments-item/>
+    <div class="appointment-card-container" *ngIf="!isReservationLoading">
+        <app-company-management-appointments-item
+                *ngFor="let reservation of reservationsList"
+                [isEditable]="isEditable(reservation)"
+                [reservation]="reservation"
+                [employeeDropDownList]="employeeDropdownList"/>
     </div>
-
-    <app-paginator></app-paginator>
+    <div class="full-height" *ngIf="isReservationLoading">
+        <app-double-spinner />
+    </div>
+    <app-paginator [pagination]="pagination" (paginatorChanged)="onPaginationChanged()"/>
 </div>

@@ -8,7 +8,7 @@
 }
 
 .appointments-card:hover{
-    transform: scale(1.05);
+    transform: scale(1.025);
 }
 
 .name-container{
@@ -49,6 +49,21 @@
     font-weight: bold;
 }
 
+.order-number{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+    gap: 10px;
+    background-color: var(--white-10);
+    border-radius: 5px;
+}
+
+.order-number > span{
+    color: var(--white);
+}
+
 .order-date-information{
     display: flex;
     flex-direction: row;
@@ -61,10 +76,17 @@
     padding: 5px 10px;
     border-radius: 5px;
     background-color: var(--white-10);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .order-date-information div > span{
     color: var(--white);
+    width: fit-content;
+    text-align: center;
+    justify-content: center;
 }
 
 .pink-75-width-line{
@@ -132,7 +154,24 @@
 
 }
 
+.btn-container.pink{
+    background-color: var(--pink);
+}
+
+.btn-container.pink > .expand > p{
+    color: var(--white);
+}
+
 .btn-container:hover .expand {
     opacity: 1;
     max-width: fit-content;
+}
+
+.buttons{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

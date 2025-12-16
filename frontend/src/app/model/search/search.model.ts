@@ -33,3 +33,11 @@ export interface CompanyOfferSearch {
     name?: string;
     sort?: string;
 }
+
+export interface CompanyReservationsSearch {
+    company_id: number;
+    name?: string;
+    status?: string;
+    sort?: string;
+    userId?: number;
+}
