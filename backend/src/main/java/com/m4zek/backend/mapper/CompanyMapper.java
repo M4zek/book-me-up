@@ -38,11 +38,11 @@ public class CompanyMapper {
                 .owner(company.getUsers().stream()
                         .filter(item -> item.getRole().getName().equals("COMPANY_OWNER"))
                         .findFirst()
-                        .map(item -> UserMapper.toEmployeeSummaryResponse(item.getUsers()))
+                        .map(item -> UserMapper.toEmployeeSummaryResponse(item.getUser()))
                         .orElse(null))
                 .employees(company.getUsers().stream()
                         .filter(user -> !user.getRole().getName().equals("COMPANY_OWNER"))
-                        .map(userRole ->  UserMapper.toEmployeeSummaryResponse(userRole.getUsers()))
+                        .map(userRole ->  UserMapper.toEmployeeSummaryResponse(userRole.getUser()))
                         .toList().stream().toList())
                 .build();
     }

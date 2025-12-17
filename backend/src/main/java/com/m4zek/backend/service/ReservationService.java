@@ -7,6 +7,7 @@ import com.m4zek.backend.model.dto.read.BookedCompanyHoursResponse;
 import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
 import com.m4zek.backend.model.dto.read.ReservationResponse;
 import com.m4zek.backend.model.dto.read.UserReservationResponse;
+import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
 import com.m4zek.backend.repository.ReservationRepository;
@@ -208,6 +209,43 @@ public class ReservationService {
         );
     }
 
+    /*
+        Method to update reservation
+     */
+    public ReservationResponse updateReservation(int companyId, int reservationId, ReservationPatchRequest request) {
+        Reservation reservation = this.reservationRepository.findByIdAndCompanyId(reservationId, companyId)
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation not found"));
+
+        ReservationStatus currentStatus = ReservationStatus.from(reservation.getReservationStatus());
+        ReservationStatus newStatus = ReservationStatus.from(request.getStatus());
+
+        if(!request.getStatus().isEmpty() && !currentStatus.equals(newStatus)) {
+
+            if(!currentStatus.canTransitionTo(newStatus)) {
+                throw new ReservationBadRequestException("Incorrect status change sequence: " + currentStatus + " -> " + newStatus);
+            }
+
+            reservation.setStatus(ReservationStatus.from(request.getStatus()));
+        }
+
+
+        User prefUser = reservation.getUser();
+
+        if(prefUser == null || prefUser.getId() != request.getPreferred_employee_id()) {
+
+            User newPreferredUser = reservation.getCompanyOffer().getCompany().getUsers()
+                    .stream()
+                    .map(CompanyUserRole::getUser)
+                    .filter(user -> request.getPreferred_employee_id() == user.getId())
+                    .findAny()
+                    .orElseThrow(() -> new UserNotFoundException("Employee not found in company"));
+
+            reservation.assignNewPreferredUser(newPreferredUser);
+        }
+
+        reservation = this.reservationRepository.save(reservation);
+        return ReservationMapper.reserevationToReservationResponse(reservation);
+    }
 
     public Page<ReservationResponse> getAllCompanyReservations(int companyId, String name,  String status, Integer userId, Pageable pageable) {
         Page<Reservation> reservationPages = this.reservationRepository.findAllByCompanyId(companyId, name, status, userId, pageable);

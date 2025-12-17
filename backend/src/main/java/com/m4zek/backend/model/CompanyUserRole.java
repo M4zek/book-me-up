@@ -33,7 +33,7 @@ public class CompanyUserRole {
         return this.role;
     }
 
-    public User getUsers() {
+    public User getUser() {
         return this.user;
     }
 

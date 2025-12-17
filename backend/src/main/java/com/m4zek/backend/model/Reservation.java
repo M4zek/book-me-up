@@ -75,4 +75,8 @@ public class Reservation extends BaseEntity {
     public void setStatus(ReservationStatus status) {
         this.status = status;
     }
+
+    public void assignNewPreferredUser(User preferredUser) {
+        this.preferredUser = preferredUser;
+    }
 }

@@ -36,18 +36,23 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         this.myUserDetailsService = myUserDetailsService;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         try {
             String token = tokenManager.parseJwt(request);
-            if(token != null && tokenManager.validateToken(token)){
+
+            if (token != null && tokenManager.validateToken(token)) {
                 String email = tokenManager.getEmailFromToken(token);
                 UserDetails userDetails = myUserDetailsService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
@@ -55,9 +60,13 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e){
             logger.error("User cannot be authenticated: {}", e.getMessage());
             handleJwtExpiredException(request, response, e);
-        } catch (JwtException ex){
-            handleJwtException(request, response, ex);
+            return;
+        } catch (JwtException e) {
+            logger.error("Invalid token: {}", e.getMessage());
+            handleJwtException(request, response, e);
+            return;
         }
+        filterChain.doFilter(request, response);
     }
 
 

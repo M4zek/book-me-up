@@ -111,7 +111,7 @@ public class CompanyService {
         Company company = this.getCompany(companyId);
         return company.getUsers().stream()
                 .map(
-                        item -> UserMapper.toEmployeeSummaryResponse(item.getUsers())
+                        item -> UserMapper.toEmployeeSummaryResponse(item.getUser())
                 ).toList();
     }
 
@@ -120,7 +120,7 @@ public class CompanyService {
         List<EmployeeDetailsResponse> responseList = companyUserRoles.stream()
                 .map(userRole ->
                         UserMapper.toEmployeeDetailsResponse(
-                            userRole.getUsers(),
+                            userRole.getUser(),
                             userRole.getRole().getName())
                 )
                 .toList();

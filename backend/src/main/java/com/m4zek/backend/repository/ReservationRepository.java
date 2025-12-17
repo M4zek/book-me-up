@@ -59,4 +59,14 @@ public interface ReservationRepository {
                 AND (:userId IS NULL OR r.preferredUser.id = :userId)
         """)
     Page<Reservation> findAllByCompanyId(int companyId, String name, String status, Integer userId, Pageable pageable);
+
+    @Query("""
+        SELECT r
+        FROM reservations r
+        WHERE r.id = :reservationId
+          AND r.companyOffer.company.id = :companyId
+    """)
+    Optional<Reservation> findByIdAndCompanyId(
+            @Param("reservationId") int reservationId,
+            @Param("companyId") int companyId);
 }

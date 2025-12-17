@@ -1,8 +1,10 @@
 package com.m4zek.backend.controller;
 
+import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
 import com.m4zek.backend.model.dto.read.ReservationResponse;
 import com.m4zek.backend.model.dto.read.UserReservationResponse;
+import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.service.ReservationService;
 import jakarta.validation.Valid;
@@ -13,13 +15,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Validated
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(value = "/api/v1")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -29,18 +33,10 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/companies/{companyId}/reservations/busy")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<List<ReservationAvailabilityResponse>> readReservationAvailability(
-            @PathVariable @Positive(message = "Company id must be positive number") int companyId,
-            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate fromDate,
-            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate
-    ) {
-        return ResponseEntity.ok(this.reservationService.getCompanyReservationAvailability(companyId, fromDate, toDate));
-    }
-
+    // Endpoints for management company reservations
     @GetMapping("/companies/{companyId}/reservations")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_EMPLOYEE", "COMPANY_MANAGER"})
     public ResponseEntity<Page<ReservationResponse>> getCompanyReservations(
             @PathVariable @Positive(message = "Company id must be positive number") int companyId,
             @RequestParam(required = false) @Size(min = 1, message = "Offer name cannot be empty string") String name,
@@ -52,13 +48,19 @@ public class ReservationController {
         return ResponseEntity.ok(this.reservationService.getAllCompanyReservations(companyId, name, status, userId, pageable));
     }
 
-    @PostMapping("/companies/reservations")
+    @PatchMapping("/companies/{companyId}/reservations/{reservationId}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody @Valid ReservationRequest reservation) {
-        return ResponseEntity.ok(this.reservationService.createNewReservation(reservation));
+    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_EMPLOYEE", "COMPANY_MANAGER"})
+    public ResponseEntity<ReservationResponse> updateCompanyReservation(
+            @PathVariable @Positive(message = "Company id must be positive number") Integer companyId,
+            @PathVariable @Positive(message = "Reservation id must be positive number") Integer reservationId,
+            @Valid @RequestBody ReservationPatchRequest request
+    ){
+        return ResponseEntity.ok(this.reservationService.updateReservation(companyId, reservationId, request));
     }
 
 
+    // Endpoints for user reservations
     @GetMapping("/reservations/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<Page<UserReservationResponse>> readAllUserReservations(
@@ -75,4 +77,20 @@ public class ReservationController {
         return ResponseEntity.ok(this.reservationService.cancelReservation(id));
     }
 
+    // General endpoints for reservations
+    @GetMapping("/companies/{companyId}/reservations/busy")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<List<ReservationAvailabilityResponse>> readReservationAvailability(
+            @PathVariable @Positive(message = "Company id must be positive number") int companyId,
+            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate fromDate,
+            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate
+    ) {
+        return ResponseEntity.ok(this.reservationService.getCompanyReservationAvailability(companyId, fromDate, toDate));
+    }
+
+    @PostMapping("/companies/reservations")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody @Valid ReservationRequest reservation) {
+        return ResponseEntity.ok(this.reservationService.createNewReservation(reservation));
+    }
 }
