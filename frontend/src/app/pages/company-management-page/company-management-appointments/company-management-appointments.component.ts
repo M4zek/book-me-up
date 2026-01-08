@@ -45,7 +45,7 @@ export class CompanyManagementAppointmentsComponent implements OnInit {
       { content: 'Pending', image:'icons/pending_icon.svg', option: 'pending' },
       { content: 'Completed', image:'icons/realized_icon.svg', option: 'completed' },
       { content: 'Rejected', image:'icons/reject_icon.svg', option: 'rejected' },
-      { content: 'Cancelled', image:'icons/canceled_icon.svg', option: 'canceled' },
+      { content: 'Cancelled', image:'icons/canceled_icon.svg', option: 'cancelled' },
       { content: 'Accepted', image:'icons/accepted_icon.svg', option: 'accepted' },
   ]
 

@@ -10,8 +10,13 @@ export interface ReservationRequest{
 }
 
 
-export interface ReservationUpdateRequest{
+export interface ReservationUpdateModel {
+    company_id: number,
     reservation_id: number,
+    request: ReservationStatusEmployeeUpdateRequest
+}
+
+export interface ReservationStatusEmployeeUpdateRequest{
     preferred_employee_id?: number,
     status?: string
 }

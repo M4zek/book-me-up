@@ -6,7 +6,7 @@ import {ReservationAvailability} from "../model/gui/gui.model";
 import {
     ReservationAvailabilityResponse,
     ReservationRequest,
-    ReservationResponse, UserReservationResponse
+    ReservationResponse, ReservationUpdateModel, UserReservationResponse
 } from "../model/http/reservation.model";
 import {CompanyReservationsSearch, Page, Pagination, UserReservationSearch} from "../model/search/search.model";
 
@@ -88,6 +88,15 @@ export class ReservationService {
         }
 
         return this.http.get<Page<ReservationResponse>>(url_request, {params: httpParams, observe: 'response'});
+    }
+
+
+    // Update reservation by status or preferred employee
+    patchReservation(reservationUpdate: ReservationUpdateModel){
+      let url_request = `/api/v1/companies/${reservationUpdate.company_id}/reservations/${reservationUpdate.reservation_id}`;
+      let requestBody = reservationUpdate.request;
+
+      return this.http.patch<ReservationResponse>(url_request, requestBody, {observe: 'response'});
     }
 
   // **************************

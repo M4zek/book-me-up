@@ -1,12 +1,13 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DropDownListComponent, DropDownListItem} from "../drop-down-list/drop-down-list.component";
 import {EmployeeDropDownItem} from "../../model/gui/gui.model";
-import {ReservationResponse, ReservationUpdateRequest} from "../../model/http/reservation.model";
+import {ReservationResponse, ReservationUpdateModel} from "../../model/http/reservation.model";
 import {DatePipe, NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 import {CompanyContextService} from "../../service/company-context.service";
-import {CompanyService} from "../../service/company.service";
 import {ConfirmService} from "../../service/confirm.service";
+import {ReservationService} from "../../service/reservation.service";
+import {ToastService} from "../../service/toast.service";
 
 
 @Component({
@@ -36,39 +37,42 @@ export class CompanyManagementAppointmentsItemComponent implements OnChanges {
     }, {
       content: 'Realized', image: 'icons/realized_icon.svg'
     }, {
-      content: 'Canceled', image: 'icons/canceled_icon.svg'
+      content: 'Cancelled', image: 'icons/canceled_icon.svg'
     },
   ]
 
   @Input() employeeDropDownList: EmployeeDropDownItem[] = []
   @Input() reservation!: ReservationResponse
 
-
   reservationChanged: boolean = false;
-  reservationUpdateRequest: ReservationUpdateRequest = {
+  reservationUpdateRequest: ReservationUpdateModel = {
+      company_id: -1,
       reservation_id: -1,
-      status: '',
-      preferred_employee_id: -1
+      request: {
+          status: '',
+          preferred_employee_id: -1
+      }
   };
-
-  company_id: number = -1;
 
 
   constructor(
+      private toast: ToastService,
       private confirmService: ConfirmService,
       private ctx: CompanyContextService,
-      private companyService: CompanyService) {}
+      private reservationService: ReservationService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
       if(changes['reservation'] && this.employeeDropDownList.length > 0) {
         this.setSelectedStatusAndEmployee();
         let company_id = this.ctx.getCompany()?.id;
         if (company_id) {
-            this.company_id = company_id;
             this.reservationUpdateRequest = {
+                company_id: company_id,
                 reservation_id: this.reservation.id,
-                status: this.reservation.status,
-                preferred_employee_id: this.reservation.preferredEmployee?.id ? this.reservation.preferredEmployee.id : undefined
+                request: {
+                    status: this.reservation.status,
+                    preferred_employee_id: this.reservation.preferredEmployee?.id ? this.reservation.preferredEmployee.id : undefined
+                }
             }
         }
       }
@@ -104,22 +108,46 @@ export class CompanyManagementAppointmentsItemComponent implements OnChanges {
 
   onStatusChanged($event: DropDownListItem) {
     this.selectedStatus = $event;
-    this.reservationUpdateRequest.status = $event.content;
+    this.reservationUpdateRequest.request.status = $event.content.toUpperCase();
 
-    this.reservationChanged = this.reservationUpdateRequest.status?.toLowerCase() != this.reservation.status.toLowerCase();
+    this.reservationChanged = this.reservationUpdateRequest.request.status?.toLowerCase() != this.reservation.status.toLowerCase();
   }
 
   onPreferredEmployeeChanged($event: DropDownListItem) {
     this.selectedEmployee = $event;
-    this.reservationUpdateRequest.preferred_employee_id = $event.id;
+    this.reservationUpdateRequest.request.preferred_employee_id = $event.id;
 
-    this.reservationChanged = this.reservationUpdateRequest.preferred_employee_id != this.reservation.preferredEmployee?.id;
+    this.reservationChanged = this.reservationUpdateRequest.request.preferred_employee_id != this.reservation.preferredEmployee?.id;
   }
 
   protected async confirm() {
       let result = await this.confirmService.open("Confirm to continue...");
       if (result) {
-          console.log(this.reservationUpdateRequest);
+          this.reservationService.patchReservation(this.reservationUpdateRequest)
+              .subscribe({
+                  next: result => {
+                    if(result.body && result.status === 200) {
+                        this.reservation = result.body;
+                        this.reservationChanged = false;
+                        this.toast.show("Reservation successfully changed", 'success');
+                    } else {
+                        this.toast.show("Reservation change was unsuccessful", 'warning');
+                    }
+                  }, error: err => {
+                      switch (err.status) {
+                          case 400:
+                              let err_text = err.error.message;
+                              this.toast.show(err_text, 'warning');
+                              break;
+
+                          default:
+                              this.toast.show("Ups... Something went wrong!", 'error');
+                              break;
+                      }
+                      console.error(err.error.message);
+                      this.reset();
+                  }
+              })
       } else {
           this.setSelectedStatusAndEmployee();
       }
