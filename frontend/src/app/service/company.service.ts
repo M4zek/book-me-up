@@ -101,6 +101,8 @@ export class CompanyService {
     }
 
 
+
+  // Company Offer Methods
   searchCompanyOffers(search: CompanyOfferSearch, pagination: Pagination) {
       let url = `/api/v1/company/${search.company_id}/offers`;
 
@@ -123,5 +125,12 @@ export class CompanyService {
       let req_url = `/api/v1/company/${company_id}/offers`;
       return this.http.post<CompanyOffersResponse>(req_url, body, {observe: 'response'});
   }
+
+  updateCompanyOffer(body: CompanyOfferRequest, company_id: number, offer_id: number){
+      let req_url = `/api/v1/company/${company_id}/offers/${offer_id}`;
+
+      return this.http.patch<CompanyOffersResponse>(req_url, body, {observe: 'response'});
+  }
+
 
 }

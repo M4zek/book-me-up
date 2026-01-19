@@ -1,4 +1,9 @@
 <div class="offer-card">
+
+    <div class="wrapper" *ngIf="isLoading">
+        <app-double-spinner/>
+    </div>
+
     <div class="inputBox"
          [class.editable]="!toEdit"
     >

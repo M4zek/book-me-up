@@ -14,6 +14,7 @@ import {CompanyContextService} from "../../../service/company-context.service";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyOffersResponse} from "../../../model/http/company.model";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
+import {ToastService} from "../../../service/toast.service";
 
 @Component({
   selector: 'app-company-management-offer',
@@ -53,7 +54,10 @@ export class CompanyManagementOfferComponent implements OnInit {
     searchValue: CompanyOfferSearch = { company_id: 0 };
     isOfferLoading: boolean = false;
 
-    constructor(private ctx: CompanyContextService, private companyService: CompanyService) {
+    constructor(
+        private ctx: CompanyContextService,
+        private toast: ToastService,
+        private companyService: CompanyService) {
     }
 
     ngOnInit() {
@@ -102,4 +106,5 @@ export class CompanyManagementOfferComponent implements OnInit {
     protected onPaginationChanged() {
         this.searchOffers();
     }
+
 }

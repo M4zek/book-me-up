@@ -19,7 +19,12 @@
     <div class="full-height">
         <app-double-spinner *ngIf="isOfferLoading"/>
         <div class="offer-card-container" *ngIf="!isOfferLoading">
-            <app-company-management-offer-item [isEditable]="isEditable" *ngFor="let offer of offers" [offer]="offer"/>
+            <app-company-management-offer-item
+                    [isEditable]="isEditable"
+                    *ngFor="let offer of offers"
+                    [offer]="offer"
+                    [company_id]="searchValue.company_id"
+            />
         </div>
     </div>
 
