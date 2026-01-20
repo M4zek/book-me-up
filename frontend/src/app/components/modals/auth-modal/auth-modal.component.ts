@@ -35,12 +35,12 @@ export class AuthModalComponent {
   registerData: UserAccountRequest = {
       addressEmail: '',
       password: '',
-      userDataRequest: {
+      userData: {
           firstName: '',
           lastName: '',
           dateOfBirth: '',
           phoneNumber: '',
-          photo: null
+          photo: ''
       }
   }
   confirmPassword: string = '';
@@ -85,13 +85,13 @@ export class AuthModalComponent {
         return;
     }
 
-    if(this.isUserAdult(this.registerData.userDataRequest.dateOfBirth) && this.registerData.password === this.confirmPassword) {
+    if(this.isUserAdult(this.registerData.userData.dateOfBirth) && this.registerData.password === this.confirmPassword) {
         this.authService.register(this.registerData).subscribe({
             next: (response) => {
-                if(response.status === 200 && response.body) {
+                if(response.status === 201 && response.body) {
                     this.toast.show("Account has been registered successfully.", "success");
                     this.resetForm();
-                    form.clearErrors();
+                    form.reset();
                 }
             }
             ,error: (err) =>{
@@ -159,12 +159,12 @@ export class AuthModalComponent {
       this.registerData = {
           addressEmail: '',
           password: '',
-          userDataRequest: {
+          userData: {
               firstName: '',
               lastName: '',
               dateOfBirth: '',
               phoneNumber: '',
-              photo: null
+              photo: ''
           }
       }
       this.confirmPassword = '';
@@ -201,7 +201,7 @@ export class AuthModalComponent {
         this.registerData = {
             addressEmail: '',
             password: '',
-            userDataRequest: {
+            userData: {
                 firstName: '',
                 lastName: '',
                 dateOfBirth: '',

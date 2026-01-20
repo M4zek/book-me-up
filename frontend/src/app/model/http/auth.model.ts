@@ -44,5 +44,5 @@ export interface UserDataRequest {
 export interface UserAccountRequest{
     addressEmail: string;
     password: string;
-    userDataRequest: UserDataRequest;
+    userData: UserDataRequest;
 }

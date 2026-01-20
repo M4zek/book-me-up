@@ -156,7 +156,7 @@
                             minlength="3"
                             placeholder="First name"
                             class="input-field"
-                            [(ngModel)]="registerData.userDataRequest.firstName"
+                            [(ngModel)]="registerData.userData.firstName"
                             #firstNameCTRL = "ngModel"
                     >
                     <div *ngIf="firstNameCTRL.invalid && firstNameCTRL.touched">
@@ -173,7 +173,7 @@
                            required
                            name="lastName"
                            minlength="3"
-                           [(ngModel)]="registerData.userDataRequest.lastName"
+                           [(ngModel)]="registerData.userData.lastName"
                            #lastNameCTRL="ngModel"
                     >
                     <div *ngIf="lastNameCTRL.invalid && lastNameCTRL.touched">
@@ -182,7 +182,7 @@
                     </div>
                 </div>
 
-                <div class="input-container" [class.error]="(birthDateCTRL.invalid || !isUserAdult(registerData.userDataRequest.dateOfBirth)) && birthDateCTRL.touched" >
+                <div class="input-container" [class.error]="(birthDateCTRL.invalid || !isUserAdult(registerData.userData.dateOfBirth)) && birthDateCTRL.touched" >
                     <img [src]="calendar_icon" alt="ln" class="input-icon"/>
                     <input
                            (focusin)="birthDateVisible = true"
@@ -191,16 +191,16 @@
                            class="input-field"
                            required
                            name="dateOfBirth"
-                           [(ngModel)]="registerData.userDataRequest.dateOfBirth"
+                           [(ngModel)]="registerData.userData.dateOfBirth"
                            #birthDateCTRL="ngModel"
                            [type]="birthDateVisible ? 'date' : 'text'"
                     >
                     <div *ngIf="birthDateCTRL.invalid && birthDateCTRL.touched">
                         <span *ngIf="birthDateCTRL.errors?.['required']">Birth date is required</span>
                     </div>
-                    <div *ngIf="birthDateCTRL.touched && !isUserAdult(registerData.userDataRequest.dateOfBirth)">
+                    <div *ngIf="birthDateCTRL.touched && !isUserAdult(registerData.userData.dateOfBirth)">
                        <span *ngIf="!birthDateCTRL.errors?.['required']
-                        && !isUserAdult(registerData.userDataRequest.dateOfBirth)">The user must be 18 years old</span>
+                        && !isUserAdult(registerData.userData.dateOfBirth)">The user must be 18 years old</span>
                     </div>
 
                 </div>
@@ -212,7 +212,7 @@
                            class="input-field"
                            required
                            name="phoneNumber"
-                           [(ngModel)]="registerData.userDataRequest.phoneNumber"
+                           [(ngModel)]="registerData.userData.phoneNumber"
                            #phoneNumberCTRL="ngModel">
                     <div *ngIf="phoneNumberCTRL.invalid && phoneNumberCTRL.touched">
                         <span *ngIf="phoneNumberCTRL.errors?.['required']">Phone number is required</span>
@@ -228,7 +228,7 @@
                     <div class="action-container" (click)="onSubmit(registerForm)">
                         <div class="button-confirm"
 
-                             [class.disabled]="registerForm.invalid || !isUserAdult(registerData.userDataRequest.dateOfBirth) || !isPasswordEquals()"
+                             [class.disabled]="registerForm.invalid || !isUserAdult(registerData.userData.dateOfBirth) || !isPasswordEquals()"
                              (click)="register(registerForm)">
                             <p>Register</p>
                         </div>
