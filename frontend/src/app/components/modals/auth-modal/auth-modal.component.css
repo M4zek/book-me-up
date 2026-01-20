@@ -8,7 +8,7 @@
      display: flex;
      justify-content: center;
      align-items: center;
-     z-index: 1000;
+     z-index: 99999;
  }
 
 .modal-content {
@@ -96,6 +96,11 @@
     max-height: 1000px;
 }
 
+/*.gap20{*/
+/*    gap: 20px;*/
+/*    transition: gap 0.3s ease-in-out;*/
+/*}*/
+
 
 .content-container.sign-in-on {
     opacity: 1;
@@ -139,11 +144,38 @@
     display: flex;
     align-items: center;
     background-color: transparent;
+    position: relative;
     padding: 5px 10px;
     border-radius: 5px;
     border: 1px solid var(--white);
     width: 80%;
     height: 40px;
+    transition: all .2s ease;
+}
+
+.input-container.error{
+    padding: 10px 10px 15px 10px;
+    height: 60px;
+    transition: all .3s ease;
+}
+
+.input-container:has(div){
+    border-color: var(--gold);
+}
+
+.input-container span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 0.7em;
+    transform: translateX(25px) translateY(5px);
+    padding: 0 6px 1px 5px;
+    border-radius: 2px;
+    color: var(--white);
+    background: var(--gold);
+    letter-spacing: 1px;
+    border: 1px solid var(--white-10);
+    transition: all .3s ease;
 }
 
 .input-field{
@@ -184,7 +216,7 @@
 }
 
 .action-container{
-    width: 40%;
+    width: 75%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -201,14 +233,26 @@
     user-select: none;
 }
 
-.button-confirm p{
+.button-confirm p, .button-clear p{
     margin: 0;
     padding: 10px;
+    user-select: none;
+}
+
+.button-clear{
+    width: 25%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border-radius: 5px;
+    border: 1px solid var(--light-blue);
+    background-color: var(--light-blue-5);
 }
 
 .button-confirm:hover,
-.button-rejected:hover{
-    border: 1px solid var(--light-blue);
+.button-rejected:hover,
+.button-clear:hover{
+    border: 1px solid var(--lime);
     transition: .2s ease-in-out;
 }
 

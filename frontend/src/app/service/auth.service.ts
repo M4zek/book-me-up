@@ -1,8 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {UserContextService} from "./user-context.service";
-import {AuthRequest, LoginWrapper, RefreshTokenResponse, UserContextModel} from "../model/http/auth.model";
+import {
+    AuthRequest,
+    LoginWrapper,
+    RefreshTokenResponse,
+    UserAccountRequest,
+    UserContextModel
+} from "../model/http/auth.model";
 import {catchError, map, Observable, of} from "rxjs";
+import {UserResponse} from "../model/http/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +38,8 @@ export class AuthService {
         return this.http.post<RefreshTokenResponse>(`/api/auth/refreshToken/${refreshToken}`, null);
     }
 
-
+    register(request: UserAccountRequest) {
+      const url: string = '/api/auth/register';
+      return this.http.post<UserResponse>(url, request, {observe: 'response'});
+    }
 }

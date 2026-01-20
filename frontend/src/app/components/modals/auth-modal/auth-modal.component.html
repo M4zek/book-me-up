@@ -9,83 +9,239 @@
                 </div>
             </div>
         <div class="wrapper">
-            <div class="content-container" [ngClass]="!isCheck ? 'sign-in-on' : 'sign-in-off'">
-                <div class="input-container">
+            <form class="content-container"
+                  #loginForm="ngForm"
+                  (ngSubmit)="onLoginSubmit(loginForm)"
+                 [ngClass]="!isCheck ? 'sign-in-on' : 'sign-in-off'">
+
+                <div class="input-container" [class.error]="emailLoginCTRL.invalid && emailLoginCTRL.touched">
                     <img [src]="email_icon" alt="email" class="input-icon"/>
-                    <input type="text"
+                    <input type="email"
                            placeholder="Address email"
                            class="input-field"
+                           email
+                           required
+                           name="emailLogin"
                            [(ngModel)]="login_model.email"
+                           #emailLoginCTRL="ngModel"
                     >
+                    <div *ngIf="emailLoginCTRL.invalid && emailLoginCTRL.touched">
+                        <span *ngIf="emailLoginCTRL.errors?.['required']">Address email is required</span>
+                        <span *ngIf="emailLoginCTRL.errors?.['minlength']">Address email must be at least 3 characters</span>
+                        <span *ngIf="emailLoginCTRL.errors?.['email']">Wrong address email format!</span>
+                    </div>
                 </div>
 
-                <div class="input-container">
+                <div class="input-container" [class.error]="passwordLoginCTRL.invalid && passwordLoginCTRL.touched">
                     <img [src]="lock_icon" alt="pass" class="input-icon"/>
-                    <input [type]="passwordFields['signIn'].visible ? 'text' : 'password'"
-                           placeholder="Password" class="input-field" [(ngModel)]="login_model.password">
+                    <input
+                           [type]="passwordFields['signIn'].visible ? 'text' : 'password'"
+                           placeholder="Password"
+                           class="input-field"
+                           [(ngModel)]="login_model.password"
+                            required
+                           minlength="8"
+                           name="passwordLogin"
+                           #passwordLoginCTRL="ngModel"
+                    >
                     <img [src]="passwordFields['signIn'].icon" alt="confirm"
                          [ngClass]="{'slash': !passwordFields['signIn'].visible}"
                          class="password-icon" (click)="togglePasswordVisibility('signIn')"/>
+                    <div *ngIf="passwordLoginCTRL.invalid && passwordLoginCTRL.touched">
+                        <span *ngIf="passwordLoginCTRL.errors?.['required']">Password is required</span>
+                        <span *ngIf="passwordLoginCTRL.errors?.['minlength']">Min 8 characters</span>
+                    </div>
                 </div>
-                <div class="action-container">
-                    <div class="button-confirm" (click)="sign_in()">
+                <div class="action-container" (click)="onLoginSubmit(loginForm)">
+                    <div class="button-confirm"
+                         [class.disabled]="loginForm.invalid"
+                         (click)="sign_in(login_model)">
                         <p>Sign in</p>
                     </div>
                     <div class="button-rejected" (click)="close()">
                         <p>Cancel</p>
                     </div>
                 </div>
-            </div>
-            <div class="content-container" [ngClass]="isCheck ? 'register-on' : 'register-off'">
-                <div class="input-container">
-                    <img [src]="email_icon" alt="email" class="input-icon"/>
-                    <input type="text" placeholder="Address email" class="input-field">
+            </form>
+
+            <form #registerForm = "ngForm"
+                  (ngSubmit)="onSubmit(registerForm)"
+                  class="content-container"
+                  [ngClass]="isCheck ? 'register-on' : 'register-off'">
+
+                <div class="input-container"
+                     [class.error]="emailCTRL.invalid && emailCTRL.touched">
+                    <img [src]="email_icon"
+                         alt="email"
+                         class="input-icon"/>
+                    <input type="email"
+                           name="addressEmail"
+                           placeholder="Address email"
+                           class="input-field"
+                           required
+                           email
+                           minlength="3"
+                           [(ngModel)]="registerData.addressEmail"
+                           #emailCTRL="ngModel"
+                    >
+                    <div *ngIf="emailCTRL.invalid && emailCTRL.touched">
+                        <span *ngIf="emailCTRL.errors?.['required']">Address email is required</span>
+                        <span *ngIf="emailCTRL.errors?.['minlength']">Address email must be at least 3 characters</span>
+                        <span *ngIf="emailCTRL.errors?.['email']">Wrong address email format!</span>
+                    </div>
                 </div>
 
-                <div class="input-container">
-                    <img [src]="lock_icon" alt="pass" class="input-icon"/>
-                    <input [type]="passwordFields['registerPassword'].visible ? 'text' : 'password'"
-                           placeholder="Password" class="input-field">
-                    <img [src]="passwordFields['registerPassword'].icon" alt="confirm"
-                         [ngClass]="{'slash': !passwordFields['registerPassword'].visible}"
-                         class="password-icon" (click)="togglePasswordVisibility('registerPassword')"/>
+
+                <div class="input-container"
+                    [class.error]="passwordCtrl.invalid && passwordCtrl.touched">
+                    <img [src]="lock_icon" class="input-icon"/>
+
+                    <input
+                            [type]="passwordFields['registerPassword'].visible ? 'text' : 'password'"
+                            name="password"
+                            placeholder="Password"
+                            class="input-field"
+                            required
+                            minlength="8"
+                            [(ngModel)]="registerData.password"
+                            #passwordCtrl="ngModel"
+                    />
+
+                    <img [src]="passwordFields['registerPassword'].icon"
+                         class="password-icon"
+                         (click)="togglePasswordVisibility('registerPassword')"/>
+                    <div *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+                        <span *ngIf="passwordCtrl.errors?.['required']">Password is required</span>
+                        <span *ngIf="passwordCtrl.errors?.['minlength']">Min 8 characters</span>
+                    </div>
                 </div>
-                <div class="input-container">
-                    <img [src]="lock_icon" alt="pass" class="input-icon"/>
-                    <input [type]="passwordFields['registerConfirm'].visible ? 'text' : 'password'"
-                           placeholder="Confirm password" class="input-field">
-                    <img [src]="passwordFields['registerConfirm'].icon" alt="confirm"
-                         [ngClass]="{'slash': !passwordFields['registerConfirm'].visible}"
-                         class="password-icon" (click)="togglePasswordVisibility('registerConfirm')"/>
+
+
+                <div class="input-container"
+                     [class.error]="(passwordConfirmCtrl.invalid || registerData.password !== confirmPassword) && passwordConfirmCtrl.touched">
+                    <img [src]="lock_icon" class="input-icon"/>
+
+                    <input
+                            [type]="passwordFields['registerConfirm'].visible ? 'text' : 'password'"
+                            name="confirmPassword"
+                            placeholder="Confirm password"
+                            class="input-field"
+                            required
+                            minlength="8"
+                            [(ngModel)]="confirmPassword"
+
+                            #passwordConfirmCtrl="ngModel"
+                    />
+
+                    <img [src]="passwordFields['registerConfirm'].icon"
+                         class="password-icon"
+                         (click)="togglePasswordVisibility('registerConfirm')"/>
+
+                    <div *ngIf="passwordConfirmCtrl.invalid && passwordConfirmCtrl.touched || registerData.password !== confirmPassword">
+                        <span *ngIf="passwordConfirmCtrl.errors?.['required']">Confirm password is required</span>
+                        <span *ngIf="passwordConfirmCtrl.errors?.['minlength']">Min 8 characters</span>
+                        <span *ngIf="!passwordConfirmCtrl.errors?.['required'] && !passwordConfirmCtrl.errors?.['minlength'] && registerData.password !== confirmPassword"
+                        >Passwords do not match</span>
+                    </div>
                 </div>
-                <div class="input-container">
+
+
+
+                <div class="input-container" [class.error]="firstNameCTRL.invalid && firstNameCTRL.touched">
                     <img [src]="user_icon" alt="fn" class="input-icon"/>
-                    <input type="text" placeholder="First name" class="input-field">
+                    <input
+                            type="text"
+                            name="firstName"
+                            required
+                            minlength="3"
+                            placeholder="First name"
+                            class="input-field"
+                            [(ngModel)]="registerData.userDataRequest.firstName"
+                            #firstNameCTRL = "ngModel"
+                    >
+                    <div *ngIf="firstNameCTRL.invalid && firstNameCTRL.touched">
+                        <span *ngIf="firstNameCTRL.errors?.['required']">First name is required</span>
+                        <span *ngIf="firstNameCTRL.errors?.['minlength']">Min 3 characters</span>
+                    </div>
                 </div>
-                <div class="input-container">
+
+                <div class="input-container" [class.error]="lastNameCTRL.invalid && lastNameCTRL.touched">
                     <img [src]="user_icon" alt="ln" class="input-icon"/>
-                    <input type="text" placeholder="Last name" class="input-field">
-                </div>
-                <div class="input-container">
-                    <img [src]="calendar_icon" alt="ln" class="input-icon"/>
                     <input type="text"
-                           placeholder="Birth date e.g.: 1993-12-20" class="input-field">
+                           placeholder="Last name"
+                           class="input-field"
+                           required
+                           name="lastName"
+                           minlength="3"
+                           [(ngModel)]="registerData.userDataRequest.lastName"
+                           #lastNameCTRL="ngModel"
+                    >
+                    <div *ngIf="lastNameCTRL.invalid && lastNameCTRL.touched">
+                        <span *ngIf="lastNameCTRL.errors?.['required']">Last name is required</span>
+                        <span *ngIf="lastNameCTRL.errors?.['minlength']">Min 3 characters</span>
+                    </div>
                 </div>
-                <div class="input-container">
+
+                <div class="input-container" [class.error]="(birthDateCTRL.invalid || !isUserAdult(registerData.userDataRequest.dateOfBirth)) && birthDateCTRL.touched" >
+                    <img [src]="calendar_icon" alt="ln" class="input-icon"/>
+                    <input
+                           (focusin)="birthDateVisible = true"
+                           (focusout)="birthDateVisible = false"
+                           placeholder="Birth date e.g.: 1993-12-20"
+                           class="input-field"
+                           required
+                           name="dateOfBirth"
+                           [(ngModel)]="registerData.userDataRequest.dateOfBirth"
+                           #birthDateCTRL="ngModel"
+                           [type]="birthDateVisible ? 'date' : 'text'"
+                    >
+                    <div *ngIf="birthDateCTRL.invalid && birthDateCTRL.touched">
+                        <span *ngIf="birthDateCTRL.errors?.['required']">Birth date is required</span>
+                    </div>
+                    <div *ngIf="birthDateCTRL.touched && !isUserAdult(registerData.userDataRequest.dateOfBirth)">
+                       <span *ngIf="!birthDateCTRL.errors?.['required']
+                        && !isUserAdult(registerData.userDataRequest.dateOfBirth)">The user must be 18 years old</span>
+                    </div>
+
+                </div>
+
+                <div class="input-container" [class.error]="phoneNumberCTRL.invalid && phoneNumberCTRL.touched">
                     <img [src]="phone_icon" alt="phone" class="input-icon"/>
                     <input type="text"
-                           placeholder="Phone number" class="input-field">
+                           placeholder="Phone number"
+                           class="input-field"
+                           required
+                           name="phoneNumber"
+                           [(ngModel)]="registerData.userDataRequest.phoneNumber"
+                           #phoneNumberCTRL="ngModel">
+                    <div *ngIf="phoneNumberCTRL.invalid && phoneNumberCTRL.touched">
+                        <span *ngIf="phoneNumberCTRL.errors?.['required']">Phone number is required</span>
+                    </div>
                 </div>
 
-                <div class="action-container">
-                    <div class="button-confirm" (click)="register()">
-                        <p>Register</p>
+                <div class="action-container" >
+
+                    <div class="button-clear" (click)="clearRegisterForm(registerForm)">
+                        <p>Clear</p>
                     </div>
-                    <div class="button-rejected" (click)="close()">
-                        <p>Cancel</p>
+
+                    <div class="action-container" (click)="onSubmit(registerForm)">
+                        <div class="button-confirm"
+
+                             [class.disabled]="registerForm.invalid || !isUserAdult(registerData.userDataRequest.dateOfBirth) || !isPasswordEquals()"
+                             (click)="register(registerForm)">
+                            <p>Register</p>
+                        </div>
+
+                        <div class="button-rejected" (click)="close()">
+
+                            <p>Cancel</p>
+                        </div>
+
                     </div>
                 </div>
-            </div>
+
+            </form>
         </div>
     </div>
 </div>

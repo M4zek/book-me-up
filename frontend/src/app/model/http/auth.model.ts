@@ -32,3 +32,17 @@ export interface RefreshTokenResponse {
     accessToken: string,
     refreshToken: string
 }
+
+export interface UserDataRequest {
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    phoneNumber: string,
+    photo: string | null,
+}
+
+export interface UserAccountRequest{
+    addressEmail: string;
+    password: string;
+    userDataRequest: UserDataRequest;
+}
