@@ -9,7 +9,10 @@ import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
+import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
 import com.m4zek.backend.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,8 @@ import java.util.List;
 
 @Service
 public class CompanyService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
@@ -127,6 +132,29 @@ public class CompanyService {
         return new PageImpl<>(responseList, pageable, companyUserRoles.getTotalElements());
     }
 
+    // Method to change user role in company based on companyId, employeeId(USER ID) and new role from body
+    public EmployeeDetailsResponse updateEmployeeRoleInCompany(int companyId, int employeeId, UserCompanyRoleRequest body) {
+        CompanyUserRole companyUserRoleRelation = this.companyUserRoleRepository.findByUserIdAndCompanyId(employeeId, companyId)
+                .orElseThrow(() -> new CompanyNotFoundException("Employee with id " + employeeId + " not found in company with id " + companyId));
+
+
+        String oldRoleTxt = companyUserRoleRelation.getRole().getName();
+        String newRoleTxt = body.getRole().toString();
+
+        CompanyRole newRole = this.companyRoleRepository.findByName(newRoleTxt)
+                .orElseThrow(() -> new CompanyNotFoundException("Role with name " + newRoleTxt + " not found"));
+
+        companyUserRoleRelation.assignRole(newRole);
+        this.companyUserRoleRepository.save(companyUserRoleRelation);
+
+
+        logger.info("Employee[{}] in Company[{}] has change role from [{}] to [{}]", employeeId, companyId, oldRoleTxt, newRoleTxt);
+
+        return UserMapper.toEmployeeDetailsResponse(
+                companyUserRoleRelation.getUser(),
+                companyUserRoleRelation.getRole().getName()
+        );
+    }
 
     /* ************************************
                  PRIVATE METHODS

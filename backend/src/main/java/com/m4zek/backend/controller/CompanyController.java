@@ -1,10 +1,12 @@
 package com.m4zek.backend.controller;
 
+import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
 import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
 import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
+import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
 import com.m4zek.backend.service.CompanyService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -57,6 +59,18 @@ public class CompanyController {
             Pageable pageable
     ){
         return ResponseEntity.ok(this.companyService.findEmployeesDetailsByCompanyId(company_id, pageable));
+    }
+
+    // Endpoint for changing user role in company
+    @PatchMapping("/v1/companies/{companyId}/employees/{employeeId}/role")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
+    public ResponseEntity<EmployeeDetailsResponse> updateEmployeeRole(
+            @PathVariable int companyId,
+            @PathVariable int employeeId,
+            @RequestBody @Valid UserCompanyRoleRequest userCompanyRoleRequest
+    ){
+        return ResponseEntity.ok(this.companyService.updateEmployeeRoleInCompany(companyId, employeeId, userCompanyRoleRequest));
     }
 
     // --------------- PUBLIC ENDPOINTS ---------------

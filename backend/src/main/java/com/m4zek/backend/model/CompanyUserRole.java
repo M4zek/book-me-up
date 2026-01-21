@@ -38,5 +38,9 @@ public class CompanyUserRole {
     }
 
     public Company getCompany() {return this.company;}
+
+    public void assignRole(CompanyRole role) {
+        this.role = role;
+    }
 }
 
