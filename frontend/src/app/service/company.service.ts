@@ -2,8 +2,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {CompanyOfferSearch, Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
-    CompanyDetailsResponse, CompanyEmployeeDetailsResponse,
-    CompanyHours, CompanyOfferRequest,
+    CompanyDetailsResponse,
+    CompanyEmployeeDetailsResponse,
+    CompanyHours,
+    CompanyOfferRequest,
     CompanyOffersResponse,
     CompanyPortfolioResponse,
     CompanySummaryResponse,
@@ -78,6 +80,13 @@ export class CompanyService {
     getCompanyEmployees(companyId: number) {
         const url = `/api/v1/companies/${companyId}/employees`;
         return this.http.get<EmployeeSummaryResponse[]>(url, {observe: 'response'});
+    }
+
+    // Method to send request to backend for change employee role in company based on employe id and company id.
+    updateEmployeeRole(companyId: number, employeeId: number, role: string) {
+      const url = `/api/v1/companies/${companyId}/employees/${employeeId}/role`;
+      const body = {role: role};
+      return this.http.patch<CompanyEmployeeDetailsResponse>(url, body, {observe: 'response'});
     }
 
     getCompanyBusinessHours(companyId: number) {

@@ -18,7 +18,9 @@
 
 
     <div class="full-size">
+
         <app-double-spinner *ngIf="isEmployeesLoading"/>
+
         <div class="card-container" *ngIf="!isEmployeesLoading">
             <div class="profile-card" *ngFor="let employee of employeeList">
                 <img [src]="'data:image/jpeg;base64,' + employee.avatar" alt="Profile photo" class="avatar" />
@@ -28,7 +30,7 @@
                         [noneValue]="false"
                         [options]="roles"
                         [selectedOption]="getEmployeeRole(employee.role_in_company)"
-                        (valueChanged)="onRoleChanged($event)"
+                        (valueChanged)="onRoleChanged($event, employee)"
                 />
                 <p class="email">{{ employee.email }}</p>
                 <p class="phone">{{ employee.phone }}</p>

@@ -11,6 +11,8 @@ import {CompanyContextService} from "../../../service/company-context.service";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyEmployeeDetailsResponse} from "../../../model/http/company.model";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
+import {ConfirmService} from "../../../service/confirm.service";
+import {ToastService} from "../../../service/toast.service";
 
 
 @Component({
@@ -43,7 +45,10 @@ export class CompanyManagementEmployeeComponent implements OnInit {
 
   employeeList: CompanyEmployeeDetailsResponse[] = [];
 
-  constructor(private ctx: CompanyContextService, private companyService: CompanyService) {
+  constructor(private ctx: CompanyContextService,
+              private toast: ToastService,
+              private confirmService: ConfirmService,
+              private companyService: CompanyService) {
   }
 
   ngOnInit() {
@@ -55,7 +60,6 @@ export class CompanyManagementEmployeeComponent implements OnInit {
     this.isDataEditable = this.ctx.isOwnerLoggedIn();
     this.initEmployeeList();
   }
-
 
 
    protected getEmployeeRole(role: string) {
@@ -101,8 +105,50 @@ export class CompanyManagementEmployeeComponent implements OnInit {
       this.initEmployeeList();
   }
 
-  protected onRoleChanged($event: DropDownListItem) {
-      const role: string = $event.content;
-      console.log(role);
+  // Listen to changed role event.
+  async onRoleChanged($event: DropDownListItem, employee: CompanyEmployeeDetailsResponse) {
+      const role: string =  `COMPANY_${$event.content.toUpperCase()}`;
+
+      const refEmpl = {...employee}
+
+      if(role!==employee.role_in_company.toUpperCase()) {
+          const message = `Are you sure you want to change the roles from 
+          ${employee.role_in_company.split("_")[1].toLowerCase()} 
+          to ${role.split("_")[1].toLowerCase()} for ${employee.firstName} ${employee.lastName}?`
+
+          const result = await this.confirmService.open(message);
+          let company_id = this.ctx.getCompany()?.id;
+
+          if (result && company_id) {
+              this.companyService.updateEmployeeRole(company_id, employee.id, role).subscribe({
+                  next: result => {
+                      if (result.status == 200 && result.body) {
+                          const updatedEmployee = result.body as CompanyEmployeeDetailsResponse;
+                          this.onEmployeeChanged(updatedEmployee);
+                          this.toast.show("Role has been changed","success");
+                      }
+                  }, error: error => {
+                      console.error(error);
+                      this.onEmployeeChanged(refEmpl);
+                  }
+              })
+              return
+          }
+      }
+      this.onEmployeeChanged(refEmpl);
   }
+
+
+  protected onEmployeeChanged(employee: CompanyEmployeeDetailsResponse) {
+      const index = this.employeeList.findIndex(
+          e => e.id === employee.id
+      );
+
+      console.log(index);
+
+      if (index !== -1) {
+          this.employeeList[index] = employee;
+      }
+  }
+
 }
