@@ -85,6 +85,8 @@ public class CompanyController {
 
     // Endpoint for hiring new employees
     @PostMapping("/v1/companies/{companyId}/employees/hire")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
     public ResponseEntity<List<EmployeeDetailsResponse>> hireEmployees(
             @PathVariable int companyId,
             @Valid @RequestBody EmployeeHireRequest employeeHireRequest
