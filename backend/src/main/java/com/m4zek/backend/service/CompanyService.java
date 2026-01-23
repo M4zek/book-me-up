@@ -2,6 +2,7 @@ package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.exception.EmployeeAlreadyHireException;
 import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.mapper.CompanyMapper;
 import com.m4zek.backend.mapper.ReviewMapper;
@@ -9,6 +10,7 @@ import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
+import com.m4zek.backend.model.dto.write.EmployeeHireRequest;
 import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
 import com.m4zek.backend.repository.*;
 import org.slf4j.Logger;
@@ -18,8 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -154,6 +158,44 @@ public class CompanyService {
                 companyUserRoleRelation.getUser(),
                 companyUserRoleRelation.getRole().getName()
         );
+    }
+
+    // Method for dismiss employee from company
+    public void dismissEmployeeFromCompany(int companyId, int employeeId) {
+        CompanyUserRole companyUserRole = this.companyUserRoleRepository.findByUserIdAndCompanyId(employeeId, companyId)
+                .orElseThrow(() -> new CompanyNotFoundException("Employee not found in company"));
+        this.companyUserRoleRepository.delete(companyUserRole);
+        logger.info("Employee was dismissed from Company[{}]", companyUserRole.getCompany().getName());
+    }
+
+    // Method to hire new employees to company based on user ids
+    public List<EmployeeDetailsResponse> hireEmployeeToCompany(int companyId, EmployeeHireRequest body) {
+
+        for (Integer employeeId : body.getEmployeeIds()) {
+            Optional<CompanyUserRole> cur = this.companyUserRoleRepository.findByUserIdAndCompanyId(employeeId, companyId);
+            if(cur.isPresent()) {
+                UserData user = cur.get().getUser().getUserData();
+                throw new EmployeeAlreadyHireException(String.format("Employee %s %s already hired", user.getFirstName(), user.getLastName()));
+            }
+        }
+
+        CompanyRole employeeRole = this.companyRoleRepository.findByName("COMPANY_EMPLOYEE")
+                .orElseThrow(() -> new RuntimeException("Company role not found"));
+
+        Company company = this.companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        List<EmployeeDetailsResponse> newHiredEmployees = new ArrayList<>();
+
+        for(Integer employeeId : body.getEmployeeIds()) {
+            User newEmployee = this.userRepository.findById(employeeId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            CompanyUserRole companyUserRole = this.companyUserRoleRepository.save(new CompanyUserRole(newEmployee, company, employeeRole));
+            EmployeeDetailsResponse response = UserMapper.toEmployeeDetailsResponse(companyUserRole.getUser(), companyUserRole.getRole().getName());
+            newHiredEmployees.add(response);
+        }
+        logger.info("New employee [{}] was assign to company[{}]",newHiredEmployees.size(), company.getName());
+        return newHiredEmployees;
     }
 
     /* ************************************

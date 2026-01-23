@@ -84,6 +84,17 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EmployeeAlreadyHireException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleCompanyNotFound(EmployeeAlreadyHireException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(ReservationNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleReservationNotFound(ReservationNotFoundException e, WebRequest request) {

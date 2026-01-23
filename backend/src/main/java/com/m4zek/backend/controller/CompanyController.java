@@ -6,6 +6,7 @@ import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
 import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.write.CompanyRequest;
+import com.m4zek.backend.model.dto.write.EmployeeHireRequest;
 import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
 import com.m4zek.backend.service.CompanyService;
 import jakarta.transaction.Transactional;
@@ -73,6 +74,23 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.updateEmployeeRoleInCompany(companyId, employeeId, userCompanyRoleRequest));
     }
 
+    // Endpoint for employee dismissal
+    @DeleteMapping("/v1/companies/{companyId}/employee/{employeeId}/dismiss")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
+    public ResponseEntity<?> dismissEmployee(@PathVariable int companyId, @PathVariable int employeeId){
+        this.companyService.dismissEmployeeFromCompany(companyId, employeeId);
+        return ResponseEntity.ok().build();
+    }
+
+    // Endpoint for hiring new employees
+    @PostMapping("/v1/companies/{companyId}/employees/hire")
+    public ResponseEntity<List<EmployeeDetailsResponse>> hireEmployees(
+            @PathVariable int companyId,
+            @Valid @RequestBody EmployeeHireRequest employeeHireRequest
+    ){
+        return  ResponseEntity.ok(this.companyService.hireEmployeeToCompany(companyId, employeeHireRequest));
+    }
     // --------------- PUBLIC ENDPOINTS ---------------
 
     // Reading the recommended companies (basic data) based on the best reviews

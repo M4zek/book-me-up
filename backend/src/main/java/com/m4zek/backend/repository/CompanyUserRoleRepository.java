@@ -19,4 +19,6 @@ public interface CompanyUserRoleRepository {
     List<CompanyUserRole> findAllByUserId(int userId);
 
     boolean existsByUserIdAndCompanyIdAndRoleNameIn(int user_id, int company_id, List<String> roles);
+
+    void delete(CompanyUserRole companyUserRole);
 }
