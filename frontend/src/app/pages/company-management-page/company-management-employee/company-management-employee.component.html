@@ -35,7 +35,9 @@
                 <p class="email">{{ employee.email }}</p>
                 <p class="phone">{{ employee.phone }}</p>
 
-                <div class="fire-employee" (click)="fireEmployee(employee.id)">
+                <div class="fire-employee"
+                     *ngIf="employee.role_in_company.toUpperCase() !== 'COMPANY_OWNER'"
+                     (click)="fireEmployee(employee)">
                     <img [src]="'icons/reject_icon.svg'" alt="remove"/>
                     <div class="expand">
                         <p>Fire employee</p>

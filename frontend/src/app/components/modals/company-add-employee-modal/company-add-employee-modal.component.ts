@@ -34,31 +34,6 @@ export class CompanyAddEmployeeModalComponent {
             id: 1,
             name: 'John Doe',
             avatar: 'images/user_default_avatar.png',
-        },
-        {
-            id: 2,
-            name: 'John Doe',
-            avatar: 'images/user_default_avatar.png',
-        },
-        {
-            id: 3,
-            name: 'John Doe',
-            avatar: 'images/user_default_avatar.png',
-        },
-        {
-            id: 4,
-            name: 'John Doe',
-            avatar: 'images/user_default_avatar.png',
-        },
-        {
-            id: 5,
-            name: 'John Doe',
-            avatar: 'images/user_default_avatar.png',
-        },
-        {
-            id: 6,
-            name: 'John Doe',
-            avatar: 'images/user_default_avatar.png',
         }
     ];
 
@@ -96,4 +71,9 @@ export class CompanyAddEmployeeModalComponent {
         return this.selectedEmployee.some(emp => emp.id === employeeId);
     }
 
+    protected onSearchClick() {
+        if(this.searchModel !== '') {
+            // Todo send request
+        }
+    }
 }

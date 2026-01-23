@@ -89,7 +89,25 @@ export class CompanyManagementEmployeeComponent implements OnInit {
       })
   }
 
-  fireEmployee(id: number) {
+  async fireEmployee(employee: CompanyEmployeeDetailsResponse) {
+      const result = await this.confirmService.open(`Are you sure to fire ${employee.firstName} ${employee.lastName} ?`);
+      const company_id = this.ctx.getCompany()?.id;
+
+      if(result && company_id) {
+          const employee_id = employee.id;
+
+          this.companyService.fireEmployee(company_id, employee_id).subscribe({
+              next: (result) => {
+                  if(result.status == 200) {
+                      this.employeeList = this.employeeList.filter(employee => employee.id !== employee_id);
+                      this.toast.show(`Employee ${employee.firstName} ${employee.lastName} successfully fired`, "success");
+                  }
+              }, error: (err) => {
+                  console.log(err);
+                  this.toast.show("Something went wrong!", "error");
+              }
+          })
+      }
 
   }
 

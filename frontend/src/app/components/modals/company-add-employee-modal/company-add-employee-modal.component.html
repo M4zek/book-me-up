@@ -7,10 +7,10 @@
 
         <div class="parent">
 
-            <div class="search-bar">
+            <form class="search-bar">
                 <input type="text" [(ngModel)]="searchModel" placeholder="Search by name or surname">
-                <img [src]="'icons/search_icon.svg'" alt="search"/>
-            </div>
+                <img [src]="'icons/search_icon.svg'" alt="search" (click)="onSearchClick()">
+            </form>
 
             <div class="search-employee-container">
                 <div class="search-employee-list">
@@ -28,7 +28,7 @@
             </div>
 
             <div class="added-employee-preview-list" *ngIf="selectedEmployee.length > 0">
-                <h2>Added employee</h2>
+                <h2>Added employee - {{selectedEmployee.length}}</h2>
                 <div class="search-employee-list">
                     <div class="employee-item added"
                          *ngFor="let empl of selectedEmployee"
@@ -45,6 +45,7 @@
 
         <div class="edit-container-buttons">
             <div class="btn-container"
+                 [class.disabled]="selectedEmployee.length === 0"
                  (click)="confirm()">
                 <img [src]="'icons/confirm_icon.svg'" alt="search" />
                 <div class="expand">

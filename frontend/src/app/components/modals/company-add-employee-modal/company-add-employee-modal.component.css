@@ -96,6 +96,7 @@ h2{
     gap: 10px;
     padding: 5px;
     overflow: auto;
+    min-height: 250px;
     max-height: 250px;
 }
 

@@ -89,6 +89,11 @@ export class CompanyService {
       return this.http.patch<CompanyEmployeeDetailsResponse>(url, body, {observe: 'response'});
     }
 
+    fireEmployee(company_id: number, employee_id: number) {
+      const url = `/api/v1/companies/${company_id}/employee/${employee_id}/dismiss`;
+      return this.http.delete(url, {observe: 'response'});
+    }
+
     getCompanyBusinessHours(companyId: number) {
       const url = `/api/v1/companies/${companyId}/hours`;
       return this.http.get<CompanyHours[]>(url, {observe: 'response'});
