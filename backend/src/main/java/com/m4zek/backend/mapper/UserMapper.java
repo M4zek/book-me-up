@@ -5,11 +5,11 @@ import com.m4zek.backend.model.UserData;
 import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
+import com.m4zek.backend.model.dto.read.UserToHiredResponse;
 import com.m4zek.backend.security.service.MyUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,4 +72,16 @@ public class UserMapper {
     }
 
 
+    public static UserToHiredResponse userToUserToHiredResponse(User user) {
+        return UserToHiredResponse.builder()
+                .id(user.getId())
+                .firstName(user.getUserData().getFirstName())
+                .lastName(user.getUserData().getLastName())
+                .companyIds(user.getCompanyUserRoles().stream()
+                        .map(cur -> cur.getCompany().getId())
+                        .collect(Collectors.toList())
+                )
+                .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
+                .build();
+    }
 }

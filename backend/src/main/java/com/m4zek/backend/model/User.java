@@ -40,6 +40,11 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL
+    )
+    private List<CompanyUserRole> companyUserRoles = new ArrayList<>();
 
     public User() {}
 
@@ -86,5 +91,9 @@ public class User extends BaseEntity {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public List<CompanyUserRole> getCompanyUserRoles() {
+        return companyUserRoles;
     }
 }
