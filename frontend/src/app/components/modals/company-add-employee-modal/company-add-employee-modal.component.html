@@ -8,22 +8,36 @@
         <div class="parent">
 
             <form class="search-bar">
-                <input type="text" [(ngModel)]="searchModel" placeholder="Search by name or surname">
+
+                <input type="text"
+                       [(ngModel)]="searchModel.firstName"
+                       name="firstName"
+                       placeholder="Search by name">
+
+                <input type="text"
+                       [(ngModel)]="searchModel.lastName"
+                       name="lastName"
+                       placeholder="Search by surname">
+
                 <img [src]="'icons/search_icon.svg'" alt="search" (click)="onSearchClick()">
+                <img [src]="'icons/reject_icon.svg'" alt="clear">
+
             </form>
 
             <div class="search-employee-container">
                 <div class="search-employee-list">
+                    <app-double-spinner *ngIf="isUsersLoading"/>
                     <div class="employee-item"
                          *ngFor="let employee of searchEmployeeList"
                          (click)="addEmployeeToSelected(employee)"
-                         [ngClass]="{'disabled': isEmployeeSelected(employee.id)}"
+                         [class.disabled]="isEmployeeSelected(employee.id) || isEmployeeAlreadyHired(employee.id)"
                     >
                         <img [src]="employee.avatar" alt="Avatar"/>
-                        <h2>{{employee.name}}</h2>
+                        <h2>{{employee.firstName}} {{employee.lastName}}</h2>
                     </div>
-                </div>
 
+
+                </div>
                 <app-paginator [pagination]="paginator"></app-paginator>
             </div>
 
@@ -35,7 +49,7 @@
                          (click)="removeEmployeeFromSelected(empl.id)"
                     >
                         <img [src]="empl.avatar" alt="Avatar"/>
-                        <h2>{{empl.name}}</h2>
+                        <h2>{{empl.firstName}} {{empl.lastName}}</h2>
                     </div>
                 </div>
             </div>

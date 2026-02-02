@@ -10,3 +10,10 @@ export interface UserResponse {
     avatar: string | null;
 }
 
+export interface UserHireDetails {
+    id: number;
+    firstName: string;
+    lastName: string;
+    companyIds: number[];
+    avatar: string | null;
+}

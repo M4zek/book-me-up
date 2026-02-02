@@ -70,7 +70,7 @@ h2{
     outline: none;
     color: var(--white);
     border: none;
-    text-align: center;
+    text-align: left;
     font: 1.1rem "Times New Roman", sans-serif;
     height: 30px;
     background-color: transparent;
