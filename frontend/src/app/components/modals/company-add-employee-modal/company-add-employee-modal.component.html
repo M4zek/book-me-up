@@ -20,7 +20,7 @@
                        placeholder="Search by surname">
 
                 <img [src]="'icons/search_icon.svg'" alt="search" (click)="onSearchClick()">
-                <img [src]="'icons/reject_icon.svg'" alt="clear">
+                <img [src]="'icons/reject_icon.svg'" alt="clear" (click)="clearForm()">
 
             </form>
 
@@ -30,15 +30,17 @@
                     <div class="employee-item"
                          *ngFor="let employee of searchEmployeeList"
                          (click)="addEmployeeToSelected(employee)"
-                         [class.disabled]="isEmployeeSelected(employee.id) || isEmployeeAlreadyHired(employee.id)"
+                         [class.disabled]="isEmployeeSelected(employee.id)"
+                         [class.hired]="isEmployeeAlreadyHired(employee.companyIds)"
                     >
-                        <img [src]="employee.avatar" alt="Avatar"/>
+                        <img [src]="'data:image/jpeg;base64,' + employee.avatar" *ngIf="employee.avatar !== '' && employee.avatar" alt="Avatar"/>
+                        <img [src]="'images/user_default_avatar'" *ngIf="!employee.avatar" alt="Avatar"/>
                         <h2>{{employee.firstName}} {{employee.lastName}}</h2>
                     </div>
 
 
                 </div>
-                <app-paginator [pagination]="paginator"></app-paginator>
+                <app-paginator [pagination]="paginator" (paginatorChanged)="onPaginatorChanged($event)"></app-paginator>
             </div>
 
             <div class="added-employee-preview-list" *ngIf="selectedEmployee.length > 0">
@@ -48,7 +50,8 @@
                          *ngFor="let empl of selectedEmployee"
                          (click)="removeEmployeeFromSelected(empl.id)"
                     >
-                        <img [src]="empl.avatar" alt="Avatar"/>
+                        <img [src]="'data:image/jpeg;base64,' + empl.avatar" *ngIf="empl.avatar !== '' && empl.avatar" alt="Avatar"/>
+                        <img [src]="'images/user_default_avatar'" *ngIf="!empl.avatar" alt="Avatar"/>
                         <h2>{{empl.firstName}} {{empl.lastName}}</h2>
                     </div>
                 </div>

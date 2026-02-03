@@ -37,7 +37,7 @@ export class CompanyAddEmployeeModalComponent {
     paginator: Pagination = {
         totalItems: this.searchEmployeeList.length,
         itemsPerPage: 5,
-        currentPage: 1,
+        currentPage: 0,
         itemsPerPageOptions: [5,10,15,20]
     }
 
@@ -73,10 +73,10 @@ export class CompanyAddEmployeeModalComponent {
         return this.selectedEmployee.some(emp => emp.id === employeeId);
     }
 
-    isEmployeeAlreadyHired(employeeId: number): boolean {
-        let company_id = this.ctx.getCompany()?.id;
-        if (company_id) {
-            return this.searchEmployeeList.some(emp => emp.companyIds.some(id => id === employeeId));
+    isEmployeeAlreadyHired(companyIds: number[]): boolean {
+        let companyId = this.ctx.getCompany()?.id;
+        if (companyId) {
+            return companyIds.includes(companyId);
         }
         return false;
     }
@@ -99,6 +99,7 @@ export class CompanyAddEmployeeModalComponent {
                 }, error: (err) => {
                     this.isUsersLoading = false;
                     console.log(err);
+                    this.clearForm();
                 }
             })
         }
@@ -107,5 +108,20 @@ export class CompanyAddEmployeeModalComponent {
     // Simple method to check field is not empty
     protected isSearchModelCorrect() {
         return this.searchModel.lastName !== '' || this.searchModel.firstName !== '';
+    }
+
+    protected onPaginatorChanged($event: void) {
+        this.onSearchClick();
+    }
+
+    protected clearForm() {
+        this.searchModel = {
+            firstName: '',
+            lastName: '',
+        }
+
+        this.searchEmployeeList = [];
+        this.selectedEmployee = [];
+        this.paginator.totalItems = this.searchEmployeeList.length;
     }
 }

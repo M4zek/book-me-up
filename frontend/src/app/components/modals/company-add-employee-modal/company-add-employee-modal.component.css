@@ -70,10 +70,20 @@ h2{
     outline: none;
     color: var(--white);
     border: none;
-    text-align: left;
+    text-align: center;
     font: 1.1rem "Times New Roman", sans-serif;
     height: 30px;
     background-color: transparent;
+}
+
+
+.search-bar > img{
+    width: 50px;
+    transition: all .3s ease;
+}
+
+.search-bar > img:active{
+    rotate: 45deg;
 }
 
 .search-employee-container{
@@ -118,6 +128,8 @@ h2{
 
 .employee-item img{
     width: 30px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
 }
 
 .employee-item.disabled{
@@ -125,6 +137,15 @@ h2{
     opacity: 0.5;
     background-color: var(--pink_25);
     user-select: none;
+}
+
+
+.employee-item.hired{
+    pointer-events: none;
+    opacity: 0.5;
+    background-color: var(--white-50);
+    user-select: none;
+    border-radius: 5px;
 }
 
 .employee-item p {
