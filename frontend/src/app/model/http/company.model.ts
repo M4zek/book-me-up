@@ -41,6 +41,16 @@ export interface EmployeeSummaryResponse{
     avatar: string
 }
 
+export interface EmployeeDetailsResponse{
+    id: number,
+    firstName: string,
+    lastName: string,
+    phone: string,
+    email: string,
+    role_in_company: string,
+    avatar: string | null,
+}
+
 export interface CompanyDetailsResponse {
     id: number,
     name: string,

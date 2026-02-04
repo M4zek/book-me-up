@@ -8,6 +8,7 @@ import {CompanyService} from "../../../service/company.service";
 import {UserService} from "../../../service/user.service";
 import {UserHireDetails} from "../../../model/http/user.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
+import {EmployeeDetailsResponse} from "../../../model/http/company.model";
 
 
 @Component({
@@ -34,6 +35,8 @@ export class CompanyAddEmployeeModalComponent {
     searchEmployeeList: UserHireDetails[] = [];
     selectedEmployee: UserHireDetails[] = [];
 
+    resultEmployeeList: EmployeeDetailsResponse[] = [];
+
     paginator: Pagination = {
         totalItems: this.searchEmployeeList.length,
         itemsPerPage: 5,
@@ -42,6 +45,8 @@ export class CompanyAddEmployeeModalComponent {
     }
 
     isUsersLoading = false;
+
+    isHireProcessing = false;
 
     constructor(private ctx: CompanyContextService,
                 private companyService: CompanyService,
@@ -53,7 +58,24 @@ export class CompanyAddEmployeeModalComponent {
     }
 
     confirm() {
-
+        let company_id = this.ctx.getCompany()?.id;
+        if(this.selectedEmployee.length > 0 && company_id){
+            this.isUsersLoading = true;
+            let user_ids = this.selectedEmployee.map(employee => {
+                return employee.id;
+            })
+            this.companyService.hireEmployeesToCompany(company_id, user_ids).subscribe({
+                next: result => {
+                    if(result.body && result.status === 200){
+                        this.resultEmployeeList = result.body;
+                    }
+                    this.isHireProcessing = false;
+                }, error: err => {
+                    console.log(err);
+                    this.isHireProcessing = false;
+                }
+            })
+        }
     }
 
     addEmployeeToSelected(employee: UserHireDetails) {
@@ -86,6 +108,7 @@ export class CompanyAddEmployeeModalComponent {
         let company_id = this.ctx.getCompany()?.id;
 
         if(this.isSearchModelCorrect() && company_id) {
+            this.searchEmployeeList = [];
             this.isUsersLoading = true;
             this.userService.searchUsersByNameAndSurname(this.searchModel, this.paginator).subscribe({
                 next: (response) => {
@@ -123,5 +146,14 @@ export class CompanyAddEmployeeModalComponent {
         this.searchEmployeeList = [];
         this.selectedEmployee = [];
         this.paginator.totalItems = this.searchEmployeeList.length;
+    }
+
+    protected onResultClickOkAndResetModal() {
+        this.searchModel = { firstName: "", lastName: "" };
+        this.isHireProcessing = false;
+        this.isUsersLoading = false;
+        this.resultEmployeeList = [];
+        this.selectedEmployee = [];
+        this.searchEmployeeList = [];
     }
 }

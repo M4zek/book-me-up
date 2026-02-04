@@ -9,6 +9,7 @@ import {
     CompanyOffersResponse,
     CompanyPortfolioResponse,
     CompanySummaryResponse,
+    EmployeeDetailsResponse,
     EmployeeSummaryResponse,
     UserCompanyResponse
 } from "../model/http/company.model";
@@ -146,5 +147,12 @@ export class CompanyService {
       return this.http.patch<CompanyOffersResponse>(req_url, body, {observe: 'response'});
   }
 
+
+  // Method to send request to the backend to hire employee in the company base od user ids and company id.
+  hireEmployeesToCompany(company_id: number, employeeIds: number[]){
+      let url = `/api/v1/companies/${company_id}/employees/hire`
+      let body = {employeeIds: employeeIds};
+      return this.http.post<EmployeeDetailsResponse[]>(url, body, {observe: 'response'});
+  }
 
 }
