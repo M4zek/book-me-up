@@ -17,6 +17,7 @@ import java.net.URI;
 @RequestMapping("api/v1/addresses")
 public class AddressController {
 
+    // TODO This controller will be remove because all operation with addresses will be processing in CompanyController
 
     private final AddressService addressService;
 

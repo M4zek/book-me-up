@@ -1,25 +1,25 @@
 package com.m4zek.backend.service;
 
-import com.m4zek.backend.exception.CategoryNotFoundException;
-import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.exception.EmployeeAlreadyHireException;
-import com.m4zek.backend.exception.UserNotFoundException;
+import com.m4zek.backend.exception.*;
+import com.m4zek.backend.mapper.AddressMapper;
 import com.m4zek.backend.mapper.CompanyMapper;
 import com.m4zek.backend.mapper.ReviewMapper;
 import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.*;
-import com.m4zek.backend.model.dto.write.CompanyRequest;
-import com.m4zek.backend.model.dto.write.EmployeeHireRequest;
-import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
+import com.m4zek.backend.model.dto.write.*;
 import com.m4zek.backend.repository.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -196,6 +196,56 @@ public class CompanyService {
         }
         logger.info("New employee [{}] was assign to company[{}]",newHiredEmployees.size(), company.getName());
         return newHiredEmployees;
+    }
+
+    // Method to update company name or logo based on company id.
+    public CompanyDetailsResponse updateCompanyNameOrLogo(int companyId, CompanyProfileRequest body, MultipartFile logo) {
+        Company company = this.getCompany(companyId);
+
+        if(logo != null) {
+            try{
+                byte[] logoBytes = logo.getBytes();
+                company.assignLogo(logoBytes);
+            } catch (IOException exception){
+                throw new ImageException(exception.getMessage());
+            }
+        }
+
+        if(body != null && !body.getName().isEmpty()){
+            String newCompanyName = body.getName();
+            company.setName(newCompanyName);
+        }
+
+        List<Object[]> reviews = this.reviewRepository.findAllByCompanyId(companyId);
+        ReviewStatisticsResponse reviewStatisticsResponse = ReviewMapper.reviewsToReviewsResponse(reviews);
+
+        return CompanyMapper.companyToCompanyDetailsResponse(this.companyRepository.save(company), reviewStatisticsResponse);
+    }
+
+    // Method to update company description based on company id.
+    public CompanyDetailsResponse updateCompanyDescription(@Positive(message = "Company id must be positive number") int companyId, @Valid CompanyDescriptionRequest companyDescriptionRequest) {
+        Company company = this.getCompany(companyId);
+
+        if(companyDescriptionRequest != null &&
+                company.getDescription().length() != companyDescriptionRequest.getDescription().length()) {
+            company.setDescription(companyDescriptionRequest.getDescription());
+        }
+
+        List<Object[]> reviews = this.reviewRepository.findAllByCompanyId(companyId);
+        ReviewStatisticsResponse reviewStatisticsResponse = ReviewMapper.reviewsToReviewsResponse(reviews);
+
+        return CompanyMapper.companyToCompanyDetailsResponse(this.companyRepository.save(company), reviewStatisticsResponse);
+    }
+
+    public AddressResponse updateCompanyAddress(int companyId, AddressRequest addressRequest) {
+        Company company = this.getCompany(companyId);
+
+        Address oldAddress = company.getAddress();
+        oldAddress.update(addressRequest);
+
+        this.companyRepository.save(company);
+
+        return AddressMapper.addressToAddressResponse(oldAddress);
     }
 
     /* ************************************

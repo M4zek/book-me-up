@@ -1,13 +1,8 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
-import com.m4zek.backend.model.dto.read.CompanyDetailsResponse;
-import com.m4zek.backend.model.dto.read.CompanySummaryResponse;
-import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
-import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
-import com.m4zek.backend.model.dto.write.CompanyRequest;
-import com.m4zek.backend.model.dto.write.EmployeeHireRequest;
-import com.m4zek.backend.model.dto.write.UserCompanyRoleRequest;
+import com.m4zek.backend.model.dto.read.*;
+import com.m4zek.backend.model.dto.write.*;
 import com.m4zek.backend.service.CompanyService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -15,10 +10,12 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
@@ -93,6 +90,47 @@ public class CompanyController {
     ){
         return  ResponseEntity.ok(this.companyService.hireEmployeeToCompany(companyId, employeeHireRequest));
     }
+
+
+    /* ----------------------------------------------- *
+     *       COMPANY DETAILS MANAGEMENT                *
+     * ----------------------------------------------- */
+
+    // Endpoint for update logo or name company
+    @PatchMapping(value = "/v1/companies/{companyId}/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
+    public ResponseEntity<CompanyDetailsResponse> updateCompanyNameAndLogo(
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
+            @RequestPart(value = "data", required = false) @Valid CompanyProfileRequest data,
+            @RequestPart(value = "logo", required = false) MultipartFile logo
+            ){
+        return ResponseEntity.ok(this.companyService.updateCompanyNameOrLogo(companyId, data, logo));
+    }
+
+
+    @PatchMapping("/v1/companies/{companyId}/desc")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
+    public ResponseEntity<CompanyDetailsResponse> updateCompanyDescriptionAndLogo(
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
+            @RequestBody @Valid CompanyDescriptionRequest companyDescriptionRequest
+    ){
+        return ResponseEntity.ok(this.companyService.updateCompanyDescription(companyId, companyDescriptionRequest));
+    }
+
+
+    @PatchMapping("/v1/companies/{companyId}/address")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @HasAnyCompanyRole({"COMPANY_OWNER"})
+    public ResponseEntity<AddressResponse> updateCompanyAddress(
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
+            @RequestBody @Valid AddressRequest addressRequest
+            ){
+        return ResponseEntity.ok(this.companyService.updateCompanyAddress(companyId,addressRequest));
+    }
+
+
     // --------------- PUBLIC ENDPOINTS ---------------
 
     // Reading the recommended companies (basic data) based on the best reviews

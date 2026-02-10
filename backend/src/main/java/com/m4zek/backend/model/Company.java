@@ -57,6 +57,14 @@ public class Company extends BaseEntity{
         this.users.add(companyUserRole);
     }
 
+    public void assignLogo(byte[] logo){
+        this.logo = logo;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
@@ -97,4 +105,7 @@ public class Company extends BaseEntity{
         return portfolioImages.size();
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
