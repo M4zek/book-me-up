@@ -20,6 +20,10 @@ public class CompanyHoursRequest {
     private Boolean isOpen;
 
     @NotBlank(message = "Day of week is required")
+    @Pattern(
+            regexp = "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday",
+            message = "Invalid day of week"
+    )
     private String dayOfWeek;
 
     @Pattern(

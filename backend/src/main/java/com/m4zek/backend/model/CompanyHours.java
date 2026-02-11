@@ -50,6 +50,17 @@ public class CompanyHours extends BaseEntity{
         return closeTime;
     }
 
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public void setOpenTime(String openTime) {
+        this.openTime = openTime;
+    }
+
+    public void setCloseTime(String closeTime) {
+        this.closeTime = closeTime;
+    }
 
     @Override
     public String toString() {
