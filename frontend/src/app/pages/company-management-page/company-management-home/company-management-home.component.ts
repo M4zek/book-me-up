@@ -173,5 +173,9 @@ export class CompanyManagementHomeComponent implements OnInit {
   }
 
 
+  protected onDescChange($event: string) {
+    if(this.companyGUIData)
+      this.companyGUIData.description = $event;
+  }
 }
 

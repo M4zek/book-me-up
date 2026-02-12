@@ -76,7 +76,7 @@
 </div>
 
 <div *ngIf="companyGUIData">
-    <app-company-description-edit-modal [description]="companyGUIData.description" [isVisible]="openEditDescriptionModal" (closeModal)="closeEditModal('editDescriptionModal')"/>
+    <app-company-description-edit-modal [description]="companyGUIData.description" [isVisible]="openEditDescriptionModal" (descriptionChanged)="onDescChange($event)" (closeModal)="closeEditModal('editDescriptionModal')"/>
     <app-company-address-edit-modal [currentLocalization]="companyGUIData.address" [isVisible]="openEditAddressModal" (closeModal)="closeEditModal('editAddressModal')"/>
     <app-company-name-logo-edit-modal [isVisible]="openEditLogoNameModal" [logoAndName]="companyGUIData.name_logo" (closeModal)="closeEditModal('editLogoNameModal')"/>
     <app-company-business-hour-edit-modal [isVisible]="openEditHoursModal" [days]="companyGUIData.hours" (closeModal)="closeEditModal('editHoursModal')"/>

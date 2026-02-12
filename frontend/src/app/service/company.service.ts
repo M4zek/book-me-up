@@ -13,6 +13,7 @@ import {
     EmployeeSummaryResponse,
     UserCompanyResponse
 } from "../model/http/company.model";
+import {LogoName} from "../components/modals/company-name-logo-edit-modal/company-name-logo-edit-modal.component";
 
 @Injectable({
   providedIn: 'root'
@@ -155,4 +156,27 @@ export class CompanyService {
       return this.http.post<EmployeeDetailsResponse[]>(url, body, {observe: 'response'});
   }
 
+  // Method to update logo or company name
+  updateLogoOrNameInCompany(company_id: number, data: LogoName) {
+      let  url: string = `/api/v1/companies/${company_id}/profile`;
+
+      // Convert name data to json
+      let json_data = JSON.stringify({name: data.name});
+      const formData = new FormData();
+
+      // Assigned data to request (name or logo or both)
+      if(data.file) formData.append("logo", data.file)
+      if(data.name) formData.append("data", new Blob([json_data], {type: 'application/json'}));
+
+      return this.http.patch<CompanyDetailsResponse>(url, formData, {observe: 'response'});
+  }
+
+
+  // Method to update company description
+  updateCompanyDescription(company_id: number, desc: string){
+    let  url = `/api/v1/companies/${company_id}/desc`;
+    let body_json_data = {description: desc};
+
+    return this.http.patch<CompanyDetailsResponse>(url, body_json_data, {observe: 'response'});
+  }
 }

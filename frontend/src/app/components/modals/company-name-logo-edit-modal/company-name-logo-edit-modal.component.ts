@@ -3,6 +3,16 @@ import {NgIf} from "@angular/common";
 import {CompanyNameAndLogo} from "../../../model/gui/gui.model";
 import {FormsModule} from "@angular/forms";
 import {ToastService} from "../../../service/toast.service";
+import {CompanyService} from "../../../service/company.service";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyDetailsResponse} from "../../../model/http/company.model";
+import {ConfirmService} from "../../../service/confirm.service";
+
+
+export interface LogoName {
+    name: string | undefined;
+    file: File | undefined;
+}
 
 @Component({
   selector: 'app-company-name-logo-edit-modal',
@@ -30,7 +40,15 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
     companyName: ''
   }
 
-  constructor(private toast: ToastService) {}
+  logoName: LogoName = {file: undefined, name: undefined};
+  file: File | undefined;
+
+
+  constructor(
+      private confirm: ConfirmService,
+      private toast: ToastService,
+              private companyService: CompanyService,
+              private ctx: CompanyContextService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['logoAndName']) {
@@ -44,29 +62,32 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    this.file = input.files?.[0];
 
-    if (!file) return;
+    if (!this.file) return;
 
-    if (!file.type.startsWith('image/')) {
+    if (!this.file.type.startsWith('image/')) {
       this.toast.show("File must be a image", 'error');
       this.resetFile();
       return;
     }
 
     const maxSize = 2 * 1024 * 1024;
-    if (file.size > maxSize) {
+    if (this.file.size > maxSize) {
       this.toast.show("The image can be up to 2 MB in size.", 'error');
       this.resetFile();
       return;
     }
 
     const reader = new FileReader();
+
     reader.onload = () => {
-      this.copyLogoAndName.logo = reader.result as string;
-      this.copyLogoAndName.logoName = file.name;
+        this.copyLogoAndName.logo = reader.result as string;
     };
-    reader.readAsDataURL(file);
+
+    reader.readAsDataURL(this.file);
+
+    this.copyLogoAndName.logoName = this.file.name;
   }
 
   private resetFile() {
@@ -76,19 +97,55 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
 
   close() {
     this.copyLogoAndName = { ...this.logoAndName };
+
+    this.file = undefined;
+    this.logoName = {file: undefined, name: undefined}
+
     this.closeModal.emit();
   }
 
-  confirmEdit() {
-    if(this.isDataChange(this.logoAndName, this.copyLogoAndName)) {
-      console.log(this.copyLogoAndName, this.logoAndName);
-      this.logoAndName.logo = this.copyLogoAndName.logo;
-      this.logoAndName.logoName = this.copyLogoAndName.logoName;
-      this.logoAndName.companyName = this.copyLogoAndName.companyName;
-      this.close();
-    } else {
-      this.toast.show('No changes have been made', 'info')
-    }
+  async confirmEdit() {
+      if(this.isDataChange(this.logoAndName, this.copyLogoAndName)){
+
+          let data: LogoName = {file: undefined, name: undefined};
+          let company_id = this.ctx.getCompany()?.id;
+
+          if(this.logoAndName.logo != this.copyLogoAndName.logo){
+              data.file = this.file;
+          }
+
+          if(this.logoAndName.companyName != this.copyLogoAndName.companyName){
+              data.name = this.copyLogoAndName.companyName;
+          }
+
+          const result = await this.confirm.open("Are you sure to change company logo or name?")
+          if(!result){ return }
+
+          if(company_id){
+              this.companyService.updateLogoOrNameInCompany(company_id, data)
+                  .subscribe({
+                      next: result => {
+                          if(result.body && result.status === 200){
+                              let response = result.body as CompanyDetailsResponse;
+                              this.logoAndName.logo = response.logo;
+                              this.logoAndName.companyName = response.name;
+                              this.close();
+
+                          } else {
+                              this.toast.show("Something went wrong", 'error');
+                          }
+                      }, error: err => {
+                          this.toast.show("Something went wrong", 'error');
+                          console.error(err);
+                      }
+                  })
+
+          } else {
+           this.toast.show("Ups... Something went wrong.", "error");
+          }
+      } else {
+          this.toast.show("No changes have been made", "info");
+      }
   }
 
 
@@ -99,5 +156,20 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
       }
     }
     return false;
+  }
+
+  // Method to get image
+  get logoSrc(): string {
+      const logo = this.copyLogoAndName?.logo;
+
+      if (!logo) {
+          return 'images/default_logo_company.png';
+      }
+
+      if (logo.startsWith('data:image')) {
+          return logo;
+      }
+
+      return `data:image/jpeg;base64,${logo}`;
   }
 }
