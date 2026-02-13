@@ -4,6 +4,8 @@ import {FormsModule} from "@angular/forms";
 import {Address} from "../../../model/gui/gui.model";
 import {MapComponent} from "../../map/map.component";
 import {ToastService} from "../../../service/toast.service";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyService} from "../../../service/company.service";
 
 
 @Component({
@@ -37,19 +39,39 @@ export class CompanyAddressEditModalComponent implements OnInit {
     buildingNumber: '',
   }
 
-  constructor(private toast: ToastService) { }
+  constructor(private toast: ToastService, private ctx: CompanyContextService, private companyService: CompanyService) { }
 
   ngOnInit(): void {
     this.newLocalization = {...this.currentLocalization};
   }
 
   close() {
-    this.closeModal.emit();
+      this.isAddressFound = false;
+      this.closeModal.emit();
   }
 
   confirmEdit() {
-    this.toast.show('TODO SEND REQUEST TO ADDRESS COMPANY UPDATE','info');
-    this.overrideCurrentLocalization();
+      if(this.isAddressChanged(this.currentLocalization, this.newLocalization)){
+          if(this.isAddressComplete(this.newLocalization)) {
+              let company_id = this.ctx.getCompany()?.id;
+              if(company_id){
+                  this.companyService.updateCompanyAddress(company_id, this.newLocalization).subscribe({
+                      next: (response) => {
+                          if(response.status === 200 && response.body) {
+                              this.overrideCurrentLocalization(response.body);
+                              this.toast.show("Address Updated successfully.", "success");
+                          }
+                      }, error: (error) => {
+                          console.log(error);
+                          this.toast.show(`Error during update address. CODE: ${error.status}}`, 'error');
+                      }, complete: () => {
+                          this.close();
+                      }
+                  })
+              }
+          }
+      }
+
   }
 
   isAddressChanged(oldAddress: Address, newAddress: Address): boolean {
@@ -61,9 +83,9 @@ export class CompanyAddressEditModalComponent implements OnInit {
     return false;
   }
 
-  private overrideCurrentLocalization() {
+  private overrideCurrentLocalization(newLocalization: Address) {
     for(const key of Object.keys(this.currentLocalization) as (keyof Address)[]) {
-      this.currentLocalization[key] = this.newLocalization[key];
+      this.currentLocalization[key] = newLocalization[key];
     }
   }
 

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {CompanyOfferSearch, Page, Pagination, SearchCompanyOptions} from "../model/search/search.model";
 import {
+    AddressResponse,
     CompanyDetailsResponse,
     CompanyEmployeeDetailsResponse,
     CompanyHours,
@@ -14,6 +15,7 @@ import {
     UserCompanyResponse
 } from "../model/http/company.model";
 import {LogoName} from "../components/modals/company-name-logo-edit-modal/company-name-logo-edit-modal.component";
+import {Address} from "../model/gui/gui.model";
 
 @Injectable({
   providedIn: 'root'
@@ -179,4 +181,26 @@ export class CompanyService {
 
     return this.http.patch<CompanyDetailsResponse>(url, body_json_data, {observe: 'response'});
   }
+
+
+  // Method to update company opening hours
+  updateCompanyOpeningHours(company_id: number, days: CompanyHours[]){
+      const url = `/api/v1/companies/${company_id}/opening-hours`;
+
+      const body = days.map(day => ({
+          dayOfWeek: day.dayOfWeek,
+          openTime: day.openTime,
+          closeTime: day.closeTime,
+          isOpen: day.open
+      }));
+
+      return this.http.patch<CompanyHours[]>(url, body, {observe: 'response'});
+  }
+
+  // Method to update company address
+  updateCompanyAddress(company_id: number, address: Address){
+    let url = `/api/v1/companies/${company_id}/address`;
+    return this.http.patch<AddressResponse>(url, address, {observe: 'response'});
+  }
+
 }

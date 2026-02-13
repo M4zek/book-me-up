@@ -54,6 +54,7 @@
 
         <div class="edit-container-buttons">
             <div class="btn-container dark-bg"
+                 [class.disabled]="!isOpeningHoursChanged()"
                  (click)="confirmEdit()">
                 <img [src]="'icons/confirm_icon.svg'" alt="search" />
                 <div class="expand">
