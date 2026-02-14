@@ -203,4 +203,21 @@ export class CompanyService {
     return this.http.patch<AddressResponse>(url, address, {observe: 'response'});
   }
 
+  // Method to delete photo from portfolio
+  deleteImageFromCompanyPortfolio(company_id: number, photo_id: number){
+      const url = `/api/v1/companies/${company_id}/portfolio-images/${photo_id}`;
+      return this.http.delete(url, {observe: 'response'});
+  }
+
+  // Method to add new images to company portfolio
+  uploadNewImagesToCompanyPortfolio(company_id: number, files: File[]){
+      let url = `/api/v1/companies/${company_id}/portfolio-images`;
+
+      const formData = new FormData();
+      files.forEach((file) => {
+          formData.append("images", file);
+      });
+
+      return this.http.post<CompanyPortfolioResponse[]>(url, formData, {observe: 'response'});
+  }
 }

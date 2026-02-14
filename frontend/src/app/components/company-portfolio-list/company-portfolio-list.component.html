@@ -2,9 +2,11 @@
     <div class="slider-container">
         <div class="slider-track">
             <div class="slide" *ngFor="let img of images; let i = index">
-                <img class="portfolio-image" [src]="img.photo.includes('data:image/jpeg;base64,') ? img.photo : 'data:image/jpeg;base64,' + img.photo"
-                     alt="Image {{i+1}}">
-                <div class="remove-container" (click)="removeImage(i)">
+
+                <img class="portfolio-image" [src]="this.getImgUrl(i)" alt="IMG"/>
+                <div class="remove-container"
+                     *ngIf="isEditable"
+                     (click)="removeImage(img.id, i)">
                     <img class="remove-icon" [src]="'icons/trash_icon.svg'" alt="Delete" />
                 </div>
             </div>

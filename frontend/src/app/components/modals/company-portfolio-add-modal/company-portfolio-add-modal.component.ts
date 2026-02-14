@@ -4,6 +4,9 @@ import {CompanyPortfolioListComponent} from "../../company-portfolio-list/compan
 import {PortfolioModel} from "../../../model/gui/gui.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {ToastService} from "../../../service/toast.service";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyService} from "../../../service/company.service";
+import {ConfirmService} from "../../../service/confirm.service";
 
 
 @Component({
@@ -24,23 +27,56 @@ export class CompanyPortfolioAddModalComponent{
 
   @Input() portfolioList: PortfolioModel[] = [];
   imagesToSend: PortfolioModel[] = [];
+  fileToSend: File[] = [];
 
-  constructor(private toast: ToastService) {}
+  constructor(
+      private ctx: CompanyContextService,
+      private companyService: CompanyService,
+      private confirmServices: ConfirmService,
+      private toast: ToastService) {}
 
 
   close() {
     this.imagesToSend = [];
+    this.fileToSend = [];
     this.closeModal.emit();
   }
 
-  confirm() {
-    if(this.imagesToSend.length > 0) {
+  async confirm() {
+    if(this.fileToSend.length > 0 && this.fileToSend.length === this.imagesToSend.length) {
 
-      // tmp copy added images to input images
-      this.imagesToSend.forEach(element => {
-        this.portfolioList.push(element);
-      })
-      // Send request to add new photo
+        let result = await this.confirmServices.open(`Are you sure you want to save additional ${this.fileToSend.length} images?`);
+
+        if (!result) {return}
+
+        let company_id = this.ctx.getCompany()?.id;
+
+        if (company_id) {
+            this.companyService.uploadNewImagesToCompanyPortfolio(company_id, this.fileToSend).subscribe({
+                next: (response) => {
+                    if(response.status === 200 && response.body){
+
+                        // Add new images to main list (Update in home view portfolio list)
+                        response.body.forEach(img => {
+                            this.portfolioList.push({
+                                id: img.id,
+                                name: img.filename,
+                                photo: img.image
+                            })
+                        })
+
+                        this.toast.show("Images successfully uploaded", "success");
+                    } else {
+                        this.toast.show("Something went wrong", "error");
+                    }
+                }, error: (error) => {
+                    console.error(error);
+                    this.toast.show(`Something went wrong [${error.status}]`, "error");
+                }, complete: () => {
+                    this.close();
+                }
+            })
+        }
 
     } else {
       this.toast.show('You haven\'t added any new photos.', 'warning')
@@ -82,6 +118,7 @@ export class CompanyPortfolioAddModalComponent{
 
       const reader = new FileReader();
       reader.onload = () => {
+
         const newPortfolioItem: PortfolioModel = {
           id: Math.random(),
           name: file.name,
@@ -90,8 +127,10 @@ export class CompanyPortfolioAddModalComponent{
         this.imagesToSend.push(newPortfolioItem);
       };
       reader.readAsDataURL(file);
-    });
 
+      // Add file to list -> send into server
+      this.fileToSend.push(file);
+    });
     input.value = '';
   }
 }

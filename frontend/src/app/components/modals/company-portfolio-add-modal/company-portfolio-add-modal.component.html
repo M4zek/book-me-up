@@ -3,7 +3,12 @@
 
         <h2>Add new photos to portfolio</h2>
         <app-double-spinner *ngIf="imagesToSend.length == 0 "/>
-        <app-company-portfolio-list [images]="imagesToSend" *ngIf="imagesToSend.length != 0"></app-company-portfolio-list>
+
+        <app-company-portfolio-list [images]="imagesToSend"
+                                    *ngIf="imagesToSend.length != 0">
+
+        </app-company-portfolio-list>
+
         <input
                 type="file"
                 #fileInput
@@ -11,6 +16,7 @@
                 (change)="onFileSelected($event)"
                 multiple accept="image/*"
         />
+
         <p>In total, you have {{imagesToSend.length + portfolioList.length}} out of 10 photos in your portfolio</p>
 
 
