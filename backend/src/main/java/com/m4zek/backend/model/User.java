@@ -24,7 +24,6 @@ public class User extends BaseEntity {
     @JoinColumn(name = "userDataId")
     private UserData userData;
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
@@ -45,6 +44,10 @@ public class User extends BaseEntity {
             cascade = CascadeType.ALL
     )
     private List<CompanyUserRole> companyUserRoles = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<RoomUser> rooms;
 
     public User() {}
 

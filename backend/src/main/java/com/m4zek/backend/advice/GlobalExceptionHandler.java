@@ -266,4 +266,16 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(RoomNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleRoomNotFoundException(RoomNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+
 }

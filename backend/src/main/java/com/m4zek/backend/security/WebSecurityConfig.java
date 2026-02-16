@@ -65,6 +65,7 @@ public class WebSecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .anyRequest().authenticated()
@@ -86,6 +87,12 @@ public class WebSecurityConfig {
                         .allowedHeaders("Origin", "X-Requested-With", "Content-Type", "Accept")
                         .allowCredentials(true)
                         .maxAge(3600);
+
+                registry.addMapping("/ws/**")
+                        .allowedOrigins("http://127.0.0.1", "http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
