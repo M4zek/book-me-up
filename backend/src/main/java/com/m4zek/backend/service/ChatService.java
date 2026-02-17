@@ -69,7 +69,6 @@ public class ChatService {
 
     public RoomResponse createConversationRoom(RoomRequest roomRequest) {
 
-        System.out.println(roomRequest.toString());
 
         // Find the owner user
         User owner = this.userRepository.findById(roomRequest.getOwnerId())
@@ -89,7 +88,7 @@ public class ChatService {
 
         room.getRoles().addAll(roomUsers);
 
-        if(roomRequest.isGroup() && members.size() > 1) {
+        if(roomRequest.isGroup() && roomUsers.size() > 2) {
             room.setType(RoomType.GROUP);
             room.setName(roomRequest.getName());
         } else {
