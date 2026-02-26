@@ -6,6 +6,7 @@ import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
 import com.m4zek.backend.model.dto.read.UserToHiredResponse;
+import com.m4zek.backend.model.projection.MemberProjection;
 import com.m4zek.backend.security.service.MyUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -84,4 +85,16 @@ public class UserMapper {
                 .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
                 .build();
     }
+
+
+    public static MemberProjection userToMemberProjection(User user) {
+        return MemberProjection.builder()
+                .id(user.getId())
+                .firstName(user.getUserData().getFirstName())
+                .lastName(user.getUserData().getLastName())
+                .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
+                .role(null)
+                .build();
+    }
+
 }

@@ -16,6 +16,7 @@ import com.m4zek.backend.repository.RoomRepository;
 import com.m4zek.backend.repository.RoomUserRepository;
 import com.m4zek.backend.repository.UserRepository;
 import com.m4zek.backend.security.service.MyUserDetails;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -97,21 +98,25 @@ public class ChatService {
                 .map(id -> this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Member not found")))
                 .collect(Collectors.toSet());
 
+        // Check if private room between two users already exists throw exception
+        if(roomRequest.getType().equals(RoomType.PRIVATE)){
+            int memberId = roomRequest.getMemberIds().size() == 1 ? roomRequest.getMemberIds().getFirst() : 0;
+            this.roomUserRepository.findPrivateConversation(roomRequest.getOwnerId(), memberId).ifPresent(r -> {
+                        throw new EntityExistsException("Room already exists");
+                    });
+        }
+
         Room room = new Room();
 
         // Created roles in chat
         List<RoomUser> roomUsers = new ArrayList<>();
         roomUsers.add(new RoomUser(room, owner, RoomRole.OWNER));
-        members.forEach(member -> {roomUsers.add(new RoomUser(room, member, RoomRole.MEMBER));});
+        members.forEach(member -> roomUsers.add(new RoomUser(room, member, RoomRole.MEMBER)));
 
         room.getRoles().addAll(roomUsers);
 
-        if(roomRequest.isGroup() && roomUsers.size() > 2) {
-            room.setType(RoomType.GROUP);
-            room.setName(roomRequest.getName());
-        } else {
-            room.setType(RoomType.PRIVATE);
-        }
+        room.setType(roomRequest.getType());
+        room.setName(roomRequest.getType().equals(RoomType.GROUP) ? roomRequest.getName() : null);
 
         Room savedRoom = this.roomRepository.save(room);
 

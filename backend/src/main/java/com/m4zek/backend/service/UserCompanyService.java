@@ -9,6 +9,7 @@ import com.m4zek.backend.model.CompanyUserRole;
 import com.m4zek.backend.model.User;
 import com.m4zek.backend.model.dto.read.UserCompanyResponse;
 import com.m4zek.backend.model.dto.read.UserToHiredResponse;
+import com.m4zek.backend.model.projection.MemberProjection;
 import com.m4zek.backend.repository.CompanyUserRoleRepository;
 import com.m4zek.backend.repository.UserRepository;
 import com.m4zek.backend.security.service.MyUserDetails;
@@ -62,6 +63,18 @@ public class UserCompanyService {
 
         return new PageImpl<>(usersToHireList, pageable, users.getTotalElements());
     }
+
+    // Find Users  by first name and last name
+    public Page<MemberProjection> findUsersToChat(Pageable pageable, String firstName, String lastName){
+        Page<User> users = this.userRepository.findAllByFirstNameAndLastname(pageable, firstName, lastName);
+
+        List<MemberProjection> softMembers = users.stream()
+                .map(UserMapper::userToMemberProjection)
+                .toList();
+
+        return new PageImpl<>(softMembers, pageable, users.getTotalElements());
+    }
+
 
 //    PRIVATE METHODS
     private User findLoggedInUser() {

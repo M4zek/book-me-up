@@ -3,6 +3,7 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.model.dto.read.UserCompanyResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
 import com.m4zek.backend.model.dto.read.UserToHiredResponse;
+import com.m4zek.backend.model.projection.MemberProjection;
 import com.m4zek.backend.service.UserCompanyService;
 import com.m4zek.backend.service.UserService;
 import jakarta.validation.constraints.Size;
@@ -51,4 +52,13 @@ public class UserController {
         return ResponseEntity.ok(this.userCompanyService.findUsersToHireByFirstNameAndSurname(pageable, firstName, lastName));
     }
 
+    @GetMapping("/users/search")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<Page<MemberProjection>> findUsers(
+            Pageable pageable,
+            @RequestParam(required = false) @Size(min = 1, message = "First name cannot be empty") String firstName,
+            @RequestParam(required = false) @Size(min = 1, message = "Last name cannot be empty") String lastName
+    ){
+        return ResponseEntity.ok(this.userCompanyService.findUsersToChat(pageable, firstName, lastName));
+    }
 }
