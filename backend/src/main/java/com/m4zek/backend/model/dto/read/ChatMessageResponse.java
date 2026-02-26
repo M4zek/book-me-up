@@ -8,16 +8,18 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Data
 @Builder
 public class ChatMessageResponse {
 
-    private Long id;
+    private int id;
     private String content;
     private MemberProjection sender;
     private MessageType type;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private ZonedDateTime createdDate;
+    private List<MemberProjection> readBy;
 }
 

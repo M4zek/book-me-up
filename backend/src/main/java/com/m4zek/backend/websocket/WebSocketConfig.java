@@ -1,7 +1,8 @@
-package com.m4zek.backend.security;
+package com.m4zek.backend.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.m4zek.backend.exception.AccessDeniedException;
+import com.m4zek.backend.model.dto.read.MessageReadReceipt;
 import com.m4zek.backend.model.dto.write.ChatMessageRequest;
 import com.m4zek.backend.security.jwt.TokenManager;
 import io.jsonwebtoken.JwtException;
@@ -86,11 +87,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             byte[] payload = (byte[]) message.getPayload();
                             String json = new String(payload, StandardCharsets.UTF_8);
 
-                            ChatMessageRequest chatMessageRequest = objectMapper.readValue(json, ChatMessageRequest.class);
+                            int room_id = 0;
+
+                            if(accessor.getDestination().contains("/app/room.read")){
+                                MessageReadReceipt chatMessageRequest = objectMapper.readValue(json, MessageReadReceipt.class);
+                                room_id = chatMessageRequest.getRoom_id();
+                            } else {
+                                ChatMessageRequest chatMessageRequest = objectMapper.readValue(json, ChatMessageRequest.class);
+                                room_id = chatMessageRequest.getRoom_id();
+                            }
 
                             // Get room if from message
-                            int room_id = chatMessageRequest.getRoom_id();
-
                             accessor.setUser(() -> tokenManager.getEmailFromToken(token));
 
                             Principal principal = accessor.getUser();
@@ -116,12 +123,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                     if(StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
                         String token = accessor.getFirstNativeHeader("Authorization");
+                        String destination = accessor.getDestination();
 
                         if (token == null || !tokenManager.validateToken(token)) {
                             throw new JwtException("Invalid token");
                         }
 
-                        int room_id = Integer.parseInt(Objects.requireNonNull(accessor.getDestination()).replace("/topic/room/", ""));
                         Principal principal = accessor.getUser();
 
                         accessor.setUser(() -> tokenManager.getEmailFromToken(token));
@@ -130,12 +137,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             throw new AccessDeniedException("Access denied - Sender not found");
                         }
 
-                        try {
-                            guard.loggedUserHasAccessToRoom(room_id, principal);
-                        } catch (AccessDeniedException e) {
-                            logger.error(e.getMessage());
-                            throw e;
-                        }
+                        //  If destination /topic/room check user role in room
+                        if(destination != null && destination.contains("/topic/room/")){
+                            try {
+                                int room_id = Integer.parseInt(Objects.requireNonNull(destination).replace("/topic/room/", ""));
+                                guard.loggedUserHasAccessToRoom(room_id, principal);
+                            } catch (AccessDeniedException e) {
+                                logger.error(e.getMessage());
+                                throw e;
+                            }
+                        } // else subscribe other channels
                     }
                     return message;
                 } catch (Exception e) {

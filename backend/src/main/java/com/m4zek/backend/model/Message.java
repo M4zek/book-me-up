@@ -7,7 +7,7 @@ public class Message extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
@@ -25,6 +25,8 @@ public class Message extends BaseEntity {
 
     public Message(){}
 
+
+
     public Message(MessageType messageType, String content, Room room, User user) {
         this.messageType = messageType;
         this.content = content;
@@ -32,7 +34,7 @@ public class Message extends BaseEntity {
         this.user = user;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

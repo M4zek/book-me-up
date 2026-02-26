@@ -1,4 +1,4 @@
-package com.m4zek.backend.security;
+package com.m4zek.backend.websocket;
 
 import com.m4zek.backend.security.jwt.TokenManager;
 import jakarta.servlet.http.HttpServletRequest;

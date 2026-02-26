@@ -1,6 +1,7 @@
 package com.m4zek.backend.controller;
 
 
+import com.m4zek.backend.model.dto.read.MessageReadReceipt;
 import com.m4zek.backend.model.dto.write.ChatMessageRequest;
 import com.m4zek.backend.service.ChatService;
 import org.slf4j.Logger;
@@ -27,5 +28,9 @@ public class ChatController {
         chatService.sendMessage(message, principal);
     }
 
+    @MessageMapping("/room.read")
+    public void readMessage(MessageReadReceipt message, Principal principal) {
+        chatService.markLastMessageAsRead(message, principal);
+    }
 
 }

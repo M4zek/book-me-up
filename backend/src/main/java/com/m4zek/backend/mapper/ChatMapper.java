@@ -32,6 +32,21 @@ public class ChatMapper {
                                 .build()
                 )
                 .createdDate(message.getCreatedDate().atZone(ZoneId.of("Europe/Warsaw")).toOffsetDateTime().toZonedDateTime())
+                .readBy(message.getRoom().getRoles().stream()
+                                .filter(roles ->
+                                    roles.getLastReadMessage() != null && roles.getLastReadMessage().getId() == message.getId()
+                                )
+                                .map(role -> {
+                                    User user = role.getUser();
+                                    return MemberProjection.builder()
+                                            .id(user.getId())
+                                            .firstName(user.getUserData().getFirstName())
+                                            .lastName(user.getUserData().getLastName())
+                                            .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
+                                            .build();
+                                })
+                                .toList()
+                )
                 .build();
     }
 
@@ -53,6 +68,14 @@ public class ChatMapper {
                         }).toList())
                 .lastMessage(room.getMessages().isEmpty() ?
                         null : toChatMessageResponse(room.getMessages().getLast()))
+                .numOfUnreadMessages(0)
                 .build();
     }
+
+    public static RoomResponse roomToRoomResponse(Room room, long numOfUnreadMessages) {
+        RoomResponse response = roomToRoomResponse(room);
+        response.setNumOfUnreadMessages(numOfUnreadMessages);
+        return response;
+    }
+
 }

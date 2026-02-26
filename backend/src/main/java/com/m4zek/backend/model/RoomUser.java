@@ -21,6 +21,10 @@ public class RoomUser {
     @Column(nullable = false, length = 50)
     private RoomRole role = RoomRole.MEMBER;
 
+    @ManyToOne
+    @JoinColumn(name = "last_read_message_id")
+    private Message lastReadMessage;
+
     public RoomUser(Room room, User user, RoomRole role) {
         this.room = room;
         this.user = user;
@@ -42,4 +46,13 @@ public class RoomUser {
     public RoomRole getRole() {
         return role;
     }
+
+    public Message getLastReadMessage() {
+        return lastReadMessage;
+    }
+
+    public void updateReadLastMessage(Message msg) {
+        this.lastReadMessage = msg;
+    }
+
 }

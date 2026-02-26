@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ChatMessageRepository {
 
     Message save(Message message);
@@ -19,4 +21,5 @@ public interface ChatMessageRepository {
     Page<Message> findAllByRoomId(
             @Param("room_id") int room_id, Pageable pageable);
 
+    Optional<Message> findByIdAndRoomId(long msg_id, int room_id);
 }

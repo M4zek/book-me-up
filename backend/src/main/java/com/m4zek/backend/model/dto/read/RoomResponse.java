@@ -17,6 +17,5 @@ public class RoomResponse {
     private List<MemberProjection> memberProjections;
     private RoomType roomType;
     private ChatMessageResponse lastMessage;
-
-
+    private long numOfUnreadMessages;
 }

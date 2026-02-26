@@ -19,7 +19,7 @@ public class Room extends BaseEntity {
     @Column(nullable = false, length = 50)
     private RoomType type = RoomType.PRIVATE;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.EAGER)
     private List<Message> messages = new ArrayList<>();
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
