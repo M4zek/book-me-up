@@ -27,6 +27,7 @@ export class SearchAndSortBarComponent {
 
   @Input() placeholder: string = 'Search...';
   @Input() showFilter: boolean = false;
+  @Input() showSort: boolean = true;
 
   searchValue: string = '';
 

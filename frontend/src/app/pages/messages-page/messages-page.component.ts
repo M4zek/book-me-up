@@ -157,14 +157,21 @@ export class MessagesPageComponent implements OnInit {
 
 
   protected selectRoom(room: RoomResponse) {
+
       if(this.selectedRoom === room) {
           return;
+      }
+
+      if(this.selectedRoom != null){
+          // TODO Unsubscribe recent room
       }
 
       this.resetMessages();
       this.selectedRoom = room;
       this.readMessages(this.selectedRoom.id);
       this.scrollToBottom();
+
+      // TODO Here connect to room via WebSocket
   }
 
 

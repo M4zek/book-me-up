@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserContextService} from "./user-context.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {ChatMessageResponse, RoomResponse} from "../model/http/chat.model";
+import {ChatMessageResponse, RoomRequest, RoomResponse} from "../model/http/chat.model";
 import {Page, Pagination} from "../model/search/search.model";
 
 @Injectable({
@@ -41,7 +41,10 @@ export class ChatService {
     }
 
 
-
+    createRoom(room: RoomRequest){
+        const url = '/api/v1/chat/room';
+        return this.http.post<RoomResponse>(url, room, { observe: 'response'});
+    }
 
 
 

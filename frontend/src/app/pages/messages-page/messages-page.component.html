@@ -31,9 +31,11 @@
         </div>
 
         <div class="list" *ngIf="!isRoomsLoading && this.userRooms.length > 0">
-            <div *ngFor="let room of userRooms" >
+            <div *ngFor="let room of userRooms">
 
+<!--                HERE ADD UNREAD MESSAGE NOTIFICATION        -->
                 <div class="list-item"
+                     [class.unread-msg]="room.numOfUnreadMessages > 0"
                      [class.selected]="room == selectedRoom"
                      *ngIf="room.roomType == RoomType.GROUP" (click)="selectRoom(room)">
                     <div class="room-member-list" >
@@ -48,9 +50,13 @@
                             {{room.lastMessage.sender.firstName}}: {{room.lastMessage.content}}
                         </span>
                     </div>
+                    <div class="unread-con" *ngIf="room.numOfUnreadMessages > 0">
+                        <span>{{room.numOfUnreadMessages}}</span>
+                    </div>
                 </div>
 
                 <div class="list-item"
+                     [class.unread-msg]="room.numOfUnreadMessages > 0"
                      [class.selected]="room == selectedRoom"
                      *ngIf="room.roomType == RoomType.PRIVATE" (click)="selectRoom(room)">
                     <div class="room-member-list" *ngIf="findChatPartner(room.memberProjections) as mem">
@@ -61,6 +67,9 @@
                         <span class="room-last-message" *ngIf="room.lastMessage">
                             {{room.lastMessage.sender.firstName}}: {{room.lastMessage.content}}
                         </span>
+                    </div>
+                    <div class="unread-con" *ngIf="room.numOfUnreadMessages > 0">
+                        <span>{{room.numOfUnreadMessages}}</span>
                     </div>
                 </div>
 

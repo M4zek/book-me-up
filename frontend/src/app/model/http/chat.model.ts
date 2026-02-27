@@ -23,7 +23,7 @@ export interface Member{
 }
 
 export interface RoomRequest{
-    group: boolean,
+    type: RoomType,
     name: string | null,
     ownerId: number,
     memberIds: number[],
@@ -35,6 +35,7 @@ export interface RoomResponse{
     memberProjections: Member[],
     roomType: RoomType,
     lastMessage: ChatMessageResponse,
+    numOfUnreadMessages: number,
 }
 
 export interface ChatMessageRequest{

@@ -406,8 +406,8 @@
 }
 
 .room-information{
-    width: 70%;
     display: flex;
+    flex: 1;
     flex-direction: column;
 }
 
@@ -428,11 +428,35 @@
     transition: all .3s ease;
 }
 
+.list-item > .unread-con{
+    border-radius: 50%;
+    background-color: var(--pink);
+    aspect-ratio: 1/1;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-item > .unread-con > span{
+    color: var(--white);
+    font: 700 12px/1.5 "Roboto", sans-serif;
+    padding: 0;
+    margin: 0;
+    justify-content: end;
+}
+
 .list-item:hover{
     background-color: var(--light-blue-25);
     border-radius: 5px;
     padding-left: 15px;
     transition: all .3s ease;
+}
+
+.list-item.unread-msg{
+    border: 1px solid var(--pink);
+    background-color: var(--pink_10);
 }
 
 
