@@ -1,4 +1,8 @@
-<div class="messages-page">
+<div class="messages-page" >
+    <div class="full-wrapper" *ngIf="!isSocketConnected">
+        <app-double-spinner [text]="'Reconnecting...'"/>
+    </div>
+
     <div class="left-panel"
         [class.full]="this.selectedRoom == null"
     >
@@ -33,7 +37,6 @@
         <div class="list" *ngIf="!isRoomsLoading && this.userRooms.length > 0">
             <div *ngFor="let room of userRooms">
 
-<!--                HERE ADD UNREAD MESSAGE NOTIFICATION        -->
                 <div class="list-item"
                      [class.unread-msg]="room.numOfUnreadMessages > 0"
                      [class.selected]="room == selectedRoom"
@@ -47,7 +50,7 @@
                     <div class="room-information">
                         <span class="room-name">{{room.name}}</span>
                         <span class="room-last-message" *ngIf="room.lastMessage">
-                            {{room.lastMessage.sender.firstName}}: {{room.lastMessage.content}}
+                            {{room.lastMessage.sender.id !== this.logged_user_id ? room.lastMessage.sender.firstName : 'You'}}: {{room.lastMessage.content}}
                         </span>
                     </div>
                     <div class="unread-con" *ngIf="room.numOfUnreadMessages > 0">
@@ -108,20 +111,35 @@
             <app-double-spinner *ngIf="isMessageLoading"/>
 
             <div class="messages" #htmlMessageList (scroll)="onScroll()">
-                <div class="parent" *ngFor="let message of messages"
-                     [class.right]="message.sender.id == this.logged_user_id">
+                <div class="parent" *ngFor="let message of messages; let i = index"
+                     [class.right]="message.sender.id === this.logged_user_id">
+
+                    <div class="message-created-time"
+                         *ngIf="!isNextDay(i)"
+                         [class.show]="!isToday(message.createdDate) && isNextDay(i)">
+                        <span>{{formatMessageDate(message.createdDate)}}</span>
+                    </div>
+
                     <div class="message-bg">
-                        <img [src]="getUserAvatar(message.sender)" alt="img"/>
+                        <div class="img-wrapper">
+                            <img [src]="getUserAvatar(message.sender)" *ngIf="showSenderAvatar(message)" alt="img"/>
+                        </div>
                         <div class="message-item">
                             <span>
                                {{message.content}}
                             </span>
                         </div>
-                        <div class="message-created-time"
-                             [class.left]="message.sender.id != this.logged_user_id"
-                        >
-                            <span>{{formatMessageDate(message.createdDate)}}</span>
-                        </div>
+                    </div>
+
+                    <div class="message-created-time" *ngIf="isNextDay(i)"
+                         [class.show]="!isToday(message.createdDate) && isNextDay(i)">
+                        <span>{{formatMessageDate(message.createdDate)}}</span>
+                    </div>
+
+                    <div class="read-by-container" *ngIf="message.readBy.length > 0">
+                        <img *ngFor="let memberWhoRead of getMembersWhoReadTheMessageWithoutLoggedUser(message)"
+                             [src]="getUserAvatar(memberWhoRead)" alt="img"
+                        />
                     </div>
                 </div>
 
@@ -131,9 +149,16 @@
                     </div>
                 </div>
             </div>
-            <div class="write">
-                <textarea type="text" placeholder="Write your message here..."></textarea>
-                <img [src]="'icons/plane_icon.svg'" alt="send"/>
+            <div class="write"
+            [class.disabled]="isMessageLoading">
+                <textarea
+                        [(ngModel)]="messageModel"
+                        type="text"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="3"
+                        placeholder="Write your message here..."></textarea>
+                <img [src]="'icons/plane_icon.svg'" alt="send" (click)="sendMessage()"/>
             </div>
         </div>
     </div>

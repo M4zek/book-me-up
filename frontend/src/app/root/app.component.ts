@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {ToastComponent} from "../components/toast/toast.component";
+import {WebsocketService} from "../service/websocket.service";
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,7 @@ import {ToastComponent} from "../components/toast/toast.component";
 })
 export class AppComponent {
   title = 'Book Me Up';
+
+  constructor(socket: WebsocketService) {}
+
 }

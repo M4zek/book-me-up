@@ -1,7 +1,10 @@
 export enum MessageType{
     MESSAGE = 'MESSAGE',
-    INFORMATION = 'INFORMATION',
-    NOTIFICATION = 'NOTIFICATION',
+    RECEIPT = 'RECEIPT',
+}
+
+export enum NotificationType {
+    CHAT = 'CHAT',
 }
 
 export enum RoomType{
@@ -15,7 +18,7 @@ export enum RoomRole{
 }
 
 export interface Member{
-    id: number;
+    id: number,
     firstName: string,
     lastName: string,
     avatar: string | null,
@@ -50,5 +53,26 @@ export interface ChatMessageResponse{
     sender: Member,
     type: MessageType,
     createdDate: string,
+    readBy: Member[],
 }
 
+export interface ChatMessageReceipt{
+    room_id: number,
+    message_id: number,
+    reader_id: number,
+    type: MessageType,
+}
+
+export type WebSocketChatData = | {
+    type: MessageType.MESSAGE;
+    message: ChatMessageResponse;
+} | {
+    type: MessageType.RECEIPT;
+    receipt: ChatMessageReceipt;
+};
+
+
+export type WebSocketNotification = | {
+    type: NotificationType,
+    room: RoomResponse
+};

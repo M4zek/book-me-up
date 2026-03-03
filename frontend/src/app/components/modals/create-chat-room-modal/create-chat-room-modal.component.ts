@@ -167,10 +167,12 @@ export class CreateChatRoomModalComponent implements OnChanges {
   }
 
   protected clearSearchForm() {
-      this.searchUserForm.reset();
-      this.searchModel = {
-          firstName: '',
-          lastName: '',
+      if(this.searchUserForm){
+          this.searchUserForm.reset();
+          this.searchModel = {
+              firstName: '',
+              lastName: '',
+          }
       }
   }
 

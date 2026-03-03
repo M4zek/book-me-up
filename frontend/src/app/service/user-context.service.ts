@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, filter, map, Observable} from "rxjs";
+import {BehaviorSubject, combineLatest, filter, map, Observable} from "rxjs";
 import {UserContextModel, UserContextWrapper} from "../model/http/auth.model";
 import {Router} from "@angular/router";
 import {UserResponse} from "../model/http/user.model";
@@ -110,4 +110,17 @@ export class UserContextService {
         );
     }
 
+    public getAuthState(): Observable<{
+        isLoggedIn: boolean;
+        userContext?: UserContextModel;
+    }> {
+        return combineLatest([
+            this.currentUser$
+        ]).pipe(
+            map(([userWrapper]) => ({
+                isLoggedIn: userWrapper.loggedIn,
+                userContext: userWrapper.userContext,
+            }))
+        );
+    }
 }

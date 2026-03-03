@@ -6,9 +6,24 @@ import {
     CreateChatRoomModalComponent
 } from "../../components/modals/create-chat-room-modal/create-chat-room-modal.component";
 import {ChatService} from "../../service/chat.service";
-import {ChatMessageResponse, Member, RoomResponse, RoomType} from "../../model/http/chat.model";
+import {
+    ChatMessageReceipt,
+    ChatMessageResponse,
+    Member,
+    MessageType,
+    NotificationType,
+    RoomResponse,
+    RoomType,
+    WebSocketChatData,
+    WebSocketNotification
+} from "../../model/http/chat.model";
 import {UserContextService} from "../../service/user-context.service";
 import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
+import {WebsocketService} from "../../service/websocket.service";
+import {filter} from "rxjs";
+import {FormsModule} from "@angular/forms";
+import {ToastService} from "../../service/toast.service";
+import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 
 
 @Component({
@@ -19,13 +34,14 @@ import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spi
         CreateChatRoomModalComponent,
         NgIf,
         SlicePipe,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        FormsModule,
+        CdkTextareaAutosize
     ],
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.css'
 })
 export class MessagesPageComponent implements OnInit {
-
   @ViewChild('htmlMessageList') htmlMessageList!: ElementRef;
 
   RoomType = RoomType;
@@ -53,10 +69,14 @@ export class MessagesPageComponent implements OnInit {
 
 
   isMessageLoading = false;
+  isSocketConnected = false;
   messages: ChatMessageResponse[] = []
 
+  messageModel: string = '';
 
-  constructor(private chatService: ChatService, private ucs: UserContextService) {
+  constructor(private webSocket: WebsocketService,
+      private toast: ToastService,
+      private chatService: ChatService, private ucs: UserContextService) {
   }
 
   ngOnInit() {
@@ -64,6 +84,50 @@ export class MessagesPageComponent implements OnInit {
           this.logged_user_id = userContext.id;
       })
       this.readRooms();
+
+      this.webSocket.messageSubject$
+          .pipe(
+              filter((message): message is WebSocketChatData => message !== null))
+          .subscribe((payload: WebSocketChatData) => {
+              switch (payload.type) {
+                  case MessageType.MESSAGE:
+                      const received_msg: ChatMessageResponse = payload.message;
+                      this.messages.push(received_msg);
+                      this.scrollToBottom();
+                      break;
+
+                  case MessageType.RECEIPT:
+                      let receipt: ChatMessageReceipt = payload.receipt;
+                      this.updateLastReadMessageByReceipt(receipt);
+                      this.scrollToBottom();
+                      break;
+              }
+      })
+
+      this.webSocket.connectStatus$.subscribe(status => {
+            this.isSocketConnected = status;
+      })
+
+      this.webSocket.notificationSubject$
+          .pipe(
+              filter((notification): notification is WebSocketNotification => notification !== null)
+          )
+          .subscribe(notification => {
+          switch (notification.type){
+              case NotificationType.CHAT:
+                  const room_data = notification.room;
+
+                  this.userRooms.map((room: RoomResponse) => {
+                          if(room.id === room_data.id){
+                              room.numOfUnreadMessages = room_data.numOfUnreadMessages;
+                              room.lastMessage = room_data.lastMessage;
+                          }
+                  });
+
+                  this.toast.show(`You have received a new message.`, "info");
+                  break;
+          }
+      })
   }
 
 
@@ -100,6 +164,12 @@ export class MessagesPageComponent implements OnInit {
       })
   }
 
+  protected sendMessage() {
+      if(this.messageModel.length > 0 && this.selectedRoom){
+          this.webSocket.sendMessage(this.messageModel, this.selectedRoom.id)
+          this.messageModel = '';
+      }
+  }
 
   protected addMessages(new_messages: ChatMessageResponse[]) {
       const container = this.htmlMessageList.nativeElement;
@@ -156,22 +226,24 @@ export class MessagesPageComponent implements OnInit {
 
 
 
-  protected selectRoom(room: RoomResponse) {
+  protected async selectRoom(room: RoomResponse) {
 
       if(this.selectedRoom === room) {
+          this.webSocket.unsubscribeRoom(this.selectedRoom.id);
+          this.selectedRoom = null;
           return;
       }
 
       if(this.selectedRoom != null){
-          // TODO Unsubscribe recent room
+          this.webSocket.unsubscribeRoom(this.selectedRoom.id);
       }
 
-      this.resetMessages();
       this.selectedRoom = room;
-      this.readMessages(this.selectedRoom.id);
+      this.resetMessages();
       this.scrollToBottom();
+      this.webSocket.subscribeRoom(this.selectedRoom.id);
 
-      // TODO Here connect to room via WebSocket
+      this.readMessages(this.selectedRoom.id);
   }
 
 
@@ -202,13 +274,16 @@ export class MessagesPageComponent implements OnInit {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const targetDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
+      const diffYear = today.getFullYear() - targetDay.getFullYear();
       const diffMs = today.getTime() - targetDay.getTime();
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
       const time = date.toLocaleTimeString([], {
           hour: '2-digit',
+
           minute: '2-digit'
       });
+      let datePart: string = '';
 
       if (diffDays === 0) {
           return time;
@@ -218,12 +293,78 @@ export class MessagesPageComponent implements OnInit {
           return `Yesterday at ${time}`;
       }
 
-      const datePart = date.toLocaleDateString([], {
-          day: 'numeric',
-          month: 'short'
-      });
+      if(diffYear > 0){
+          datePart = date.toLocaleDateString([], {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric'
+          });
+      } else {
+          datePart = date.toLocaleDateString([], {
+              day: 'numeric',
+              month: 'short',
+          });
+      }
+
 
       return `${datePart} at ${time}`;
   }
 
+  isNextDay(index: number) {
+      if (index >= this.messages.length - 1) return false;
+
+      const current = new Date(this.messages[index].createdDate);
+      const next = new Date(this.messages[index + 1].createdDate);
+
+      return (
+          current.getFullYear() !== next.getFullYear() ||
+          current.getMonth() !== next.getMonth() ||
+          current.getDate() !== next.getDate()
+      );
+  }
+
+    isToday(dateStr: string): boolean {
+        const date = this.parseDate(dateStr);
+        if (!date) return false;
+
+        const today = new Date();
+
+        return (
+            date.getFullYear() === today.getFullYear() &&
+            date.getMonth() === today.getMonth() &&
+            date.getDate() === today.getDate()
+        );
+    }
+
+    private parseDate(dateStr: string): Date | null {
+        const normalized = dateStr.replace(' ', 'T');
+        const date = new Date(normalized);
+        return isNaN(date.getTime()) ? null : date;
+    }
+
+    protected getMembersWhoReadTheMessageWithoutLoggedUser(message: ChatMessageResponse){
+      return message.readBy.filter(item => item.id !== this.logged_user_id);
+    }
+
+    protected updateLastReadMessageByReceipt(receipt: ChatMessageReceipt){
+
+      if(!this.selectedRoom || this.messages.length === 0 || !receipt){ return; }
+
+      const lastMessage = this.messages[this.messages.length - 1];
+      const memberId = receipt.reader_id;
+
+      const member = this.selectedRoom.memberProjections.find(m => m.id === memberId);
+
+      if(!member){ return; }
+
+      this.messages = this.messages.filter(message => message.readBy = message.readBy.filter(item => item.id !== receipt.reader_id));
+      this.messages = this.messages.filter(message => message.id !== lastMessage.id);
+
+      lastMessage.readBy.push(member);
+      this.messages.push(lastMessage);
+    }
+
+    protected showSenderAvatar(message: ChatMessageResponse){
+      return message.sender.id !== this.logged_user_id;
+    }
 }
