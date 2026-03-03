@@ -56,7 +56,7 @@ export class WebsocketService {
 
     // Connect to ws method
     connect(): void {
-        const MAX_RECONNECTS = 5;
+        const MAX_RECONNECTS = 10;
         let reconnectAttempts = 0;
 
         if(!this.client && this.token !== '') {
@@ -76,7 +76,7 @@ export class WebsocketService {
 
                 },
 
-                reconnectDelay: 5000 // Time between recon attempts - 5sec
+                reconnectDelay: 1500 // Time between recon attempts - 5sec
             })
 
             // Try reconnect
@@ -86,6 +86,7 @@ export class WebsocketService {
                     this.client.deactivate().then(r => {
                         console.log("Connection closed permanently")
                         this.connectStatus$.next(false);
+                        this.ucs.deleteUserFromStorage();
                     });
                 }
             }
@@ -94,8 +95,19 @@ export class WebsocketService {
             this.client.onConnect = () => {
                 reconnectAttempts = 0;
                 this.connectStatus$.next(true);
+
+                const keys = Array.from(this.subscriptions.keys()).filter((key) => key !== "chatNotification");
+                this.subscriptions.clear();
+
                 this.subscribeChatNotification();
-                console.log("CONNECTED");
+
+                keys.forEach((key) => {
+                    let room_id = parseInt(key);
+                    if(!isNaN(room_id)) {
+                        this.subscribeRoom(room_id);
+                    }
+                })
+                console.info("Connected to Server");
             }
 
 
@@ -210,7 +222,7 @@ export class WebsocketService {
     }
 
     // Send information about reading message jus arrive
-    sendReceiptForMessage(roomId: number, messageId: number): void {
+    sendReceiptForMessage(roomId: number, messageId: number | null = null): void {
         let url = `/app/room.read`;
         if(this.client.connected) {
             this.client.publish({

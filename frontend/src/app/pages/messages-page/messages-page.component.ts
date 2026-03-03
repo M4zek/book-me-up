@@ -79,6 +79,13 @@ export class MessagesPageComponent implements OnInit {
       private chatService: ChatService, private ucs: UserContextService) {
   }
 
+  ngOnDestroy() {
+      if(this.selectedRoom) {
+          this.webSocket.unsubscribeRoom(this.selectedRoom.id);
+          this.selectedRoom = null;
+      }
+  }
+
   ngOnInit() {
       this.ucs.getUserContext().subscribe(userContext => {
           this.logged_user_id = userContext.id;
@@ -99,6 +106,7 @@ export class MessagesPageComponent implements OnInit {
                   case MessageType.RECEIPT:
                       let receipt: ChatMessageReceipt = payload.receipt;
                       this.updateLastReadMessageByReceipt(receipt);
+                      this.updateUnreadMessageInRoom(receipt);
                       this.scrollToBottom();
                       break;
               }
@@ -117,6 +125,8 @@ export class MessagesPageComponent implements OnInit {
               case NotificationType.CHAT:
                   const room_data = notification.room;
 
+                  this.updateRoomInList(room_data);
+
                   this.userRooms.map((room: RoomResponse) => {
                           if(room.id === room_data.id){
                               room.numOfUnreadMessages = room_data.numOfUnreadMessages;
@@ -124,7 +134,8 @@ export class MessagesPageComponent implements OnInit {
                           }
                   });
 
-                  this.toast.show(`You have received a new message.`, "info");
+                  if(this.selectedRoom?.id !== room_data.id)
+                      this.toast.show(`You have received a new message.`, "info");
                   break;
           }
       })
@@ -160,6 +171,8 @@ export class MessagesPageComponent implements OnInit {
               }
           }, complete: () => {
               this.isMessageLoading = false;
+              if(this.selectedRoom && this.messagePaginator.currentPage === 0)
+                  this.webSocket.sendReceiptForMessage(this.selectedRoom.id);
           }
       })
   }
@@ -343,7 +356,7 @@ export class MessagesPageComponent implements OnInit {
     }
 
     protected getMembersWhoReadTheMessageWithoutLoggedUser(message: ChatMessageResponse){
-      return message.readBy.filter(item => item.id !== this.logged_user_id);
+      return message.readBy.filter(item => item.id !== this.logged_user_id && item.id !== message.sender.id);
     }
 
     protected updateLastReadMessageByReceipt(receipt: ChatMessageReceipt){
@@ -364,7 +377,29 @@ export class MessagesPageComponent implements OnInit {
       this.messages.push(lastMessage);
     }
 
+    protected updateUnreadMessageInRoom(receipt: ChatMessageReceipt){
+        this.userRooms.map(item => {
+            if(item.id == receipt.room_id){
+                item.numOfUnreadMessages = 0;
+            }
+        })
+    }
+
     protected showSenderAvatar(message: ChatMessageResponse){
       return message.sender.id !== this.logged_user_id;
+    }
+
+    private updateRoomInList(room_data: RoomResponse) {
+        let room = this.userRooms.find(room => room.id === room_data.id);
+
+        if(this.selectedRoom?.id === room_data.id) this.selectedRoom = room_data;
+
+        if(room){
+            room.numOfUnreadMessages = 0;
+            this.userRooms = [
+                room_data,
+                ...this.userRooms.filter(item => item.id !== room_data.id)
+            ]
+        }
     }
 }

@@ -1,6 +1,6 @@
 <div class="messages-page" >
     <div class="full-wrapper" *ngIf="!isSocketConnected">
-        <app-double-spinner [text]="'Reconnecting...'"/>
+        <app-double-spinner [text]="'Connecting...'"/>
     </div>
 
     <div class="left-panel"
@@ -154,9 +154,11 @@
                 <textarea
                         [(ngModel)]="messageModel"
                         type="text"
+                        required
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="1"
                         cdkAutosizeMaxRows="3"
+                        (keydown.enter)="$event.preventDefault(); sendMessage()"
                         placeholder="Write your message here..."></textarea>
                 <img [src]="'icons/plane_icon.svg'" alt="send" (click)="sendMessage()"/>
             </div>
