@@ -137,6 +137,9 @@ public class ChatService {
                 new Message(message.getType(), message.getContent(), room, sender)
         );
 
+        room.getMessages().add(msg);
+        this.roomRepository.save(room);
+
         // Convert message to
         ChatMessageResponse msgToSend = ChatMapper.toChatMessageResponse(msg);
 
@@ -150,9 +153,10 @@ public class ChatService {
                 .filter(r -> !r.getUser().equals(sender))
                 .forEach(u -> {
 
-                    long unreadMessageCount = u.getRoom().getMessages().stream()
+                    long unreadMessageCount = u.getLastReadMessage() != null ?
+                            u.getRoom().getMessages().stream()
                                         .filter(m -> m.getId() > u.getLastReadMessage().getId())
-                                    .count();
+                                    .count() : u.getRoom().getMessages().size();
 
                     RoomResponse roomResponse = ChatMapper.roomToRoomResponse(room, unreadMessageCount);
 
@@ -165,17 +169,41 @@ public class ChatService {
     }
 
 
-    public void markLastMessageAsRead(MessageReadReceipt receipt, Principal principal) {
+//    public void markLastMessageAsRead(MessageReadReceipt receipt, Principal principal) {
+//        User user = this.userRepository.findByAddressEmail(principal.getName())
+//                .orElseThrow(() -> new UserNotFoundException("Sender not found"));
+//
+//        RoomUser roomUser = this.roomUserRepository.findByRoomIdAndUserId(receipt.getRoom_id(), user.getId())
+//                .orElseThrow(() -> new RoomNotFoundException("Room not found"));
+//
+//        Message msg = chatRepository.findByIdAndRoomId(receipt.getMessage_id(), receipt.getRoom_id())
+//                .orElseThrow(() -> new RoomNotFoundException("Message not found"));
+//
+//        roomUser.updateReadLastMessage(msg);
+//        roomUserRepository.save(roomUser);
+//
+//        MessageReadReceipt payload = MessageReadReceipt.builder()
+//                .room_id(roomUser.getRoom().getId())
+//                .message_id(roomUser.getLastReadMessage().getId())
+//                .reader_id(roomUser.getUser().getId())
+//                .type(MessageType.RECEIPT)
+//                .build();
+//
+//        // Send all subscriber that the user read the msg
+//        messagingTemplate.convertAndSend("/topic/room/" + receipt.getRoom_id(), payload);
+//    }
+
+    public void markLastMessageAsRead(MessageReadReceipt receipt, Principal principal){
         User user = this.userRepository.findByAddressEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("Sender not found"));
 
         RoomUser roomUser = this.roomUserRepository.findByRoomIdAndUserId(receipt.getRoom_id(), user.getId())
                 .orElseThrow(() -> new RoomNotFoundException("Room not found"));
 
-        Message msg = chatRepository.findByIdAndRoomId(receipt.getMessage_id(), receipt.getRoom_id())
+        Message lastMessage = chatRepository.findLastMessageInRoom(receipt.getRoom_id())
                 .orElseThrow(() -> new RoomNotFoundException("Message not found"));
 
-        roomUser.updateReadLastMessage(msg);
+        roomUser.updateReadLastMessage(lastMessage);
         roomUserRepository.save(roomUser);
 
         MessageReadReceipt payload = MessageReadReceipt.builder()
@@ -185,7 +213,6 @@ public class ChatService {
                 .type(MessageType.RECEIPT)
                 .build();
 
-        // Send all subscriber that the user read the msg
         messagingTemplate.convertAndSend("/topic/room/" + receipt.getRoom_id(), payload);
     }
 

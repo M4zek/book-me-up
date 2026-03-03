@@ -14,8 +14,6 @@ public interface RoomRepository {
 
     Room save(Room room);
 
-
-
     @Query("""
         select r from room r
             left join r.roles s

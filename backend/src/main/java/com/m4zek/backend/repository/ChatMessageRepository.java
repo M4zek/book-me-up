@@ -22,4 +22,15 @@ public interface ChatMessageRepository {
             @Param("room_id") int room_id, Pageable pageable);
 
     Optional<Message> findByIdAndRoomId(long msg_id, int room_id);
+
+
+    @Query(
+            """
+        SELECT m from message m
+                WHERE m.room.id = :room_id
+                order by m.createdDate DESC LIMIT 1
+        """
+    )
+    Optional<Message> findLastMessageInRoom(int room_id);
+
 }
