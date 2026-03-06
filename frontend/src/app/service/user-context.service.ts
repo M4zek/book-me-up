@@ -123,4 +123,21 @@ export class UserContextService {
             }))
         );
     }
+
+    public authState(): Observable<{
+        isLoggedIn: boolean;
+        userContext?: UserContextModel;
+        userData?: UserResponse;
+    }> {
+        return combineLatest([
+            this.currentUser$,
+            this.userData$
+        ]).pipe(
+            map(([userWrapper, userData]) => ({
+                isLoggedIn: userWrapper.loggedIn,
+                userContext: userWrapper.userContext,
+                userData: userWrapper.loggedIn ? userData : undefined
+            }))
+        );
+    }
 }
