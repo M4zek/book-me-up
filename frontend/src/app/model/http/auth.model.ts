@@ -3,7 +3,6 @@ import {ErrorMessage} from "./error.model";
 export enum Role {
     ROLE_ADMIN = "ROLE_ADMIN",
     ROLE_USER = "ROLE_USER",
-    ROLE_TEST = "ROLE_TEST",
 }
 
 export interface LoginWrapper {
