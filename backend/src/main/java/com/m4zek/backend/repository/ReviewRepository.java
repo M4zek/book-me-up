@@ -36,9 +36,10 @@ public interface ReviewRepository {
 
 
     @Query("""
-        SELECT r from reviews r
-        JOIN r.companyOffer o
-        WHERE o.company.id = :companyId
-        """)
-    Page<Review> findAllByCompanyId(@Param("companyId") int companyId, Pageable pageable);
+    SELECT r FROM reviews r
+    JOIN r.companyOffer o
+    WHERE o.company.id = :companyId
+    AND (:rating IS NULL OR r.rating = :rating)
+""")
+    Page<Review> findAllByCompanyIdAndRating(@Param("companyId") int companyId, Pageable pageable, Integer rating);
 }

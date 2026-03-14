@@ -64,8 +64,8 @@ public class ReviewService {
 
 
 
-    public Page<UserReviewResponse> getCompanyReviews(Pageable pageable, int company_id) {
-        Page<Review> companyReviews = this.reviewRepository.findAllByCompanyId(company_id, pageable);
+    public Page<UserReviewResponse> getCompanyReviews(Pageable pageable, int company_id, Integer rating) {
+        Page<Review> companyReviews = this.reviewRepository.findAllByCompanyIdAndRating(company_id, pageable, rating);
         List<UserReviewResponse> userReviewResponses = companyReviews.stream()
                 .map(ReviewMapper::reviewsToUserReviewResponse)
                 .toList();
