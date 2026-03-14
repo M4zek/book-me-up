@@ -3,8 +3,11 @@
     display: flex;
     flex-flow: column;
     margin: 1rem 0;
-    gap: 1rem;
-    border-bottom: 1px solid var(--white-75);
+    gap: 10px;
+    background-color: var(--white-5);
+    padding: 6px;
+    border: 1px solid var(--white-10);
+    border-radius: 5px;
 }
 
 .head-opinion-container{
@@ -21,13 +24,18 @@
     gap: 5px;
 }
 
+.user-information-container .user-avatar{
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
 .user-information-container img{
     width: 30px;
     height: 30px;
 }
 
 .user-information > .name{
-    font: bold 1rem "Roboto", sans-serif;
+    font: bold .9rem "Roboto", sans-serif;
     color: var(--white);
     margin: 0;
     padding: 0;
@@ -67,7 +75,7 @@
     display: flex;
     flex-flow: column;
     gap: 5px;
-    margin: .5rem 0;
+    margin: 0 0 5px 0;
 }
 
 .offer-name{
@@ -86,18 +94,3 @@
     text-align: justify;
 }
 
-.center{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-}
-
-.center p{
-    color: #00BBFF
-}
-
-.center p:hover{
-    scale: 1.05;
-    transition: .2s ease-in-out;
-    user-select: none;
-}

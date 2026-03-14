@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {ReviewOfferRequest, ReviewUserDetailsResponse} from "../model/http/review.model";
+import {Page, Pagination} from "../model/search/search.model";
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,19 @@ export class ReviewService {
         return this.http.post<ReviewUserDetailsResponse>(apiURL, body, {observe: 'response'});
     }
 
+    // Read company reviews details
+    readCompanyReviews(companyId: number, rating: number | null, pagination: Pagination){
+        const apiURL = `/api/public/companies/${companyId}/reviews`;
+
+        let httpParams = new HttpParams()
+            .set('page', pagination.currentPage)
+            .set('size', pagination.itemsPerPage);
+
+        if(rating != null){
+            httpParams = httpParams.set('rating', rating);
+        }
+
+        return this.http.get<Page<ReviewUserDetailsResponse>>(apiURL, {params: httpParams, observe: 'response'});
+    }
 
 }

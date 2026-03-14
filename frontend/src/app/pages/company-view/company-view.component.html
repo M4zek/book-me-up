@@ -40,6 +40,6 @@
         </div>
         <app-company-employee-list [companyEmployees]="company.employees"></app-company-employee-list>
         <app-company-business-hours [openingHours]="company.companyHours"></app-company-business-hours>
-        <app-company-opinions [opinionsDetails]="company.reviewStatistics"></app-company-opinions>
+        <app-company-opinions [companyId]="company_id" [opinionsDetails]="company.reviewStatistics"></app-company-opinions>
     </div>
 </div>
