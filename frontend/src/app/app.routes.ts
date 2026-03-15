@@ -76,7 +76,10 @@ export const routes: Routes = [
       data: {roles: [Role.ROLE_ADMIN]},
       children: [
           { path: '', redirectTo: "panel", pathMatch: 'full' },
-          { path: 'panel', component: AdminPanelComponent}
+          { path: 'panel', component: AdminPanelComponent,
+          children: [
+              { path: '**', component: PageNotFoundComponent },
+          ]}
       ]
     },
     { path: '**', component: PageNotFoundComponent }

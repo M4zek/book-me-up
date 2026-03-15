@@ -1,1 +1,14 @@
-<p style="color: white">admin-panel works!</p>
+<div class="admin-panel-cont">
+
+    <div class="admin-navigation" [class.collapsed]="isCollapsed">
+        <app-admin-panel-navigation
+                (toggle)="toggleSidebar()"
+                [collapsed]="isCollapsed">
+        </app-admin-panel-navigation>
+    </div>
+
+    <div class="admin-content-con">
+        <router-outlet/>
+    </div>
+
+</div>

@@ -1,0 +1,24 @@
+<div class="sidebar">
+
+    <button class="toggle-btn" (click)="toggle.emit()">
+        ☰
+    </button>
+
+    <ul class="nav-list">
+        <li *ngFor="let nav of NAVIGATION">
+            <a [routerLink]="nav.path"
+            [class.active]="router.url == nav.path">
+                <div class="img-con"
+                [class.collapsed]="collapsed">
+                    <img class="icon" [src]="nav.icon" alt="img"/>
+                </div>
+                <div class="nav-text" [class.hidden]="collapsed">
+                    <span class="text">
+                        {{nav.name}}
+                    </span>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+</div>

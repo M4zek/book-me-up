@@ -1,0 +1,31 @@
+
+
+
+.admin-panel-cont{
+    display: flex;
+    height: 90vh;
+    width: 100%;
+}
+
+/* sidebar */
+.admin-navigation{
+    width: 260px;
+    transition: width 0.3s;
+    background: var(--dark);
+    color: white;
+    border-radius: 5px 0 0 5px;
+
+}
+
+/* collapsed sidebar */
+.admin-navigation.collapsed{
+    width: 70px;
+    border-radius: 5px 0 0 5px;
+}
+
+/* content */
+.admin-content-con{
+    flex: 1;
+    transition: margin 0.3s;
+    border-radius: 0 5px 5px 0;
+}
