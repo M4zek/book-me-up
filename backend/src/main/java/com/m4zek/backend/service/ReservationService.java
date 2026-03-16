@@ -2,14 +2,15 @@ package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.*;
 import com.m4zek.backend.mapper.ReservationMapper;
+import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
-import com.m4zek.backend.model.dto.read.BookedCompanyHoursResponse;
-import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
-import com.m4zek.backend.model.dto.read.ReservationResponse;
-import com.m4zek.backend.model.dto.read.UserReservationResponse;
+import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
+import com.m4zek.backend.model.projection.AvailableSlots;
+import com.m4zek.backend.model.projection.DayAvailability;
 import com.m4zek.backend.repository.CompanyOfferRepository;
+import com.m4zek.backend.repository.CompanyRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
 import com.m4zek.backend.security.service.MyUserDetails;
@@ -21,11 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,14 +34,16 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final CompanyOfferRepository companyOfferRepository;
+    private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
 
     @Value("${app.time-zone}")
     private String TIME_ZONE;
 
-    public ReservationService(ReservationRepository reservationRepository, CompanyOfferRepository companyOfferRepository, UserRepository userRepository) {
+    public ReservationService(ReservationRepository reservationRepository, CompanyOfferRepository companyOfferRepository, CompanyRepository companyRepository, UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
         this.companyOfferRepository = companyOfferRepository;
+        this.companyRepository = companyRepository;
         this.userRepository = userRepository;
     }
 
@@ -84,80 +86,138 @@ public class ReservationService {
         return ReservationMapper.reservationToUserReservationResponse(reservation);
     }
 
-    public List<ReservationAvailabilityResponse> getCompanyReservationAvailability(int companyId, LocalDate from, LocalDate to) {
-        ZonedDateTime fromDate = from.atStartOfDay(ZoneId.of("Europe/Warsaw"));
-        ZonedDateTime toDate = to.atTime(23, 59, 59).atZone(ZoneId.of(TIME_ZONE));
 
-        List<Reservation> reservationsCompany = this.reservationRepository.findByCompanyIdAndDateBetween(
+    public AvailableReservationSlotsResponse generateFreeSlotsBetweenDates(int companyId, LocalDate startDate, LocalDate endDate, int duration) {
+        ZonedDateTime fromDate = startDate.atStartOfDay(ZoneId.of("Europe/Warsaw"));
+        ZonedDateTime toDate = endDate.atTime(23, 59, 59).atZone(ZoneId.of(TIME_ZONE));
+
+        // Find all reservations in company between two dates
+        List<Reservation> reservations = this.reservationRepository.findByCompanyIdAndDateBetween(
                 companyId,
                 fromDate,
                 toDate
         );
 
-        List<ReservationAvailabilityResponse> response = new ArrayList<>();
 
-        if (!reservationsCompany.isEmpty()) {
-            Company company = reservationsCompany.getFirst().getCompanyOffer().getCompany();
-
-            Map<DayOfWeek, CompanyHours> hoursMap = company.getCompanyHoursList().stream()
-                    .collect(Collectors.toMap(
-                            h -> DayOfWeek.valueOf(h.getDayOfWeek().toUpperCase()),
-                            h -> h
-                    ));
+        Map<LocalDate, List<Reservation>> reservationsByDate = reservations.stream()
+                .collect(Collectors.groupingBy(item -> item.getReservationDate().toLocalDate()));
 
 
-            Map<LocalDate, List<Reservation>> reservationsByDate = reservationsCompany.stream()
-                    .collect(Collectors.groupingBy(item -> item.getReservationDate().toLocalDate()));
 
-            for (LocalDate date : reservationsByDate.keySet()) {
+        // Empty list for day data
+        List<DayAvailability> dayAvailabilities = new ArrayList<>();
 
-                List<Reservation> reservationsForDay = reservationsByDate.get(date);
+        // Get all company employees
+        Company company = this.companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyNotFoundException("Company not found with id: " + companyId));
 
-                int totalMinutes = calculateTotalMinutes(date, hoursMap);
+        List<EmployeeSummaryResponse> employees = company.getUsers().stream()
+                .map(roles -> UserMapper.toEmployeeSummaryResponse(roles.getUser()))
+                .toList();
 
-                if (totalMinutes == 0) {
+        // List of company hours (week)
+        List<CompanyHours> companyHours = company.getCompanyHoursList();
 
-                    response.add(ReservationAvailabilityResponse.builder()
-                            .dateOfBooked(date.atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime())
-                            .bookedCompanyHours(Collections.emptyList())
-                            .freeTimePercentage(0)
-                            .build());
-                    continue;
-                }
-
-                List<BookedCompanyHoursResponse> bookedHours = reservationsForDay.stream()
-                        .map(r -> {
-                            OffsetDateTime start = r.getReservationDate().toOffsetDateTime().atZoneSameInstant(ZoneId.of(TIME_ZONE)).toOffsetDateTime();
-                            OffsetDateTime end = r.getReservationDate().toOffsetDateTime().atZoneSameInstant(ZoneId.of(TIME_ZONE)).toOffsetDateTime()
-                                    .plusMinutes(r.getCompanyOffer().getDuration());
-
-                            return BookedCompanyHoursResponse.builder()
-                                    .startTimeBooked(start)
-                                    .endTimeBooked(end)
-                                    .build();
-                        })
-                        .toList();
-
-                int bookedMinutes = bookedHours.stream().mapToInt(b ->
-                        (int) ChronoUnit.MINUTES.between(
-                                OffsetDateTime.parse(b.getStartTimeBooked().toString()),
-                                OffsetDateTime.parse(b.getEndTimeBooked().toString())
-                        )
-                ).sum();
-
-
-                int freeMinutesPercentage =
-                        (int) (((double) (totalMinutes - bookedMinutes) / totalMinutes) * 100);
-
-                response.add(ReservationAvailabilityResponse.builder()
-                        .dateOfBooked(date.atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime())
-                        .bookedCompanyHours(bookedHours)
-                        .freeTimePercentage(freeMinutesPercentage)
-                        .build());
-            }
+        // Generate days (from -> to)
+        List<ZonedDateTime> week = new ArrayList<>();
+        while (fromDate.isBefore(toDate)) {
+            week.add(fromDate);
+            fromDate = fromDate.plusDays(1);
         }
 
-        return response;
+        // Map |  day -> companyHours
+        Map<OffsetDateTime, CompanyHours> companyHoursMap =
+                companyHours.stream().collect(Collectors.toMap(
+                        h -> {
+                            ZonedDateTime date = week.stream()
+                                    .filter(w -> w.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                                    .equalsIgnoreCase(h.getDayOfWeek())).findFirst().get();
+
+                            return LocalDate.from(date).atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime();
+                        },
+                        h -> h,
+                        (a,b) -> a, TreeMap::new
+                ));
+
+        // Generate response
+        companyHoursMap.forEach((day, hours) -> {
+
+            if(!hours.isOpen()) {
+                dayAvailabilities.add(
+                        DayAvailability.builder()
+                                .date(day)
+                                .isOpen(false)
+                                .build()
+                );
+                return;
+            }
+
+            // Create slots based on opening hours.
+            List<AvailableSlots> slots = generateSlots(hours.getOpenTime(), hours.getCloseTime(), duration);
+
+            // Create date e.g: (2025-10-20)
+            LocalDate localDay = day.toLocalDate();
+
+            // Get reservations by day
+            List<Reservation> reservationAtDay = reservationsByDate.get(localDay) != null ? reservationsByDate.get(localDay) : new ArrayList<>();
+
+            // If company don't have reservation on this day, all employees are available
+            // Otherwise check which employees have reservations at this slot time and delete their from available employees
+            if(reservationAtDay.isEmpty()){
+                List<Integer> availableEmployeeIds = new ArrayList<>(employees.stream().map(EmployeeSummaryResponse::getId)
+                        .toList());
+
+                slots.forEach(slot -> {
+                    slot.setAvailableEmployeeIds(availableEmployeeIds);
+                });
+            } else {
+                // Adding available employees at this time for each free time slots
+                slots.forEach(slot -> {
+
+                    // Filter employees who have reservations at this time (slot)
+                    Set<Integer> busyEmployeeIds = reservations.stream()
+                            .filter(res-> {
+                                LocalTime startReservation = res.getReservationDate().toLocalTime();
+                                LocalTime startSlot = LocalTime.parse(slot.getStart());
+                                LocalTime endSlot = LocalTime.parse(slot.getEnd());
+
+                                return startReservation.isBefore(endSlot) && startReservation.isAfter(startSlot);
+                            }).map(res-> res.getPreferredUser().getId())
+                            .collect(Collectors.toSet());
+
+                    // Remove busy employee ids = Available employees (ids) at this time
+                    List<Integer> availableEmployeeIds = new ArrayList<>(employees.stream()
+                            .map(EmployeeSummaryResponse::getId)
+                            .filter(id -> !busyEmployeeIds.contains(id))
+                            .toList());
+
+                    slot.setAvailableEmployeeIds(availableEmployeeIds);
+                });
+            }
+
+            // Calculating free time (minutes) in percentage in a day
+            int totalMinutes = calculateTotalMinutes(hours) * employees.size();
+            int bookedMinutes = reservationAtDay.stream()
+                        .mapToInt(res -> res.getCompanyOffer().getDuration()).sum();
+
+            int percentageFreeSlots = (int) (((double) (totalMinutes - bookedMinutes) / totalMinutes) * 100);
+
+            // Add to the list a data about day
+            dayAvailabilities.add(
+                    DayAvailability.builder()
+                            .date(day)
+                            .slots(slots)
+                            .isOpen(true)
+                            .freeTimePercentage(percentageFreeSlots)
+                            .build()
+            );
+        });
+
+
+        return AvailableReservationSlotsResponse.builder()
+                .employees(employees)
+                .dayAvailabilities(dayAvailabilities)
+                .build();
     }
 
     public ReservationResponse createNewReservation(ReservationRequest reservationRequest) {
@@ -176,7 +236,7 @@ public class ReservationService {
                 });
 
         User preferredEmployee = this.userRepository.findById(reservationRequest.getPreferred_employee_id())
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException("Preferred employee not found"));
 
         ZonedDateTime fromDate = reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE));
         ZonedDateTime toDate = reservationRequest.getReservation_date()
@@ -261,17 +321,13 @@ public class ReservationService {
         PRIVATE METHODS
      */
 
-    private int calculateTotalMinutes(LocalDate date, Map<DayOfWeek, CompanyHours> hoursMap) {
-
-        DayOfWeek dow = date.getDayOfWeek();
-        CompanyHours ch = hoursMap.get(dow);
-
-        if (ch == null || !ch.isOpen()) {
+    private int calculateTotalMinutes(CompanyHours hoursMap) {
+        if (hoursMap == null || !hoursMap.isOpen()) {
             return 0;
         }
 
-        LocalTime open = LocalTime.parse(ch.getOpenTime());
-        LocalTime close = LocalTime.parse(ch.getCloseTime());
+        LocalTime open = LocalTime.parse(hoursMap.getOpenTime());
+        LocalTime close = LocalTime.parse(hoursMap.getCloseTime());
 
         return (int) ChronoUnit.MINUTES.between(open, close);
     }
@@ -295,5 +351,30 @@ public class ReservationService {
                 orderCreateSecond,
                 userId,
                 companyOfferId);
+    }
+
+    // Method generate free time slots
+    private List<AvailableSlots> generateSlots(String startTime, String endTime, int duration) {
+
+        LocalTime start = LocalTime.parse(startTime);
+        LocalTime end = LocalTime.parse(endTime);
+
+        List<AvailableSlots> availableSlots = new ArrayList<>();
+        LocalTime endTimeSlot = start.plusMinutes(duration);
+
+        while (!endTimeSlot.isAfter(end)) {
+
+            availableSlots.add(
+                    AvailableSlots.builder()
+                            .start(start.format(DateTimeFormatter.ofPattern("HH:mm")))
+                            .end(endTimeSlot.format(DateTimeFormatter.ofPattern("HH:mm")))
+                            .build()
+            );
+
+            start = endTimeSlot;
+            endTimeSlot = endTimeSlot.plusMinutes(duration);
+        }
+
+        return availableSlots;
     }
 }

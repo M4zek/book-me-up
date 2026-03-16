@@ -1,5 +1,4 @@
-package com.m4zek.backend.model.dto.read;
-
+package com.m4zek.backend.model.projection;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -12,12 +11,14 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ReservationAvailabilityResponse {
+@AllArgsConstructor
+public class DayAvailability {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
-    private OffsetDateTime dateOfBooked;
-    private List<BookedCompanyHoursResponse> bookedCompanyHours;
-    private int freeTimePercentage;
+    private OffsetDateTime date;
+    private Boolean isOpen;
+    private List<AvailableSlots> slots;
+    private Integer freeTimePercentage;
+
 }

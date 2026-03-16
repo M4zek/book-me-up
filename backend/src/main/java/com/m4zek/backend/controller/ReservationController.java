@@ -1,7 +1,7 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
-import com.m4zek.backend.model.dto.read.ReservationAvailabilityResponse;
+import com.m4zek.backend.model.dto.read.AvailableReservationSlotsResponse;
 import com.m4zek.backend.model.dto.read.ReservationResponse;
 import com.m4zek.backend.model.dto.read.UserReservationResponse;
 import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
@@ -10,6 +10,7 @@ import com.m4zek.backend.service.ReservationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Validated
 @RestController
@@ -78,14 +78,15 @@ public class ReservationController {
     }
 
     // General endpoints for reservations
-    @GetMapping("/companies/{companyId}/reservations/busy")
+    @GetMapping("/companies/{companyId}/reservations/free-slots")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<List<ReservationAvailabilityResponse>> readReservationAvailability(
+    public ResponseEntity<AvailableReservationSlotsResponse> readReservationAvailability(
             @PathVariable @Positive(message = "Company id must be positive number") int companyId,
             @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate fromDate,
-            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate
+            @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate,
+            @RequestParam @Range(min = 10, max = 90) int duration
     ) {
-        return ResponseEntity.ok(this.reservationService.getCompanyReservationAvailability(companyId, fromDate, toDate));
+        return ResponseEntity.ok(this.reservationService.generateFreeSlotsBetweenDates(companyId, fromDate, toDate, duration));
     }
 
     @PostMapping("/companies/reservations")
