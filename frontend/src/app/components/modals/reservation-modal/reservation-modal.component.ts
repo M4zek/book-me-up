@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
-import {NgIf} from "@angular/common";
+import {formatDate, NgIf} from "@angular/common";
 import {
     ChangeDateEvent,
     ChangeDateEventType,
@@ -43,8 +43,8 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
       id: 0, name: '' , description: '', duration: 45, price: 30,
   }
 
-  userData!: UserResponse;
-  reservationResponse!: ReservationResponse;
+  userData!: UserResponse | null;
+  reservationResponse!: ReservationResponse | null;
 
   isReservationConfirmed: boolean = false;
 
@@ -69,7 +69,13 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
 
 
   ngOnDestroy(): void {
-
+      this.responseStatus = undefined;
+      this.loadingStatus = false;
+      this.isReservationConfirmed = false;
+      this.selectedSlot = null;
+      this.selectedDay = null;
+      this.userData = null;
+      this.reservationResponse = null;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -105,7 +111,7 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
                   this.slots = response.body
               }
           }, error: error => {
-              console.log(error);
+              console.error(error);
               this.toast.show("Something went wrong! Try again later", "error");
               this.close();
           }, complete: () => {
@@ -163,7 +169,6 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
 
   confirmReservation() {
       if (this.isReservationDataValid()) {
-          console.log(this.reservationRequest)
           this.reservationService.makeAnReservation(this.reservationRequest)
               .subscribe({
                   next: response => {
@@ -171,17 +176,21 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
                           this.reservationResponse = response.body;
                           this.responseStatus = response.status;
 
-                          console.log(this.reservationResponse.preferredEmployee?.email);
                           this.toast.show("Reservation successfully created", "success");
                       } else {
                           this.responseStatus = response.status;
                       }
                   },
                   error: error => {
-                      console.error(error);
-                  },
-                  complete: () => {
+                      switch (error.status) {
+                          case 409:
+                              this.toast.show("A similar reservation already exists [Offer and time]", "error");
+                              break;
 
+                          default:
+                              this.toast.show("Something went wrong!", "error");
+                              break;
+                      }
                   }
               });
       }
@@ -210,7 +219,7 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
 
       result.setHours(hours, minutes, 0, 0);
 
-      this.reservationRequest.reservation_date = result;
+      this.reservationRequest.reservation_date= formatDate(result, "yyyy-MM-dd'T'HH:mm:ss", 'en-US')
   }
 
   convertEmployeeToDropData(employees: EmployeeSummaryResponse[]): DropDownListItem[] {

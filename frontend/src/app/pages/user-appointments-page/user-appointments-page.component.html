@@ -26,7 +26,9 @@
                 <span>{{item.companyName}}</span>
                 <div class="action-buttons">
                     <div class="button status">
-                        <img [src]="getImage(item.status)" alt="status"/>
+                        <img [src]="getImage(item.status)"
+                             [class.rotate]="item.status == 'PENDING'"
+                             alt="status"/>
                         <div class="expand">
                             <span>{{item.status.substring(0,1).toUpperCase()}}{{item.status.substring(1).toLowerCase()}}</span>
                         </div>

@@ -8,7 +8,7 @@
                     [days]="slots.dayAvailabilities"
             />
             <div class="white-line"></div>
-            <div class="user-reservation-information">
+            <div class="user-reservation-information" *ngIf="userData">
                 <div class="user-data">
                     <img [src]="'icons/user_icon.svg'" alt="icon"/>
                     <input [value]="userData.firstName" placeholder="First name" class="input-con" disabled>
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="reservation-response" *ngIf="responseStatus === 200 && !loadingStatus" >
+        <div class="reservation-response" *ngIf="responseStatus === 200 && !loadingStatus && reservationResponse" >
             <h2>Reservation created</h2>
 
             <div class="reservation-data custom">
