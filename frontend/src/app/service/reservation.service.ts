@@ -4,9 +4,11 @@ import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ReservationAvailability} from "../model/gui/gui.model";
 import {
-    ReservationAvailabilityResponse,
+    AvailableReservationSlots,
     ReservationRequest,
-    ReservationResponse, ReservationUpdateModel, UserReservationResponse
+    ReservationResponse,
+    ReservationUpdateModel,
+    UserReservationResponse
 } from "../model/http/reservation.model";
 import {CompanyReservationsSearch, Page, Pagination, UserReservationSearch} from "../model/search/search.model";
 
@@ -17,14 +19,14 @@ export class ReservationService {
 
   constructor(private http: HttpClient) { }
 
-  getAvailabilityCalendar(availability: ReservationAvailability): Observable<HttpResponse<ReservationAvailabilityResponse[]>> {
-      let url = `/api/v1/companies/${availability.companyId}/reservations`;
+  getReservationSlots(availability: ReservationAvailability): Observable<HttpResponse<AvailableReservationSlots>> {
+      let url = `/api/v1/companies/${availability.companyId}/reservations/free-slots`;
 
       let httpParams = new HttpParams()
           .set('fromDate', availability.fromDate.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-'))
           .set('toDate', availability.toDate.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-'))
-
-      return this.http.get<ReservationAvailabilityResponse[]>(url, {params: httpParams, observe: 'response'});
+          .set("duration", availability.duration);
+      return this.http.get<AvailableReservationSlots>(url, {params: httpParams, observe: 'response'});
   }
 
 

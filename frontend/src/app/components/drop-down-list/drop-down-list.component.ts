@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
@@ -20,16 +20,18 @@ export interface DropDownListItem {
   templateUrl: './drop-down-list.component.html',
   styleUrl: './drop-down-list.component.css'
 })
-export class DropDownListComponent implements OnChanges {
+export class DropDownListComponent implements OnChanges, OnDestroy {
 
   @Output() valueChanged = new EventEmitter<DropDownListItem>();
   @Input() placeholder: string = 'Select option'
   @Input() noneValue: boolean = true;
   @Input() disabled: boolean = false;
+  @Input() itemsDisabled: boolean = false;
   menuOpen: boolean = false;
 
   @Input() selectedOption: DropDownListItem = {id: -1, content: ''};
   @Input() options: DropDownListItem[] = []
+  @Input() disabledIds: number[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['options']) {
@@ -45,9 +47,19 @@ export class DropDownListComponent implements OnChanges {
                   id: item.id ?? index,
               }));
           }
-
+      }
+      if(changes['disabledIds'] && !changes['disabledIds'].firstChange) {
+            if(this.selectedOption.id && !this.disabledIds.includes(this.selectedOption.id)){
+                this.selectNone();
+            }
       }
   }
+
+
+  ngOnDestroy() {
+      console.log("DESTROY")
+  }
+
 
   select(option: DropDownListItem): any {
     if(option.content === 'None') {
@@ -60,6 +72,11 @@ export class DropDownListComponent implements OnChanges {
     this.toggleMenu();
   }
 
+  selectNone(){
+      this.selectedOption = this.options[0];
+      this.valueChanged.emit(this.selectedOption);
+  }
+
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
@@ -70,5 +87,12 @@ export class DropDownListComponent implements OnChanges {
     if (!target.closest('.drop-down-icon')) {
       this.menuOpen = false;
     }
+  }
+
+  isDisabled(id: number | undefined) {
+      if(id && this.itemsDisabled){
+          return !this.disabledIds.includes(id);
+      }
+      return false;
   }
 }

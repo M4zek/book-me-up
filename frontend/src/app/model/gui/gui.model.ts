@@ -59,6 +59,7 @@ export interface ReservationAvailability {
     companyId: number;
     fromDate: Date;
     toDate: Date;
+    duration: number;
 }
 
 

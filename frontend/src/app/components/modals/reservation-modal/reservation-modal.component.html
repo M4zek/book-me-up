@@ -1,10 +1,12 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-content" *ngIf="slots" (click)="$event.stopPropagation()">
 
-        <div class="reservation-form" *ngIf="responseStatus != 200 && !loadingStatus">
-            <app-date-reservation-picker (changeDate)="onDateChange($event)"
-                                         [companyId]="companyId"
-                                         [duration]="offer.duration"/>
+        <div class="reservation-form" *ngIf="responseStatus != 200">
+            <app-date-reservation-picker
+                    [isSlotsLoadingFromServer]="loadingStatus"
+                    (changeDate)="onDateChange($event)"
+                    [days]="slots.dayAvailabilities"
+            />
             <div class="white-line"></div>
             <div class="user-reservation-information">
                 <div class="user-data">
@@ -35,7 +37,9 @@
                 </div>
                 <div class="white-line-25"></div>
                 <app-drop-down-list
-                        [options]="preferredEmployees"
+                        [itemsDisabled]="true"
+                        [options]="convertEmployeeToDropData(slots.employees)"
+                        [disabledIds]="selectedSlot != null ? selectedSlot.availableEmployeeIds : []"
                         [placeholder]="'Preferred employee'"
                         (valueChanged)="changePreferredEmployee($event)"></app-drop-down-list>
             </div>
@@ -43,7 +47,10 @@
             <div class="reservation-summary">
                 <div class="summary-content">
                     <p class="title-summary">Date:</p>
-                    <p class="summary-par">{{startDate}}</p>
+                    <p class="summary-par">
+                        {{selectedDay != null ? selectedDay : 'Day not selected'}}
+                        {{selectedSlot != null ? selectedSlot.start : '--:--'}}
+                    </p>
                 </div>
                 <div class="summary-content">
                     <p class="title-summary">Price:</p>
@@ -60,14 +67,12 @@
             </div>
 
             <div class="btn-confirm"
-                 [class.disabled]="!isReservationConfirmed || !isReservationDataValid()"
+                 [class.disabled]="!isReservationDataValid()"
                  (click)="confirmReservation()"
             >
                 <p>Confirm reservation</p>
             </div>
         </div>
-
-        <app-double-spinner *ngIf="loadingStatus"/>
 
         <div class="reservation-response" *ngIf="responseStatus === 200 && !loadingStatus" >
             <h2>Reservation created</h2>

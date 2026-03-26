@@ -1,5 +1,5 @@
 import {UserResponse} from "./user.model";
-import {AddressResponse, CompanyOffersResponse} from "./company.model";
+import {AddressResponse, CompanyOffersResponse, EmployeeSummaryResponse} from "./company.model";
 
 
 export interface ReservationRequest{
@@ -55,4 +55,23 @@ export interface UserReservationResponse {
     offer: CompanyOffersResponse;
     hasUserRatedOffer: boolean;
     companyLogo: string;
+}
+
+
+export interface AvailableSlot {
+    start: String,
+    end: String,
+    availableEmployeeIds: number[],
+}
+
+export interface DayAvailability{
+    date: Date,
+    isOpen: boolean,
+    slots: AvailableSlot[] | null,
+    freeTimePercentage: number | null,
+}
+
+export interface AvailableReservationSlots{
+    employees: EmployeeSummaryResponse[],
+    dayAvailabilities: DayAvailability[],
 }
