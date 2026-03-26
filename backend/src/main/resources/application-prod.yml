@@ -20,6 +20,3 @@ jwe:
     refreshExpirationSec: 1800    # 1800 = 30 min
     header: Authorization
     prefix: Bearer
-
-app:
-  time-zone: Europe/Warsaw

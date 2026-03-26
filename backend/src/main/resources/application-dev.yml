@@ -21,5 +21,3 @@ jwe:
     header: Authorization
     prefix: Bearer
 
-app:
-  time-zone: Europe/Warsaw

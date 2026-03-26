@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -25,6 +25,6 @@ public class ReservationRequest {
 
     @NotNull(message = "Reservation date cannot be null")
     @Future(message = "Reservation date must be in the future")
-    private OffsetDateTime reservation_date;
+    private LocalDateTime reservation_date;
 
 }

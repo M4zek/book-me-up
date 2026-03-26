@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class UserReservationResponse {
     private AddressResponse address;
     private CompanyOfferResponse offer;
     private String status;
-    private OffsetDateTime reservationDate;
+    private LocalDateTime reservationDate;
     private String companyLogo;
     private boolean hasUserRatedOffer;
 }

@@ -46,7 +46,7 @@ public class ReservationMapper {
                 .address(AddressMapper.addressToAddressResponse(reservation.getCompanyOffer().getCompany().getAddress()))
                 .offer(CompanyOfferMapper.companyOfferToCompanyOfferResponse(reservation.getCompanyOffer()))
                 .status(reservation.getReservationStatus())
-                .reservationDate(reservation.getReservationDate().toOffsetDateTime())
+                .reservationDate(reservation.getReservationDate())
                 .companyLogo(ImageMapper.byteImageToBase64(reservation.getCompanyOffer().getCompany().getLogo()))
                 .hasUserRatedOffer(
                         //If the reservation has a status other than COMPLETED, the user could not add a rating.

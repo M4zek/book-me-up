@@ -4,7 +4,10 @@ import com.m4zek.backend.exception.*;
 import com.m4zek.backend.mapper.ReservationMapper;
 import com.m4zek.backend.mapper.UserMapper;
 import com.m4zek.backend.model.*;
-import com.m4zek.backend.model.dto.read.*;
+import com.m4zek.backend.model.dto.read.AvailableReservationSlotsResponse;
+import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
+import com.m4zek.backend.model.dto.read.ReservationResponse;
+import com.m4zek.backend.model.dto.read.UserReservationResponse;
 import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
 import com.m4zek.backend.model.projection.AvailableSlots;
@@ -14,14 +17,15 @@ import com.m4zek.backend.repository.CompanyRepository;
 import com.m4zek.backend.repository.ReservationRepository;
 import com.m4zek.backend.repository.UserRepository;
 import com.m4zek.backend.security.service.MyUserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -37,8 +41,6 @@ public class ReservationService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
 
-    @Value("${app.time-zone}")
-    private String TIME_ZONE;
 
     public ReservationService(ReservationRepository reservationRepository, CompanyOfferRepository companyOfferRepository, CompanyRepository companyRepository, UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
@@ -88,8 +90,8 @@ public class ReservationService {
 
 
     public AvailableReservationSlotsResponse generateFreeSlotsBetweenDates(int companyId, LocalDate startDate, LocalDate endDate, int duration) {
-        ZonedDateTime fromDate = startDate.atStartOfDay(ZoneId.of("Europe/Warsaw"));
-        ZonedDateTime toDate = endDate.atTime(23, 59, 59).atZone(ZoneId.of(TIME_ZONE));
+        LocalDateTime fromDate = startDate.atStartOfDay();
+        LocalDateTime toDate = endDate.atTime(23, 59, 59);
 
         // Find all reservations in company between two dates
         List<Reservation> reservations = this.reservationRepository.findByCompanyIdAndDateBetween(
@@ -119,21 +121,21 @@ public class ReservationService {
         List<CompanyHours> companyHours = company.getCompanyHoursList();
 
         // Generate days (from -> to)
-        List<ZonedDateTime> week = new ArrayList<>();
+        List<LocalDateTime> week = new ArrayList<>();
         while (fromDate.isBefore(toDate)) {
             week.add(fromDate);
             fromDate = fromDate.plusDays(1);
         }
 
         // Map |  day -> companyHours
-        Map<OffsetDateTime, CompanyHours> companyHoursMap =
+        Map<LocalDateTime, CompanyHours> companyHoursMap =
                 companyHours.stream().collect(Collectors.toMap(
                         h -> {
-                            ZonedDateTime date = week.stream()
+                            LocalDateTime date = week.stream()
                                     .filter(w -> w.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH)
                                     .equalsIgnoreCase(h.getDayOfWeek())).findFirst().get();
 
-                            return LocalDate.from(date).atStartOfDay(ZoneId.of(TIME_ZONE)).toOffsetDateTime();
+                            return date;
                         },
                         h -> h,
                         (a,b) -> a, TreeMap::new
@@ -238,9 +240,8 @@ public class ReservationService {
         User preferredEmployee = this.userRepository.findById(reservationRequest.getPreferred_employee_id())
                 .orElseThrow(() -> new UserNotFoundException("Preferred employee not found"));
 
-        ZonedDateTime fromDate = reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE));
-        ZonedDateTime toDate = reservationRequest.getReservation_date()
-                .atZoneSameInstant(ZoneId.of(TIME_ZONE))
+        LocalDateTime fromDate = reservationRequest.getReservation_date();
+        LocalDateTime toDate = reservationRequest.getReservation_date()
                 .plusMinutes(companyOffer.getDuration());
 
         if (this.reservationRepository.existsReservationByCompanyOffer_IdAndUserIdAndReservationDateBetween(
@@ -253,14 +254,14 @@ public class ReservationService {
         }
 
         String reservationNumber = this.createReservationNumber(
-                reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE)),
+                reservationRequest.getReservation_date(),
                 reservationRequest.getCompany_offer_id(),
                 reservationRequest.getUser_id()
         );
 
         return ReservationMapper.reserevationToReservationResponse(
                 this.reservationRepository.save(new Reservation(
-                    reservationRequest.getReservation_date().atZoneSameInstant(ZoneId.of(TIME_ZONE)),
+                    reservationRequest.getReservation_date(),
                     reservationNumber,
                     user,
                     companyOffer,
@@ -332,7 +333,7 @@ public class ReservationService {
         return (int) ChronoUnit.MINUTES.between(open, close);
     }
 
-    private String createReservationNumber(ZonedDateTime reservationDate, long companyOfferId, int userId) {
+    private String createReservationNumber(LocalDateTime reservationDate, long companyOfferId, int userId) {
         String orderNumberPrefix = "ON";
         String orderCreateYear = String.valueOf(reservationDate.getYear());
         String orderCreateMonth = String.valueOf(reservationDate.getMonthValue());

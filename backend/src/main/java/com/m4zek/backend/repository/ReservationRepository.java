@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +26,9 @@ public interface ReservationRepository {
           AND r.reservationDate >= :start
           AND r.reservationDate <= :end
     """)
-    List<Reservation> findByCompanyIdAndDateBetween(long companyId, ZonedDateTime start, ZonedDateTime end);
+    List<Reservation> findByCompanyIdAndDateBetween(long companyId, LocalDateTime start, LocalDateTime end);
 
-    boolean existsReservationByCompanyOffer_IdAndUserIdAndReservationDateBetween(long companyOfferId, long userId, ZonedDateTime start, ZonedDateTime end);
+    boolean existsReservationByCompanyOffer_IdAndUserIdAndReservationDateBetween(long companyOfferId, long userId, LocalDateTime start, LocalDateTime end);
 
 
     @Query("""

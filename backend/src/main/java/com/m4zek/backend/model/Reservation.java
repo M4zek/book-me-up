@@ -2,7 +2,7 @@ package com.m4zek.backend.model;
 
 import jakarta.persistence.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Entity(name = "reservations")
 public class Reservation extends BaseEntity {
@@ -11,7 +11,7 @@ public class Reservation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private ZonedDateTime reservationDate;
+    private LocalDateTime reservationDate;
 
     private String reservationNumber;
 
@@ -32,7 +32,7 @@ public class Reservation extends BaseEntity {
 
     public Reservation() {}
 
-    public Reservation(ZonedDateTime reservationDate, String reservationNumber, User user, CompanyOffer companyOffer,  User preferredUser) {
+    public Reservation(LocalDateTime reservationDate, String reservationNumber, User user, CompanyOffer companyOffer,  User preferredUser) {
         this.reservationDate = reservationDate;
         this.reservationNumber = reservationNumber;
         this.user = user;
@@ -42,7 +42,7 @@ public class Reservation extends BaseEntity {
     }
 
 
-    public ZonedDateTime getReservationDate() {
+    public LocalDateTime getReservationDate() {
         return this.reservationDate;
     }
 
