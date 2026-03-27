@@ -144,7 +144,11 @@ public class ReservationService {
         // Generate response
         companyHoursMap.forEach((day, hours) -> {
 
-            if(!hours.isOpen()) {
+            if(
+                    !hours.isOpen()
+                    || day.toLocalDate().isBefore(LocalDate.now())
+                    || (day.toLocalDate().isAfter(LocalDate.now()) && LocalTime.now().isAfter(LocalTime.parse(hours.getCloseTime())))
+            ) {
                 dayAvailabilities.add(
                         DayAvailability.builder()
                                 .date(day)
@@ -155,7 +159,7 @@ public class ReservationService {
             }
 
             // Create slots based on opening hours.
-            List<AvailableSlots> slots = generateSlots(hours.getOpenTime(), hours.getCloseTime(), duration);
+            List<AvailableSlots> slots = generateSlots(day, hours.getOpenTime(), hours.getCloseTime(), duration);
 
             // Create date e.g: (2025-10-20)
             LocalDate localDay = day.toLocalDate();
@@ -355,10 +359,17 @@ public class ReservationService {
     }
 
     // Method generate free time slots
-    private List<AvailableSlots> generateSlots(String startTime, String endTime, int duration) {
+    private List<AvailableSlots> generateSlots(LocalDateTime date, String startTime, String endTime, int duration) {
+
+        LocalDate today = LocalDate.now();
+        LocalDate day = date.toLocalDate();
 
         LocalTime start = LocalTime.parse(startTime);
         LocalTime end = LocalTime.parse(endTime);
+
+        if(today.isEqual(day) && LocalTime.now().isAfter(start)) {
+            start = this.roundTime(LocalTime.now());
+        }
 
         List<AvailableSlots> availableSlots = new ArrayList<>();
         LocalTime endTimeSlot = start.plusMinutes(duration);
@@ -377,5 +388,19 @@ public class ReservationService {
         }
 
         return availableSlots;
+    }
+
+
+    private LocalTime roundTime(LocalTime time) {
+        int minute = time.getMinute();
+        int roundedMinute = ((minute + 9) / 10) * 10;
+
+        LocalTime roundedTime;
+        if(roundedMinute == 60){
+            roundedTime = time.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        } else {
+            roundedTime = time.withMinute(roundedMinute).withSecond(0).withNano(0);
+        }
+        return roundedTime;
     }
 }
