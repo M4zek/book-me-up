@@ -42,10 +42,12 @@ public class ReservationController {
             @RequestParam(required = false) @Size(min = 1, message = "Offer name cannot be empty string") String name,
             @RequestParam(required = false) @Size(min = 1, message = "Status name cannot be empty string") String status,
             @RequestParam(required = false) @Positive(message = "User id must be positive number") Integer userId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate,
             Pageable pageable
             )
     {
-        return ResponseEntity.ok(this.reservationService.getAllCompanyReservations(companyId, name, status, userId, pageable));
+        return ResponseEntity.ok(this.reservationService.getAllCompanyReservations(companyId, name, status, userId, pageable, fromDate, toDate));
     }
 
     @PatchMapping("/companies/{companyId}/reservations/{reservationId}")

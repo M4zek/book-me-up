@@ -57,8 +57,10 @@ public interface ReservationRepository {
                 AND (:name IS NULL OR LOWER(r.companyOffer.name) LIKE LOWER(CONCAT('%', :name, '%')))
                 AND (:status IS NULL OR LOWER(r.status) LIKE LOWER(CONCAT('%', :status, '%')))
                 AND (:userId IS NULL OR r.preferredUser.id = :userId)
+                AND (:fromDate IS NULL OR r.reservationDate >= :fromDate)
+                AND (:toDate IS NULL OR r.reservationDate <= :toDate)
         """)
-    Page<Reservation> findAllByCompanyId(int companyId, String name, String status, Integer userId, Pageable pageable);
+    Page<Reservation> findAllByCompanyId(int companyId, String name, String status, Integer userId, Pageable pageable, LocalDateTime fromDate, LocalDateTime toDate);
 
     @Query("""
         SELECT r

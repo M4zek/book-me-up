@@ -312,8 +312,14 @@ public class ReservationService {
         return ReservationMapper.reserevationToReservationResponse(reservation);
     }
 
-    public Page<ReservationResponse> getAllCompanyReservations(int companyId, String name,  String status, Integer userId, Pageable pageable) {
-        Page<Reservation> reservationPages = this.reservationRepository.findAllByCompanyId(companyId, name, status, userId, pageable);
+    public Page<ReservationResponse> getAllCompanyReservations(
+            int companyId, String name,  String status, Integer userId, Pageable pageable, LocalDate fromDate, LocalDate toDate
+    ) {
+
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.plusDays(1).atStartOfDay() : null;
+
+        Page<Reservation> reservationPages = this.reservationRepository.findAllByCompanyId(companyId, name, status, userId, pageable, fromDateTime, toDateTime);
 
         List<ReservationResponse> reservationList = reservationPages.stream()
                 .map(ReservationMapper::reserevationToReservationResponse)
