@@ -40,4 +40,6 @@ export interface CompanyReservationsSearch {
     status?: string;
     sort?: string;
     userId?: number;
+    fromDate?: Date;
+    toDate?: Date;
 }

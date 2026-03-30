@@ -25,3 +25,17 @@ export function getCompanyLogo(logo: string | null | undefined) {
 
     return `data:image/jpeg;base64,${logo}`;
 }
+
+export function idToColor(id: number): string {
+    const r = (id * 123) % 256;
+    const g = (id * 456) % 256;
+    const b = (id * 789) % 256;
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+export function getWeekdayNumber(dateStr: string): number {
+    const date = new Date(dateStr.replace(' ', 'T'));
+    const day = date.getDay();
+
+    return (day + 6) % 7;
+}

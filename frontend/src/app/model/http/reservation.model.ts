@@ -23,25 +23,13 @@ export interface ReservationStatusEmployeeUpdateRequest{
 
 // RESPONSES
 
-export interface ReservationAvailabilityResponse {
-    dateOfBooked: Date;
-    bookedCompanyHours: BookedCompanyHoursResponse[];
-    freeTimePercentage: number;
-}
-
-export interface BookedCompanyHoursResponse  {
-    startTimeBooked: string;
-    endTimeBooked: string;
-}
-
-
 export interface ReservationResponse {
     id: number;
     reservationDate: string;
     reservationNumber: string;
     status: string;
     customer: UserResponse,
-    preferredEmployee: UserResponse | null,
+    preferredEmployee: UserResponse,
     companyOffer: CompanyOffersResponse
 }
 

@@ -23,6 +23,9 @@ import {AuthGuard} from "./auth.guard";
 import {NavbarLayoutComponent} from "./pages/navbar-layout/navbar-layout.component";
 import {AdminPanelComponent} from "./pages/admin-panel/admin-panel.component";
 import {Role} from "./model/http/auth.model";
+import {
+    CompanyManagementBookingsCalendarComponent
+} from "./pages/company-management-page/company-management-bookings-calendar/company-management-bookings-calendar.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -62,6 +65,7 @@ export const routes: Routes = [
                 { path: 'employee', component: CompanyManagementEmployeeComponent},
                 { path: 'offers', component: CompanyManagementOfferComponent},
                 { path: 'appointments', component: CompanyManagementAppointmentsComponent},
+                { path: 'calendar', component: CompanyManagementBookingsCalendarComponent},
                 { path: '**', component: PageNotFoundComponent },
             ]},
             { path: 'messages', component: MessagesPageComponent},

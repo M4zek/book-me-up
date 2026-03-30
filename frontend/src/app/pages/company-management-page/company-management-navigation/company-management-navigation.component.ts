@@ -100,7 +100,8 @@ export class CompanyManagementNavigationComponent implements OnInit{
               homePage: {name: 'Home', path: '/app/company-management/home'},
               employeePage: {name: 'Employees', path: '/app/company-management/employee'},
               offerPage: {name: 'Offers', path: '/app/company-management/offers'},
-              appointmentsPage: {name: 'Appointments', path: '/app/company-management/appointments'}
+              appointmentsPage: {name: 'Appointments', path: '/app/company-management/appointments'},
+              calendarPage: {name: 'Calendar', path: '/app/company-management/calendar'}
           };
       } else {
           this.NAVIGATION = {}

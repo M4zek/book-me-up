@@ -89,6 +89,11 @@ export class ReservationService {
             httpParams = httpParams.set("sort", search.sort);
         }
 
+        if(search.fromDate && search.toDate){
+            httpParams = httpParams.set("fromDate", search.fromDate.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-'))
+            httpParams = httpParams.set("toDate", search.toDate.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-'))
+        }
+
         return this.http.get<Page<ReservationResponse>>(url_request, {params: httpParams, observe: 'response'});
     }
 
