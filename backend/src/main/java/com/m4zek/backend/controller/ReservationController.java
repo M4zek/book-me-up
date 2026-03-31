@@ -52,7 +52,7 @@ public class ReservationController {
 
     @PatchMapping("/companies/{companyId}/reservations/{reservationId}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_EMPLOYEE", "COMPANY_MANAGER"})
+//    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_EMPLOYEE", "COMPANY_MANAGER"})
     public ResponseEntity<ReservationResponse> updateCompanyReservation(
             @PathVariable @Positive(message = "Company id must be positive number") Integer companyId,
             @PathVariable @Positive(message = "Reservation id must be positive number") Integer reservationId,

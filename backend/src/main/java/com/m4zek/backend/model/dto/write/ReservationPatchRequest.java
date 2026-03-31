@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,6 +19,7 @@ public class ReservationPatchRequest {
     private String status;
 
     @Positive(message ="The ID of the preferred employee must be greater than 0")
-    private int preferred_employee_id;
+    private Integer preferred_employee_id;
 }
+
 

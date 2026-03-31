@@ -278,25 +278,31 @@ public class ReservationService {
         Method to update reservation
      */
     public ReservationResponse updateReservation(int companyId, int reservationId, ReservationPatchRequest request) {
+
+        // If all request params  is null throw BadRequestException
+        if(request.getStatus() == null && request.getPreferred_employee_id() == null){
+            throw new ReservationBadRequestException("Required parameters are missing");
+        }
+
+        // Find reservation to updating
         Reservation reservation = this.reservationRepository.findByIdAndCompanyId(reservationId, companyId)
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found"));
 
-        ReservationStatus currentStatus = ReservationStatus.from(reservation.getReservationStatus());
-        ReservationStatus newStatus = ReservationStatus.from(request.getStatus());
 
-        if(!request.getStatus().isEmpty() && !currentStatus.equals(newStatus)) {
-
-            if(!currentStatus.canTransitionTo(newStatus)) {
-                throw new ReservationBadRequestException("Incorrect status change sequence: " + currentStatus + " -> " + newStatus);
+        if(request.getStatus() != null && !request.getStatus().isEmpty()) {
+            ReservationStatus currentStatus = ReservationStatus.from(reservation.getReservationStatus());
+            ReservationStatus newStatus = ReservationStatus.from(request.getStatus());
+            if(!currentStatus.equals(newStatus)){
+                if(!currentStatus.canTransitionTo(newStatus)) {
+                    throw new ReservationBadRequestException("Incorrect status change sequence: " + currentStatus + " -> " + newStatus);
+                }
+                reservation.setStatus(ReservationStatus.from(request.getStatus()));
             }
-
-            reservation.setStatus(ReservationStatus.from(request.getStatus()));
         }
 
 
-        User prefUser = reservation.getUser();
-
-        if(prefUser == null || prefUser.getId() != request.getPreferred_employee_id()) {
+        User currentPrefUser = reservation.getUser();
+        if(request.getPreferred_employee_id() != null && currentPrefUser.getId() != request.getPreferred_employee_id()) {
 
             User newPreferredUser = reservation.getCompanyOffer().getCompany().getUsers()
                     .stream()
@@ -311,6 +317,7 @@ public class ReservationService {
         reservation = this.reservationRepository.save(reservation);
         return ReservationMapper.reserevationToReservationResponse(reservation);
     }
+
 
     public Page<ReservationResponse> getAllCompanyReservations(
             int companyId, String name,  String status, Integer userId, Pageable pageable, LocalDate fromDate, LocalDate toDate
