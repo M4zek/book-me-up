@@ -1,19 +1,19 @@
 <div class="wrapper">
     <div class="calendar-container">
         <div class="date-navigation">
-            <div><img [src]="'icons/left_arrow_icon.svg'" (click)="prevWeek()"></div>
+            <div><img [src]="'icons/left_arrow_icon.svg'" (click)="prevWeek()" alt="left"></div>
             <div class="date">
                 <span *ngIf="!isReservationsLoading">{{datePicker.start | date:'dd.MM.yyyy'}} - {{datePicker.end | date:'dd.MM.yyyy'}}</span>
                 <app-double-spinner *ngIf="isReservationsLoading"/>
             </div>
-            <div><img [src]="'icons/right_arrow_icon.svg'" (click)="nextWeek()"></div>
+            <div><img [src]="'icons/right_arrow_icon.svg'" (click)="nextWeek()" alt="right"></div>
         </div>
 
         <div class="container-wrapper" [class.disabled]="isReservationsLoading">
             <div class="calendar-wrapper">
 
                 <div class="calendar"
-                     [style.grid-template-columns]="'80px repeat(' + days.length + ', 1fr)'"
+                     [style.grid-template-columns]="'50px repeat(' + days.length + ', 1fr)'"
                      [style.grid-template-rows]="'50px auto auto'"
                 >
 
@@ -52,6 +52,8 @@
                 <div class="events-layer">
                     <div class="event" (click)="onEventClick(e.id)"
                          *ngFor="let e of getPositionedEvents()"
+                         [class.left]="e.day === 0"
+                         [class.right]="e.day === 6"
                          [class.selected]="e.id == selectedReservation?.id"
                          [style.left.%]="e.day * (100/days.length) + e.left * (100/days.length)"
                          [style.width.%]="(e.width * (100/days.length))"
@@ -60,7 +62,7 @@
                          [style.height.px]="getHeight(e.start,e.end)">
 
                         <div class="inside-event">
-                            <img [src]="getUserAvatar(e.employee.avatar)" />
+                            <img [src]="getUserAvatar(e.employee.avatar)" alt="av"/>
                             <div>
                                 <span>{{e.employee.firstName}} {{e.employee.lastName}}</span>
                             </div>
@@ -77,6 +79,7 @@
         <div class="booking-details-container" *ngIf="selectedReservation">
             <app-reservation-details
                     (close)="selectedReservation = null"
+                    (onReservationUpdate)="onReservationChanged($event)"
                     [company_id]="company_id"
                     [employees]="employees"
                     [reservation]="selectedReservation"/>
@@ -85,14 +88,15 @@
 </div>
 
 
-<h3>Info</h3>
+<h3>Employees </h3>
 <div class="color-legends">
     <div class="user-color" *ngFor="let e of employees"
         [style.border-bottom]="'2px solid ' + idToColor(e.id)"
-    >
+        [style.opacity]="countReservationsForEmployee(e) != 0 ? 1 : 0.35">
         <img [src]="getUserAvatar(e.avatar)"
              [style.border]="'3px solid ' + idToColor(e.id)"
              alt="avatar">
-        <span>{{e.firstName}} {{e.lastName}}</span>
+        <span> {{ countReservationsForEmployee(e) != 0 ? "[" + countReservationsForEmployee(e) + "]" : ''}} </span>
+        <span>{{e.firstName}} {{e.lastName}} </span>
     </div>
 </div>

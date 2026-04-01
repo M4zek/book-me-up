@@ -23,6 +23,7 @@ export class ReservationDetailsComponent implements OnChanges {
     protected readonly getUserAvatar = getUserAvatar;
 
     @Output() close:EventEmitter<void> = new EventEmitter();
+    @Output() onReservationUpdate:EventEmitter<ReservationResponse | null> = new EventEmitter();
 
     @Input() reservation: ReservationResponse | null = null;
     @Input() company_id: number | null = null;
@@ -36,8 +37,10 @@ export class ReservationDetailsComponent implements OnChanges {
         {id: 4,content: 'Completed', image: 'icons/realized_icon.svg'},
         {id: 5,content: 'Cancelled', image: 'icons/canceled_icon.svg'},
     ]
+    selectedStatus: DropDownListItem = {id: -1, content: ''}
 
     employeesDropDownList: DropDownListItem[] = []
+    selectedEmployee: DropDownListItem = { id: -1, content: ''}
 
     reservationUpdate: ReservationUpdateModel = {
         company_id: -1, reservation_id: -1,
@@ -46,7 +49,6 @@ export class ReservationDetailsComponent implements OnChanges {
             preferred_employee_id: -1
         }
     }
-
     isReservationUpdating: boolean = false;
 
     constructor(private reservationService: ReservationService,
@@ -57,18 +59,35 @@ export class ReservationDetailsComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if(changes['employees']) {
             this.employeesDropDownList = this.convertEmployeeToDropDownListItem(changes['employees'].currentValue)
-            this.reservationUpdate.request.preferred_employee_id = this.findCurrentPrefEmployee().id;
+            this.selectedEmployee = this.findCurrentPrefEmployee();
+            this.reservationUpdate.request.preferred_employee_id = this.selectedEmployee.id;
         }
+
         if(changes['company_id']) {
             this.reservationUpdate.company_id = changes['company_id'].currentValue;
         }
+
         if(changes['reservation']) {
-            this.reservationUpdate.reservation_id = changes['reservation'].currentValue.id
-            this.reservationUpdate.request.status = this.findCurrentStatus().content;
+            this.reservation = changes['reservation'].currentValue;
+            this.reservationUpdate.reservation_id = changes['reservation'].currentValue.id;
+            this.selectedStatus = this.findCurrentStatus();
+            this.selectedEmployee = this.findCurrentPrefEmployee();
+
+            this.reservationUpdate.request.status = this.selectedStatus.content;
+            this.reservationUpdate.request.preferred_employee_id = this.selectedEmployee.id;
         }
     }
 
     protected return() {
+        this.reservationUpdate = {
+            company_id: -1, reservation_id: -1,
+            request: {
+                status: '',
+                preferred_employee_id: -1
+            }
+        }
+        this.reservation = null;
+        this.isReservationUpdating = false;
         this.close.emit();
     }
 
@@ -120,7 +139,7 @@ export class ReservationDetailsComponent implements OnChanges {
                 this.isReservationUpdating = true;
 
                 if(this.reservation?.status.toUpperCase() === this.reservationUpdate.request.status?.toUpperCase()){
-                    this.reservationUpdate.request.status = '';
+                    this.reservationUpdate.request.status = undefined;
                 }
 
                 if(this.reservation?.preferredEmployee.id === this.reservationUpdate.request.preferred_employee_id){
@@ -132,10 +151,19 @@ export class ReservationDetailsComponent implements OnChanges {
                         if(response.status === 200 && response.body){
                             this.reservation!.status=response.body.status;
                             this.reservation!.preferredEmployee = response.body.preferredEmployee;
+                            this.reservationUpdate.request.status = response.body.status;
+                            this.reservationUpdate.request.preferred_employee_id = response.body.preferredEmployee.id;
+                            this.onReservationUpdate.emit(this.reservation);
                         }
                     }, error: (err) => {
-                        console.error(err);
                         this.isReservationUpdating = false;
+                        this.selectedEmployee = {id: -1, content: ''};
+                        this.selectedStatus = {id: -1, content: ''};
+
+                        this.selectedEmployee = this.findCurrentPrefEmployee();
+                        this.selectedStatus = this.findCurrentStatus();
+
+                        console.error(err);
                         this.toast.show("Ups... Something went wrong!", "error");
                     }, complete: () => {
                         this.isReservationUpdating = false;

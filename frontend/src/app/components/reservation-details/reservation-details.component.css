@@ -86,7 +86,6 @@
     border-radius: 5px;
     border: 1px solid var(--white-25);
     padding: 15px 5px 10px 5px;
-    gap: 5px;
     position: relative;
     margin-top: 20px;
 }

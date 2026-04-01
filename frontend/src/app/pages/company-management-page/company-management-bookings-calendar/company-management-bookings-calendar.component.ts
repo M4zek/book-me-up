@@ -17,6 +17,7 @@ interface CalendarEvent{
     start:string
     end:string
     title:string
+    status:string
     employee: EmployeeSummaryResponse
 }
 
@@ -70,6 +71,7 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
     employees: EmployeeSummaryResponse[] = [];
     reservations: ReservationResponse[] = [];
     hours: CompanyHours[] = [];
+
 
     constructor(private companyService: CompanyService,
                 private ctx: CompanyContextService,
@@ -274,6 +276,8 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
                 next: response => {
                     if(response.body)
                         this.employees = response.body;
+                        this.employees = this.sortEmployeesByCountOfReservations(this.employees);
+
                 }, error: error => {
                     console.error(error);
                 }, complete: () => {
@@ -307,7 +311,7 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
                     if(response.body)
                         this.reservations = response.body.content;
                         this.generateEvents(this.reservations);
-
+                        this.employees = this.sortEmployeesByCountOfReservations(this.employees);
                 }, error: error => {
                     console.error(error);
                 }, complete: () => {
@@ -402,6 +406,7 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
             end: endTime,
             day: day_number,
             title: reservation.companyOffer.name,
+            status: reservation.status,
             employee: {
                 id: reservation.preferredEmployee.id,
                 firstName: reservation.preferredEmployee.firstName,
@@ -415,7 +420,28 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
     protected getDayOfMonth(index: number) {
         const date = new Date(this.datePicker.start);
         date.setDate(date.getDate() + index);
-        return date.toLocaleDateString('en-US', {day: '2-digit'});
+
+        return Number(date.toLocaleDateString('en-US', {day: '2-digit'}));
     }
 
+    protected onReservationChanged($event: ReservationResponse | null) {
+        if($event == null) {return}
+
+        let e = this.events.find(e => e.id === $event.id)
+        let pref_empl = this.employees.find(emp => emp.id === $event.preferredEmployee.id)
+
+        if(e && pref_empl){
+            e.employee = pref_empl;
+        }
+    }
+
+    protected countReservationsForEmployee(employee: EmployeeSummaryResponse) {
+        return this.reservations.filter(res => res.preferredEmployee.id === employee.id).length;
+    }
+
+    private sortEmployeesByCountOfReservations(employees: EmployeeSummaryResponse[]) {
+        return employees.sort((a, b) =>
+            this.countReservationsForEmployee(b) - this.countReservationsForEmployee(a)
+        )
+    }
 }
