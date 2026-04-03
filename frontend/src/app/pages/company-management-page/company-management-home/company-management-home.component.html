@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="company-opinion-gird">
-        <app-company-opinions [opinionsDetails]="companyGUIData.opinions"></app-company-opinions>
+        <app-company-opinions [companyId]="companyGUIData.id" [opinionsDetails]="companyGUIData.opinions"></app-company-opinions>
     </div>
     <div class="company-open-hours-gird">
         <app-company-business-hours [openingHours]="companyGUIData.hours"></app-company-business-hours>

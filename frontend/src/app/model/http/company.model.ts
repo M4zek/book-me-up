@@ -1,3 +1,5 @@
+import {Address} from "../gui/gui.model";
+
 export interface CategoryResponse{
     id: number,
     name: string,
@@ -77,6 +79,18 @@ export interface CompanyOfferRequest{
     description?: string,
     price?: number,
     duration?: number
+}
+
+export interface CompanyRequest{
+    owner_id: number,
+    details: {
+        avatar: string | null;
+        name: string;
+        description: string;
+        category: string;
+    },
+    hours: CompanyHours[],
+    address: Address,
 }
 
 export interface CompanyPortfolioResponse{
