@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class CompanyRequest {
@@ -34,5 +36,8 @@ public class CompanyRequest {
 
     @Valid
     private CategoryRequest category;
+
+    @Valid
+    private List<CompanyHoursRequest> openingHours;
 
 }

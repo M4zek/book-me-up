@@ -1,7 +1,5 @@
 package com.m4zek.backend.model.dto.write;
 
-import com.m4zek.backend.model.Company;
-import com.m4zek.backend.model.CompanyHours;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -38,7 +36,4 @@ public class CompanyHoursRequest {
     )
     private String closeTime;
 
-    public CompanyHours toEntity(Company company) {
-        return new CompanyHours(this.dayOfWeek, this.openTime, this.closeTime, this.isOpen, company);
-    }
 }

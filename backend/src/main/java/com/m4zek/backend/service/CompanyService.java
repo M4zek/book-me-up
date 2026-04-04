@@ -1,14 +1,12 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.*;
-import com.m4zek.backend.mapper.AddressMapper;
-import com.m4zek.backend.mapper.CompanyMapper;
-import com.m4zek.backend.mapper.ReviewMapper;
-import com.m4zek.backend.mapper.UserMapper;
+import com.m4zek.backend.mapper.*;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.dto.write.*;
 import com.m4zek.backend.repository.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
@@ -20,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CompanyService {
@@ -49,13 +44,21 @@ public class CompanyService {
         this.companyUserRoleRepository = companyUserRoleRepository;
     }
 
+    @Transactional
     public CompanyDetailsResponse saveCompany(CompanyRequest companyRequest) {
         User owner = userRepository.findById(companyRequest.getOwner_id())
                 .orElseThrow(() -> new UserNotFoundException("User with given id not found"));
 
         Category category = getCategory(companyRequest.getCategory().getName());
 
-        Address address = companyRequest.getAddress().toEntity();
+        this.validateNoDuplicateDays(companyRequest.getOpeningHours());
+
+        Address address = new Address(
+                companyRequest.getAddress().getCity(),
+                companyRequest.getAddress().getPostalCode(),
+                companyRequest.getAddress().getStreet(),
+                companyRequest.getAddress().getBuildingNumber()
+        );
 
         byte[] logoBytes = companyRequest.getLogo() != null ?
                 Base64.getDecoder().decode(companyRequest.getLogo()) : null;
@@ -67,15 +70,18 @@ public class CompanyService {
                 category,
                 address
         );
-
         address.assignCompany(company);
 
         CompanyRole companyRole = companyRoleRepository.findByName("COMPANY_OWNER")
                 .orElseThrow(() -> new CategoryNotFoundException("Category with name COMPANY_OWNER not found"));
-
         CompanyUserRole companyUserRole = new CompanyUserRole(owner, company, companyRole);
-
         company.addUserRole(companyUserRole);
+
+        List<CompanyHours> openingHours = companyRequest.getOpeningHours()
+                .stream()
+                .map( request -> CompanyHoursMapper.requestToCompanyHours(request,company)
+                ).toList();
+        company.assignCompanyHours(openingHours);
 
         Company savedCompany = companyRepository.save(company);
 
@@ -261,6 +267,18 @@ public class CompanyService {
         return this.categoryRepository.findByName(categoryName).orElseThrow(
                 () -> new CategoryNotFoundException("Category with given name not found")
         );
+    }
+
+    private void validateNoDuplicateDays(List<CompanyHoursRequest> list) {
+        Set<String> days = new HashSet<>();
+
+        for (CompanyHoursRequest item : list) {
+            String day = item.getDayOfWeek();
+
+            if (!days.add(day)) {
+                throw new BadRequestException("Duplicate days found: " + day);
+            }
+        }
     }
 
 }

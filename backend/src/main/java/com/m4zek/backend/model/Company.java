@@ -61,6 +61,10 @@ public class Company extends BaseEntity{
         this.logo = logo;
     }
 
+    public void assignCompanyHours(List<CompanyHours> companyHours){
+        this.companyHoursList = companyHours;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

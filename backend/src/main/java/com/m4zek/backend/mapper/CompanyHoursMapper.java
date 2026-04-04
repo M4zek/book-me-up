@@ -1,7 +1,9 @@
 package com.m4zek.backend.mapper;
 
+import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.CompanyHours;
 import com.m4zek.backend.model.dto.read.CompanyHoursResponse;
+import com.m4zek.backend.model.dto.write.CompanyHoursRequest;
 
 public class CompanyHoursMapper {
 
@@ -15,5 +17,17 @@ public class CompanyHoursMapper {
                 .isOpen(companyHours.isOpen())
                 .build();
     }
+
+
+    public static CompanyHours requestToCompanyHours(CompanyHoursRequest request, Company company) {
+        return new CompanyHours(
+                request.getDayOfWeek(),
+                request.getOpenTime(),
+                request.getCloseTime(),
+                request.getIsOpen(),
+                company
+        );
+    }
+
 
 }

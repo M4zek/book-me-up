@@ -17,7 +17,12 @@ public class AddressService {
     
 
     public Address createNewAddress(AddressRequest addressRequest) {
-        Address address = addressRequest.toEntity();
+        Address address = new Address(
+                addressRequest.getCity(),
+                addressRequest.getPostalCode(),
+                addressRequest.getStreet(),
+                addressRequest.getBuildingNumber()
+        );
         return addressRepository.save(address);
     }
 

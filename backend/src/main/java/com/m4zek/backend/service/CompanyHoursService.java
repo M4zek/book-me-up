@@ -30,12 +30,11 @@ public class CompanyHoursService {
 
     public List<CompanyHoursResponse> setCompanyHours(Long companyId, List<CompanyHoursRequest> companyWorkingHours) {
         List<CompanyHours> companyHours = companyWorkingHours.stream()
-                .map(writeModel ->
-                        writeModel.toEntity(
-                                companyRepository.findById(companyId).orElseThrow(
-                                        () -> new CompanyNotFoundException(String.valueOf(companyId)))
-                        )
-                )
+                .map(request -> {
+                    Company company = companyRepository.findById(companyId).orElseThrow(
+                                        () -> new CompanyNotFoundException(String.valueOf(companyId)));
+                    return CompanyHoursMapper.requestToCompanyHours(request, company);
+                })
                 .toList();
 
         companyHours.forEach(this.companyHoursRepository::save);

@@ -1,6 +1,5 @@
 package com.m4zek.backend.model.dto.write;
 
-import com.m4zek.backend.model.Address;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -27,10 +26,6 @@ public class AddressRequest {
 
     @Pattern(regexp = "^\\d+[A-Za-z]?(?:\\/\\d+[A-Za-z]?)?$", message = "Wrong building number field")
     private String buildingNumber;
-
-    public Address toEntity() {
-        return new Address(this.city, this.postalCode, this.street, this.buildingNumber);
-    }
 
 }
 
