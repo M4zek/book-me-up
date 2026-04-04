@@ -80,7 +80,12 @@ public class AddressServiceTest {
                 .build();
 
         var mockAddressRepository = mock(AddressRepository.class);
-        when(mockAddressRepository.save(any(Address.class))).thenReturn(newAddressData.toEntity());
+        when(mockAddressRepository.save(any(Address.class))).thenReturn(new Address(
+                newAddressData.getCity(),
+                newAddressData.getPostalCode(),
+                newAddressData.getStreet(),
+                newAddressData.getBuildingNumber()
+        ));
 
         // system under test
         var toTest = new AddressService(mockAddressRepository);
