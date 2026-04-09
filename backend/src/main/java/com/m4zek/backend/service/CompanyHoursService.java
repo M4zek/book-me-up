@@ -78,7 +78,7 @@ public class CompanyHoursService {
         for (CompanyHoursRequest req : companyHours) {
             CompanyHours item = currentMap.get(req.getDayOfWeek());
             if (item != null) {
-                item.setOpen(req.getIsOpen());
+                item.setOpen(req.getOpen());
                 item.setOpenTime(req.getOpenTime());
                 item.setCloseTime(req.getCloseTime());
             }

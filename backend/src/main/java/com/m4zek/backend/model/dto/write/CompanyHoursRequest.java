@@ -15,7 +15,7 @@ import lombok.ToString;
 public class CompanyHoursRequest {
 
     @NotNull(message = "You must specify whether the company is open")
-    private Boolean isOpen;
+    private Boolean open;
 
     @NotBlank(message = "Day of week is required")
     @Pattern(

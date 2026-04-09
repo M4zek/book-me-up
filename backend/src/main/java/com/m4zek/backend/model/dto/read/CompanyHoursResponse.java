@@ -14,7 +14,7 @@ public class CompanyHoursResponse {
 
     private String dayOfWeek;
 
-    private boolean isOpen;
+    private boolean open;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private String openTime;

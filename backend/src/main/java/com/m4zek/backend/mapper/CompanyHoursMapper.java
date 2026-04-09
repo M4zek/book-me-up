@@ -14,7 +14,7 @@ public class CompanyHoursMapper {
                 .closeTime(companyHours.getCloseTime())
                 .openTime(companyHours.getOpenTime())
                 .dayOfWeek(companyHours.getDayOfWeek())
-                .isOpen(companyHours.isOpen())
+                .open(companyHours.isOpen())
                 .build();
     }
 
@@ -24,7 +24,7 @@ public class CompanyHoursMapper {
                 request.getDayOfWeek(),
                 request.getOpenTime(),
                 request.getCloseTime(),
-                request.getIsOpen(),
+                request.getOpen(),
                 company
         );
     }
