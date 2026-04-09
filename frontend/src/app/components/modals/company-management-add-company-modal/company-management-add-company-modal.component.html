@@ -35,7 +35,7 @@
                                         #fileInput
                                         style="display: none"
                                         (change)="onFileSelected($event)"
-                                        multiple accept="image/*"
+                                        multiple accept="image/jpeg, image/jpg"
                                 />
                                 <div class="select-file-button" (click)="fileInput.click()">
                                     <img [src]="'icons/file_select_icon.svg'" alt="select"/>
@@ -318,7 +318,7 @@
                 <!-- Step four | Result -->
                 <div class="step"
                      *ngIf="currentStep == 4">
-                    <div class="result-step-container" *ngIf="isCompanyCreating">
+                    <div class="result-step-container" *ngIf="!isCompanyCreating">
                         <span class="result-title">{{companyResponse?.status === 201 ? 'Success' : 'Error'}}</span>
                         <span class="result-message">{{companyResponse?.status === 201 ? 'Your company has been created' : 'Ups... Something went wrong. Try again later.'}}</span>
                         <div class="result-icon-bg" [class.success]="companyResponse?.status === 201">
@@ -335,7 +335,7 @@
                             <span>Retry</span>
                         </div>
                     </div>
-                    <app-double-spinner [text]="'Please wait...'" *ngIf="!isCompanyCreating"/>
+                    <app-double-spinner [text]="'Please wait...'" *ngIf="isCompanyCreating"/>
                 </div>
             </div>
         </div>

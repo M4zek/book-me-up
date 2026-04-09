@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {Address} from "../../../model/gui/gui.model";
@@ -47,7 +47,7 @@ export interface Step{
   templateUrl: './company-management-add-company-modal.component.html',
   styleUrl: './company-management-add-company-modal.component.css'
 })
-export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterViewInit {
+export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterViewInit, OnDestroy {
     protected readonly getCompanyLogo = getCompanyLogo;
     protected readonly getUserAvatar = getUserAvatar;
 
@@ -72,11 +72,11 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
     }
 
     hours: CompanyHours[] = [
-        {dayOfWeek: "Monday", openTime: '08:00', closeTime: '16:00', open: false},
-        {dayOfWeek: "Tuesday", openTime: '08:00', closeTime: '16:00', open: false},
-        {dayOfWeek: "Wednesday", openTime: '08:00', closeTime: '16:00', open: false},
-        {dayOfWeek: "Thursday", openTime: '08:00', closeTime: '16:00', open: false},
-        {dayOfWeek: "Friday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Monday", openTime: '08:00', closeTime: '16:00', open: true},
+        {dayOfWeek: "Tuesday", openTime: '08:00', closeTime: '16:00', open: true},
+        {dayOfWeek: "Wednesday", openTime: '08:00', closeTime: '16:00', open: true},
+        {dayOfWeek: "Thursday", openTime: '08:00', closeTime: '16:00', open: true},
+        {dayOfWeek: "Friday", openTime: '08:00', closeTime: '16:00', open: true},
         {dayOfWeek: "Saturday", openTime: '08:00', closeTime: '16:00', open: false},
         {dayOfWeek: "Sunday", openTime: '08:00', closeTime: '16:00', open: false},
     ]
@@ -101,6 +101,30 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
                 private companyService: CompanyService,
                 private categoryService: CategoryService,
                 ) {
+    }
+
+    ngOnDestroy(): void {
+        this.isCompanyCreating = false;
+        this.currentStep = 0;
+        this.details = {
+            avatar: '', description: '', name: '', category: {
+                name: '',
+                isCorrect: false,
+                isTouched: false,
+            },
+        };
+        this.address = {
+            city: '', postalCode: '', street: '', buildingNumber: ''
+        }
+        this.hours =[
+            {dayOfWeek: "Monday", openTime: '08:00', closeTime: '16:00', open: true},
+            {dayOfWeek: "Tuesday", openTime: '08:00', closeTime: '16:00', open: true},
+            {dayOfWeek: "Wednesday", openTime: '08:00', closeTime: '16:00', open: true},
+            {dayOfWeek: "Thursday", openTime: '08:00', closeTime: '16:00', open: true},
+            {dayOfWeek: "Friday", openTime: '08:00', closeTime: '16:00', open: true},
+            {dayOfWeek: "Saturday", openTime: '08:00', closeTime: '16:00', open: false},
+            {dayOfWeek: "Sunday", openTime: '08:00', closeTime: '16:00', open: false},
+        ]
     }
 
 
@@ -174,6 +198,7 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
 
 
     close(){
+      this.ngOnDestroy();
       this.closeModal.emit();
     }
 
@@ -255,7 +280,7 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
                 category: {
                     name: this.details.category.name,
                 },
-                logo: this.details.avatar ? this.details.avatar : null,
+                logo: this.details.avatar ? this.details.avatar.replace('data:image/jpeg;base64,', '') : null,
                 address: this.address,
                 openingHours: this.hours
             }
@@ -267,9 +292,9 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
                         this.companyResponse = result
                         this.companyCreated.emit(this.companyResponse.body as CompanyDetailsResponse);
                     }
+                    this.isCompanyCreating = false;
                 }, error: err => {
                     console.log(err);
-                }, complete: () => {
                     this.isCompanyCreating = false;
                 }
             })
@@ -283,6 +308,6 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
         if(this.companyResponse?.status === 201){
             this.showNewCompany.emit(this.companyResponse.body?.id);
         }
-        this.closeModal.emit();
+        this.close()
     }
 }

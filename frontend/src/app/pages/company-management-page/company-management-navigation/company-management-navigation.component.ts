@@ -124,7 +124,8 @@ export class CompanyManagementNavigationComponent implements OnInit{
                 content: $event.name,
                 image: $event.logo,
             }
-            this.dropDownCompanyItemList.push(drop_item);
+
+            this.dropDownCompanyItemList = [...this.dropDownCompanyItemList, drop_item];
 
             // Add new company to all user companies
             this.user_companies.push({
@@ -139,7 +140,7 @@ export class CompanyManagementNavigationComponent implements OnInit{
     protected onShowNewCompany($event: Number) {
         const drop_item = this.dropDownCompanyItemList.find(item => item.id === $event)
         if(drop_item){
-            this.selected_company = drop_item;
+            this.onCompanySelectedChange(drop_item);
         }
     }
 }
