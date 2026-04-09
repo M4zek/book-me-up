@@ -83,13 +83,13 @@ export interface CompanyOfferRequest{
 
 export interface CompanyRequest{
     owner_id: number,
-    details: {
-        avatar: string | null;
-        name: string;
-        description: string;
-        category: string;
-    },
-    hours: CompanyHours[],
+    logo: string | null;
+    name: string;
+    description: string;
+    category: {
+        name: string,
+    }
+    openingHours: CompanyHours[],
     address: Address,
 }
 

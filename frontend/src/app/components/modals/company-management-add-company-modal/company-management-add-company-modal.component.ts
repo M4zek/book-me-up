@@ -3,7 +3,12 @@ import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {Address} from "../../../model/gui/gui.model";
 import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
-import {CompanyHours, CompanyRequest, EmployeeSummaryResponse} from "../../../model/http/company.model";
+import {
+    CompanyDetailsResponse,
+    CompanyHours,
+    CompanyRequest,
+    EmployeeSummaryResponse
+} from "../../../model/http/company.model";
 import {MapComponent} from "../../map/map.component";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {ToastService} from "../../../service/toast.service";
@@ -12,6 +17,7 @@ import {getCompanyLogo, getUserAvatar} from "../../../utils.functions";
 import {CompanyService} from "../../../service/company.service";
 import {CategoryService} from "../../../service/category.service";
 import {UserContextService} from "../../../service/user-context.service";
+import {HttpResponse} from "@angular/common/http";
 
 export interface Details {
   avatar: string;
@@ -48,6 +54,8 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
 
     @Input() isVisible: boolean = false;
     @Output() closeModal = new EventEmitter<void>();
+    @Output() showNewCompany = new EventEmitter<Number>();
+    @Output() companyCreated = new EventEmitter<CompanyDetailsResponse>();
 
     details: Details = {
         avatar: '', description: '', name: '', category: {
@@ -64,13 +72,13 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
     }
 
     hours: CompanyHours[] = [
-        {dayOfWeek: "Monday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Tuesday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Wednesday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Thursday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Friday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Saturday", openTime: '00:00', closeTime: '00:00', open: false},
-        {dayOfWeek: "Sunday", openTime: '00:00', closeTime: '00:00', open: false},
+        {dayOfWeek: "Monday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Tuesday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Wednesday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Thursday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Friday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Saturday", openTime: '08:00', closeTime: '16:00', open: false},
+        {dayOfWeek: "Sunday", openTime: '08:00', closeTime: '16:00', open: false},
     ]
 
     steps: Step[] = [
@@ -83,6 +91,9 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
     currentStep = 0;
 
     categories: DropDownListItem[] = [];
+
+    isCompanyCreating: boolean = false;
+    companyResponse: HttpResponse<CompanyDetailsResponse> | null = null;
 
     constructor(private toast: ToastService,
                 private userContextService: UserContextService,
@@ -232,24 +243,46 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
 
 
 
-    protected async confirm() {
-
-        const result = await this.confirmService.open(`Are you sure the data is correct?`);
+    protected async confirm(retry: boolean = false) {
+        const msg_confirm = retry ? 'Do you want to try again?' : 'Are you sure the data is correct?';
+        const result = await this.confirmService.open(msg_confirm);
 
         if(result){
             const companyRequest: CompanyRequest = {
                 owner_id: this.owner.id,
-                details:{
-                    name: this.details.name,
-                    description: this.details.description,
-                    category: this.details.category.name,
-                    avatar: this.details.avatar
+                name: this.details.name,
+                description: this.details.description,
+                category: {
+                    name: this.details.category.name,
                 },
+                logo: this.details.avatar ? this.details.avatar : null,
                 address: this.address,
-                hours: this.hours
+                openingHours: this.hours
             }
 
-            // TODO Send create request to backend
+            this.isCompanyCreating = true;
+            this.companyService.createCompany(companyRequest).subscribe({
+                next: result => {
+                    if(result.status === 201 && result.body as CompanyDetailsResponse) {
+                        this.companyResponse = result
+                        this.companyCreated.emit(this.companyResponse.body as CompanyDetailsResponse);
+                    }
+                }, error: err => {
+                    console.log(err);
+                }, complete: () => {
+                    this.isCompanyCreating = false;
+                }
+            })
+            if(this.currentStep < this.steps.length - 1) {
+                this.currentStep++;
+            }
         }
+    }
+
+    protected continue() {
+        if(this.companyResponse?.status === 201){
+            this.showNewCompany.emit(this.companyResponse.body?.id);
+        }
+        this.closeModal.emit();
     }
 }

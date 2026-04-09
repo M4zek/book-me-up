@@ -299,7 +299,7 @@
                                                  <span>{{h.dayOfWeek}}</span>
                                              </div>
                                              <div class="content-box">
-                                                 <span>{{h.open ? 'Open' : 'Closed'}} {{h.open ? h.openTime + ' : ' + h.closeTime : ''}}</span>
+                                                <span>{{h.open ? 'Open' : 'Closed'}} {{h.open ? h.openTime + ' : ' + h.closeTime : ''}}</span>
                                              </div>
                                          </div>
                                      </div>
@@ -318,9 +318,24 @@
                 <!-- Step four | Result -->
                 <div class="step"
                      *ngIf="currentStep == 4">
-                    <!--        TODO Result | Response information from backend.            -->
-                    <div class="stepper-actions">
+                    <div class="result-step-container" *ngIf="isCompanyCreating">
+                        <span class="result-title">{{companyResponse?.status === 201 ? 'Success' : 'Error'}}</span>
+                        <span class="result-message">{{companyResponse?.status === 201 ? 'Your company has been created' : 'Ups... Something went wrong. Try again later.'}}</span>
+                        <div class="result-icon-bg" [class.success]="companyResponse?.status === 201">
+                            <img [src]="companyResponse?.status === 201 ? 'icons/confirm_icon.svg' : 'icons/reject_icon.svg'" alt="icon"/>
+                        </div>
+                        <div class="result-button"
+                             (click)="continue()"
+                             [class.success]="companyResponse?.status === 201">
+                            <span>Continue</span>
+                        </div>
+                        <div class="result-retry-button"
+                             (click)="confirm(true)"
+                             *ngIf="companyResponse?.status !== 201">
+                            <span>Retry</span>
+                        </div>
                     </div>
+                    <app-double-spinner [text]="'Please wait...'" *ngIf="!isCompanyCreating"/>
                 </div>
             </div>
         </div>

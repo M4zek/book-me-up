@@ -8,7 +8,7 @@ import {
     CompanyHours,
     CompanyOfferRequest,
     CompanyOffersResponse,
-    CompanyPortfolioResponse,
+    CompanyPortfolioResponse, CompanyRequest,
     CompanySummaryResponse,
     EmployeeDetailsResponse,
     EmployeeSummaryResponse,
@@ -23,6 +23,12 @@ import {Address} from "../model/gui/gui.model";
 export class CompanyService {
 
   constructor(private http: HttpClient) { }
+
+
+    createCompany(companyRequest: CompanyRequest) {
+        const url = '/api/v1/companies';
+        return this.http.post<CompanyDetailsResponse>(url, companyRequest, {observe: 'response'});
+    }
 
   getCompanyRecommended(pagination: Pagination, searchValueOptions?: SearchCompanyOptions) {
     let httpParams = new HttpParams()

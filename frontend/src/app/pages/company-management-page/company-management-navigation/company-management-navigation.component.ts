@@ -5,7 +5,7 @@ import {Router, RouterLink} from "@angular/router";
 import {
     CompanyManagementAddCompanyModalComponent
 } from "../../../components/modals/company-management-add-company-modal/company-management-add-company-modal.component";
-import {UserCompanyResponse} from "../../../model/http/company.model";
+import {CompanyDetailsResponse, UserCompanyResponse} from "../../../model/http/company.model";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyContextService} from "../../../service/company-context.service";
 
@@ -115,4 +115,31 @@ export class CompanyManagementNavigationComponent implements OnInit{
       this.companyContextService.setCompany(result);
   }
 
+    protected onCompanyCreatedFromModal($event: CompanyDetailsResponse) {
+        if($event) {
+
+            // Add new company to drop down list component
+            const drop_item = {
+                id: $event.id,
+                content: $event.name,
+                image: $event.logo,
+            }
+            this.dropDownCompanyItemList.push(drop_item);
+
+            // Add new company to all user companies
+            this.user_companies.push({
+                id: $event.id,
+                name: $event.name,
+                logo: $event.logo,
+                role: ['COMPANY_OWNER']
+            })
+        }
+    }
+
+    protected onShowNewCompany($event: Number) {
+        const drop_item = this.dropDownCompanyItemList.find(item => item.id === $event)
+        if(drop_item){
+            this.selected_company = drop_item;
+        }
+    }
 }

@@ -29,5 +29,7 @@
 
 <app-company-management-add-company-modal
         [isVisible]="isOpenAddDialog"
+        (companyCreated)="onCompanyCreatedFromModal($event)"
+        (showNewCompany)="onShowNewCompany($event)"
         (closeModal)="closeAddCompanyDialog()"
 />
