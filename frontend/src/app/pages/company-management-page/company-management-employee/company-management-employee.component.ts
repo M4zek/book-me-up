@@ -13,7 +13,15 @@ import {CompanyEmployeeDetailsResponse} from "../../../model/http/company.model"
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {ConfirmService} from "../../../service/confirm.service";
 import {ToastService} from "../../../service/toast.service";
+import {getUserAvatar} from "../../../utils.functions";
+import {FormsModule} from "@angular/forms";
+import {SearchAndSortBarComponent} from "../../../components/search-bar/search-and-sort-bar.component";
 
+
+export interface EmployeeSearchModel{
+    firstName: string;
+    lastName: string | null;
+}
 
 @Component({
   selector: 'app-company-management-employee',
@@ -23,12 +31,15 @@ import {ToastService} from "../../../service/toast.service";
         DropDownListComponent,
         CompanyAddEmployeeModalComponent,
         DoubleSpinnerComponent,
-        NgIf
+        NgIf,
+        FormsModule,
+        SearchAndSortBarComponent
     ],
   templateUrl: './company-management-employee.component.html',
   styleUrl: './company-management-employee.component.css'
 })
 export class CompanyManagementEmployeeComponent implements OnInit {
+  protected readonly getUserAvatar = getUserAvatar;
 
   isAddEmployeeModalOpen = false;
   isEmployeesLoading = false;
@@ -44,6 +55,8 @@ export class CompanyManagementEmployeeComponent implements OnInit {
   }
 
   employeeList: CompanyEmployeeDetailsResponse[] = [];
+  company_id: number | null = null;
+  searchModel!: EmployeeSearchModel;
 
   constructor(private ctx: CompanyContextService,
               private toast: ToastService,
@@ -57,7 +70,6 @@ export class CompanyManagementEmployeeComponent implements OnInit {
         content: role
     }));
 
-    this.isDataEditable = this.ctx.isOwnerLoggedIn();
     this.initEmployeeList();
   }
 
@@ -74,18 +86,12 @@ export class CompanyManagementEmployeeComponent implements OnInit {
   }
 
   protected initEmployeeList() {
-      this.isEmployeesLoading = true;
       this.ctx.currentCompany$.subscribe(company => {
           if(company) {
-              this.companyService.getCompanyEmployeesDetails(company.id, this.pagination).subscribe(response => {
-                  if(response.status == 200 && response.body) {
-                      this.employeeList = response.body.content;
-                      this.pagination.currentPage = response.body.page.number;
-                      this.pagination.totalItems = response.body.page.totalElements;
-                  }
-              })
+            this.company_id = company.id;
+            this.isDataEditable = this.ctx.isOwnerLoggedIn();
+            this.searchEmployees();
           }
-          this.isEmployeesLoading = false;
       })
   }
 
@@ -120,7 +126,7 @@ export class CompanyManagementEmployeeComponent implements OnInit {
   }
 
   protected onPaginationChanged() {
-      this.initEmployeeList();
+      this.searchEmployees();
   }
 
   // Listen to changed role event.
@@ -169,4 +175,32 @@ export class CompanyManagementEmployeeComponent implements OnInit {
       }
   }
 
+
+  protected onSearchChanged($event: string) {
+      const [firstName, lastName] = $event.split(" ");
+
+      this.searchModel = {
+          firstName: firstName,
+          lastName: lastName
+      }
+
+      this.searchEmployees();
+  }
+
+
+  private searchEmployees(){
+      if(this.company_id){
+          this.isEmployeesLoading = true;
+          this.companyService.getCompanyEmployeesDetails(this.company_id, this.pagination, this.searchModel).subscribe(response => {
+              if(response.status == 200 && response.body) {
+                  this.employeeList = response.body.content;
+                  this.pagination.currentPage = response.body.page.number;
+                  this.pagination.totalItems = response.body.page.totalElements;
+              }
+              this.isEmployeesLoading = false;
+          })
+      } else {
+          console.error("Ups... Something went wrong!");
+      }
+  }
 }

@@ -1,33 +1,76 @@
 .hired-employee-view{
     display: flex;
     flex-direction: column;
-    height: 88vh;
-    padding: 10px;
+    width: 100%;
+    gap: 10px;
 }
 
-.top-bar{
+.horizontal {
     display: flex;
-    flex-flow: row;
-    border-bottom: 1px solid var(--white-50);
-    justify-content: space-between;
+    flex-direction: row;
     width: 100%;
-    padding-bottom: 10px;
-    /*height: 60px;*/
+    align-items: center;
+    padding: 0 5px;
+    gap: 10px;
+    border-bottom: 2px solid var(--white-25);
+}
+
+.horizontal > .search-bar-cont{
+    width: 100%;
+    padding: 5px;
+}
+
+:host ::ng-deep app-search-and-sort-bar .search-bar {
+    border-bottom: none;
 }
 
 .img-container{
     display: flex;
     justify-content: center;
     align-items: center;
-    /*width: 40px;*/
-    /*height: 40px;*/
     padding: 5px;
     border-radius: 50%;
     transition: all .3s ease;
 }
 
+
+.add-button-container{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: var(--pink);
+    transition: all .4s ease;
+}
+
+.add-button-container:hover{
+    padding: 5px;
+    gap: 10px;
+    width: 150px;
+    border-radius: 2px;
+}
+
+.add-button-container:hover .expand{
+    width: 100%;
+    opacity: 1;
+}
+
+.add-button-container:hover .expand > span{
+    opacity: 1;
+}
+
+.add-button-container:active{
+    background-color: var(--lime);
+}
+
 .img-container:hover{
     background-color: var(--pink_50);
+}
+
+.add-button-container img{
+    width: 20px;
 }
 
 .add-employee{
@@ -61,7 +104,7 @@
     opacity: 1;
     margin-left: 10px;
 }
-.add-employee:hover .expand p {
+.add-employee:hover > .expand > span {
     opacity: 1;
 }
 
@@ -69,13 +112,14 @@
     display: flex;
     width: 0;
     opacity: 0;
+    overflow: hidden;
     justify-content: center;
     align-items: center;
     transition: width .3s ease,
                 opacity .15s ease;
 }
 
-.expand p{
+.expand > span{
     user-select: none;
     margin: 0;
     padding: 0;
@@ -205,12 +249,13 @@ h3{
     align-items: center;
     justify-content: center;
     width: 100%;
+    height: 75vh;
 }
 
 
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 4fr));
     grid-auto-rows: 300px;
     gap: 20px;
     padding: 10px;

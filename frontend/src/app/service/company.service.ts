@@ -16,6 +16,9 @@ import {
 } from "../model/http/company.model";
 import {LogoName} from "../components/modals/company-name-logo-edit-modal/company-name-logo-edit-modal.component";
 import {Address} from "../model/gui/gui.model";
+import {
+    EmployeeSearchModel
+} from "../pages/company-management-page/company-management-employee/company-management-employee.component";
 
 @Injectable({
   providedIn: 'root'
@@ -114,12 +117,19 @@ export class CompanyService {
       return this.http.get<UserCompanyResponse[]>(request_url, {observe: 'response'});
   }
 
-    getCompanyEmployeesDetails(companyId: number, pagination: Pagination) {
+    getCompanyEmployeesDetails(companyId: number, pagination: Pagination, search: EmployeeSearchModel | null = null) {
         const request_url = `/api/v1/companies/${companyId}/employees/details`;
 
         let httpParams = new HttpParams()
             .set('page', pagination.currentPage)
             .set('size', pagination.itemsPerPage)
+
+        if(search?.firstName && search.firstName !== '') {
+            httpParams = httpParams.set('firstName', search.firstName);
+            if(search?.lastName && search.lastName !== '') {
+                httpParams = httpParams.set('lastName', search.lastName);
+            }
+        }
 
         return this.http.get<Page<CompanyEmployeeDetailsResponse>>(request_url, {params: httpParams, observe: 'response'});
     }

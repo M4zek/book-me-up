@@ -1,21 +1,19 @@
 <div class="hired-employee-view">
 
-    <div class="top-bar">
-        <div class="search">
-            <div class="img-container">
-                <img [src]="'icons/search_icon.svg'" alt="Search"/>
-            </div>
-            <input type="text" placeholder="Search employee"/>
+    <div class="horizontal">
+        <div class="search-bar-cont">
+            <app-search-and-sort-bar
+                    [placeholder]="'Search e.g.: John Doe'"
+                    (searchChanged)="onSearchChanged($event)"
+                    [showSort]="false"/>
         </div>
-        <div class="add-employee" (click)="openAddEmployeeModal()">
+        <div class="add-button-container" (click)="openAddEmployeeModal()">
             <img [src]="'icons/plus_icon.svg'" alt="add"/>
             <div class="expand">
-                <p>Add new employee</p>
+                <span>Add new employee</span>
             </div>
         </div>
     </div>
-
-
 
     <div class="full-size">
 
@@ -23,7 +21,7 @@
 
         <div class="card-container" *ngIf="!isEmployeesLoading">
             <div class="profile-card" *ngFor="let employee of employeeList">
-                <img [src]="'data:image/jpeg;base64,' + employee.avatar" alt="Profile photo" class="avatar" />
+                <img [src]="getUserAvatar(employee.avatar)" alt="Profile photo" class="avatar" />
                 <h3>{{ employee.firstName }} {{employee.lastName}}</h3>
                 <app-drop-down-list
                         [disabled]="!isDataEditable"
