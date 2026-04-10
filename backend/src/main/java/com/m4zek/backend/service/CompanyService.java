@@ -130,8 +130,8 @@ public class CompanyService {
                 ).toList();
     }
 
-    public Page<EmployeeDetailsResponse> findEmployeesDetailsByCompanyId(int companyId, Pageable pageable) {
-        Page<CompanyUserRole> companyUserRoles = this.companyUserRoleRepository.findAllByCompanyId(companyId, pageable);
+    public Page<EmployeeDetailsResponse> findEmployeesDetailsByCompanyId(int companyId, String firstName, String lastName, Pageable pageable) {
+        Page<CompanyUserRole> companyUserRoles = this.companyUserRoleRepository.findAllByCompanyId(companyId, firstName, lastName, pageable);
         List<EmployeeDetailsResponse> responseList = companyUserRoles.stream()
                 .map(userRole ->
                         UserMapper.toEmployeeDetailsResponse(

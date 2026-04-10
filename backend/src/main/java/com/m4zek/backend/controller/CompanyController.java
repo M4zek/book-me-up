@@ -54,9 +54,11 @@ public class CompanyController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Page<EmployeeDetailsResponse>> findEmployeesDetailsByCompanyId(
             @Positive(message = "Company id must be positive number") @PathVariable int company_id,
+            @RequestParam(required = false) @Size(min = 1, message = "First name cannot be empty") String firstName,
+            @RequestParam(required = false) @Size(min = 1, message = "Last name cannot be empty") String lastName,
             Pageable pageable
     ){
-        return ResponseEntity.ok(this.companyService.findEmployeesDetailsByCompanyId(company_id, pageable));
+        return ResponseEntity.ok(this.companyService.findEmployeesDetailsByCompanyId(company_id, firstName, lastName, pageable));
     }
 
     // Endpoint for changing user role in company
