@@ -5,6 +5,12 @@ export enum Role {
     ROLE_USER = "ROLE_USER",
 }
 
+export enum COMPANY_ROLE {
+    ROLE_OWNER = "COMPANY_OWNER",
+    ROLE_EMPLOYEE = "COMPANY_EMPLOYEE",
+    ROLE_MANAGER = "COMPANY_MANAGER",
+}
+
 export interface LoginWrapper {
     success: boolean,
     errorMessage?: ErrorMessage,

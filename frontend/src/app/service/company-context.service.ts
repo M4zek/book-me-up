@@ -25,7 +25,7 @@ export class CompanyContextService {
     }
 
     hasAnyRole(...roles: string[]): boolean {
-        return roles.some(r => this.roles.includes(r));
+        return roles.some((r:string) => this.getCompany()?.role.includes(r));
     }
 
     getCompany(){

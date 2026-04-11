@@ -8,10 +8,12 @@ import {
 import {CompanyDetailsResponse, UserCompanyResponse} from "../../../model/http/company.model";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyContextService} from "../../../service/company-context.service";
+import {COMPANY_ROLE} from "../../../model/http/auth.model";
 
 export interface NavCompanyManagementType {
   name: string;
   path: string;
+  roles?: COMPANY_ROLE[];
 }
 
 export interface CompanyManagementNavigation {
@@ -40,7 +42,7 @@ export class CompanyManagementNavigationComponent implements OnInit{
   selected_company: DropDownListItem | null = null;
   dropDownCompanyItemList: DropDownListItem[] = [];
 
-  public navigation: string[] = Object.keys(this.NAVIGATION);
+  public navigation: string[] = [];
 
   constructor(public router: Router,
               private companyService: CompanyService,
@@ -95,18 +97,31 @@ export class CompanyManagementNavigationComponent implements OnInit{
   }
 
   private createNavigation(){
-      if(this.companyContextService.getCompany() != null){
-          this.NAVIGATION = {
-              homePage: {name: 'Home', path: '/app/company-management/home'},
-              employeePage: {name: 'Employees', path: '/app/company-management/employee'},
-              offerPage: {name: 'Offers', path: '/app/company-management/offers'},
-              appointmentsPage: {name: 'Appointments', path: '/app/company-management/appointments'},
-              calendarPage: {name: 'Calendar', path: '/app/company-management/calendar'}
-          };
-      } else {
+
+      const company = this.companyContextService.getCompany();
+
+      if(!company){
           this.NAVIGATION = {}
+          this.navigation = [];
+          return;
       }
-      this.navigation = Object.keys(this.NAVIGATION);
+
+      this.NAVIGATION = {
+          homePage: {name: 'Home', path: '/app/company-management/home'},
+          employeePage: {name: 'Employees', path: '/app/company-management/employee', roles: [COMPANY_ROLE.ROLE_OWNER, COMPANY_ROLE.ROLE_MANAGER]},
+          offerPage: {name: 'Offers', path: '/app/company-management/offers', roles: [COMPANY_ROLE.ROLE_OWNER, COMPANY_ROLE.ROLE_MANAGER]},
+          appointmentsPage: {name: 'Appointments', path: '/app/company-management/appointments'},
+          calendarPage: {name: 'Calendar', path: '/app/company-management/calendar'}
+      };
+
+      const user_role = company.role;
+
+      this.navigation = Object.keys(Object.fromEntries(
+          Object.entries(this.NAVIGATION).filter(([_, item]) => {
+              if(!item.roles) return true;
+              return item.roles.some(role => user_role.includes(role))
+          })
+      ))
   }
 
   private changeCompanyToContext(){

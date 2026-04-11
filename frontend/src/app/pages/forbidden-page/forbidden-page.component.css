@@ -1,0 +1,37 @@
+.forbidden-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.forbidden-container > img {
+    height: 50%;
+    max-height: 300px;
+}
+
+.forbidden-container > .title{
+    font: italic 30px 'Imprint MT Shadow', sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+.forbidden-container > .description{
+    font: normal 15px 'Arial', sans-serif;
+    color: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+
+.forbidden-container > .white-line{
+    width: 50%;
+    height: 1px;
+    background: var(--white-50);
+}
+
+.forbidden-container > a {
+    margin-top: 20px;
+}
