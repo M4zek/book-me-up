@@ -147,7 +147,7 @@ public class ReservationService {
             if(
                     !hours.isOpen()
                     || day.toLocalDate().isBefore(LocalDate.now())
-                    || (day.toLocalDate().isAfter(LocalDate.now()) && LocalTime.now().isAfter(LocalTime.parse(hours.getCloseTime())))
+                    || (day.toLocalDate().isEqual(LocalDate.now()) && LocalTime.now().isAfter(LocalTime.parse(hours.getCloseTime())))
             ) {
                 dayAvailabilities.add(
                         DayAvailability.builder()
