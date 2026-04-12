@@ -1,69 +1,87 @@
-<div class="wrapper">
+<div class="company-m-home-bg" *ngIf="isCompanyDataLoading">
+    <app-double-spinner [text]="'Loading company data...'"/>
+</div>
+<div class="wrapper" *ngIf="companyGUIData && !isCompanyDataLoading">
     <div class="company-name-logo-grid">
         <div class="logo-name-company-container">
-            <img [src]="companyNameLogo.logo" alt="Logo"/>
-            <h3>{{companyNameLogo.companyName}}</h3>
+            <img [src]="'data:image/jpeg;base64,' + companyGUIData.name_logo.logo" alt="Logo"/>
+            <h3>{{companyGUIData.name_logo.companyName}}</h3>
         </div>
-        <div class="edit-container-action top-right" (click)="openEditModal('editLogoNameModal')">
+        <div class="edit-container-action top-right"
+             *ngIf="isDataEditable"
+             (click)="openEditModal('editLogoNameModal')">
             <img [src]="'icons/pencil_icon.svg'" alt="edit">
         </div>
     </div>
     <div class="company-description-grid">
         <h2>Description</h2>
         <div class="desc-con">
-            <p>{{description}}</p>
+            <p>{{companyGUIData.description}}</p>
         </div>
-        <div class="edit-container-action" (click)="openEditModal('editDescriptionModal')">
+        <div class="edit-container-action"
+             *ngIf="isDataEditable"
+              (click)="openEditModal('editDescriptionModal')">
             <img [src]="'icons/pencil_icon.svg'" alt="edit">
         </div>
     </div>
     <div class="company-address-grid">
         <h2>Localization</h2>
-        <app-map [currentAddress]="companyAddress"></app-map>
+        <app-map [currentAddress]="companyGUIData.address"></app-map>
         <div class="company-address">
             <div class="address-elem">
                 <h3>City:</h3>
-                <p>{{companyAddress.city}}</p>
+                <p>{{companyGUIData.address.city}}</p>
             </div>
             <div class="address-elem">
                 <h3>Street:</h3>
-                <p>{{companyAddress.street}}</p>
+                <p>{{companyGUIData.address.street}}</p>
             </div>
             <div class="address-elem">
                 <h3>Building number:</h3>
-                <p>{{companyAddress.buildingNumber}}</p>
+                <p>{{companyGUIData.address.buildingNumber}}</p>
             </div>
             <div class="address-elem">
                 <h3>Postal code:</h3>
-                <p>{{companyAddress.postalCode}}</p>
+                <p>{{companyGUIData.address.postalCode}}</p>
             </div>
         </div>
-        <div class="edit-container-action" (click)="openEditModal('editAddressModal')">
+        <div class="edit-container-action"
+             *ngIf="isDataEditable"
+             (click)="openEditModal('editAddressModal')">
             <img [src]="'icons/pencil_icon.svg'" alt="edit">
         </div>
     </div>
     <div class="company-portfolio-grid">
         <h2>Portfolio</h2>
-        <app-company-portfolio-list [images]="portfolioList"></app-company-portfolio-list>
-        <div class="add-container-action" (click)="openEditModal('addPortfolioModal')">
+        <app-company-portfolio-list
+                [isEditable]="isDataEditable"
+                [images]="companyGUIData.portfolio"/>
+        <div class="add-container-action"
+             *ngIf="isDataEditable"
+             (click)="openEditModal('addPortfolioModal')">
             <img alt="add" [src]="'icons/plus_icon.svg'"/>
             <p>Add new photos</p>
         </div>
     </div>
     <div class="company-opinion-gird">
-        <app-company-opinions></app-company-opinions>
+        <app-company-opinions [companyId]="companyGUIData.id" [opinionsDetails]="companyGUIData.opinions"></app-company-opinions>
     </div>
     <div class="company-open-hours-gird">
-        <app-company-business-hours></app-company-business-hours>
-        <div class="edit-container-action" (click)="openEditModal('editHoursModal')">
+        <app-company-business-hours [openingHours]="companyGUIData.hours"></app-company-business-hours>
+        <div class="edit-container-action"
+             *ngIf="isDataEditable"
+             (click)="openEditModal('editHoursModal')">
             <img [src]="'icons/pencil_icon.svg'" alt="edit">
         </div>
     </div>
+
 </div>
 
+<div *ngIf="companyGUIData">
+    <app-company-description-edit-modal [description]="companyGUIData.description" [isVisible]="openEditDescriptionModal" (descriptionChanged)="onDescChange($event)" (closeModal)="closeEditModal('editDescriptionModal')"/>
+    <app-company-address-edit-modal [currentLocalization]="companyGUIData.address" [isVisible]="openEditAddressModal" (closeModal)="closeEditModal('editAddressModal')"/>
+    <app-company-name-logo-edit-modal [isVisible]="openEditLogoNameModal" [logoAndName]="companyGUIData.name_logo" (closeModal)="closeEditModal('editLogoNameModal')"/>
+    <app-company-business-hour-edit-modal [isVisible]="openEditHoursModal" [days]="companyGUIData.hours" (closeModal)="closeEditModal('editHoursModal')"/>
+    <app-company-portfolio-add-modal [portfolioList]="companyGUIData.portfolio" [isVisible]="openAddPortfolioModal" (closeModal)="closeEditModal('addPortfolioModal')"/>
+</div>
 
-<app-company-description-edit-modal [description]="description" [isVisible]="openEditDescriptionModal" (closeModal)="closeEditModal('editDescriptionModal')"/>
-<app-company-address-edit-modal [currentLocalization]="companyAddress" [isVisible]="openEditAddressModal" (closeModal)="closeEditModal('editAddressModal')"/>
-<app-company-name-logo-edit-modal [isVisible]="openEditLogoNameModal" [logoAndName]="companyNameLogo" (closeModal)="closeEditModal('editLogoNameModal')"/>
-<app-company-business-hour-edit-modal [isVisible]="openEditHoursModal" (closeModal)="closeEditModal('editHoursModal')"/>
-<app-company-portfolio-add-modal [portfolioList]="portfolioList" [isVisible]="openAddPortfolioModal" (closeModal)="closeEditModal('addPortfolioModal')"/>

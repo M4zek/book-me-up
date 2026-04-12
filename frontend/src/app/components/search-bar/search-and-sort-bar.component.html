@@ -22,6 +22,7 @@
                 [placeholder]="'Filter by'"
         />
         <app-drop-down-list
+                *ngIf="showSort"
                 (valueChanged)="onSortChanged($event)"
                 [options]="sortByItems"
                 [placeholder]="'Sort by'"

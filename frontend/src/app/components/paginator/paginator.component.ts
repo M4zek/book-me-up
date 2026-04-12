@@ -1,12 +1,14 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Pagination} from "../../model/search/search.model";
 import {NgForOf} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-paginator',
-  imports: [
-    NgForOf
-  ],
+    imports: [
+        NgForOf,
+        FormsModule
+    ],
   templateUrl: './paginator.component.html',
   styleUrl: './paginator.component.css'
 })
@@ -15,12 +17,14 @@ export class PaginatorComponent {
   @Input() pagination: Pagination = {
     totalItems: 0,
     itemsPerPage: 10,
-    currentPage: 1,
+    currentPage: 0,
     itemsPerPageOptions: [5, 10, 20, 30, 40]
   }
 
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() itemsPerPageChange = new EventEmitter<number>();
+  // @Output() pageChange = new EventEmitter<number>();
+  // @Output() itemsPerPageChange = new EventEmitter<number>();
+
+    @Output() paginatorChanged = new EventEmitter<void>();
 
   get totalPages(): number {
     return Math.ceil(this.pagination.totalItems / this.pagination.itemsPerPage);
@@ -30,8 +34,8 @@ export class PaginatorComponent {
     const pages: number[] = [];
     if (this.totalPages <= 1) return pages;
 
-    const start = Math.max(1, this.pagination.currentPage - 1);
-    const end = Math.min(this.totalPages, this.pagination.currentPage + 1);
+    const start = Math.max(0, this.pagination.currentPage - 1);
+    const end = Math.min(this.totalPages - 1, this.pagination.currentPage + 1 );
 
     for (let i = start; i <= end; i++) {
       pages.push(i);
@@ -41,17 +45,18 @@ export class PaginatorComponent {
   }
 
   changePage(page: number) {
-    if (page < 1 || page > this.totalPages) return;
+    if (page < 0 || page > this.totalPages - 1) return;
     this.pagination.currentPage = page;
-    this.pageChange.emit(this.pagination.currentPage);
+    this.paginatorChanged.emit()
+    // this.pageChange.emit(this.pagination.currentPage);
   }
 
   firstPage() {
-    this.changePage(1);
+    this.changePage(0);
   }
 
   lastPage() {
-    this.changePage(this.totalPages);
+    this.changePage(this.totalPages - 1);
   }
 
   previousPage() {
@@ -65,7 +70,7 @@ export class PaginatorComponent {
   changeItemsPerPage(event: Event) {
     const newValue = Number((event.target as HTMLSelectElement).value);
     this.pagination.itemsPerPage = newValue;
-    this.itemsPerPageChange.emit(newValue);
-    this.changePage(1);
+    // this.itemsPerPageChange.emit(newValue);
+    this.changePage(0);
   }
 }

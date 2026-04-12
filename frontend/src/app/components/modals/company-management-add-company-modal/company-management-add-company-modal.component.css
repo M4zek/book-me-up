@@ -14,83 +14,216 @@
 .modal-content {
     background-color: var(--dark);
     border-radius: 8px;
-    top: 10%;
-    width: 30%;
+    top: 3%;
+    width: 100%;
+    max-height: 95%;
     position: absolute;
-    max-width: 50%;
-    max-height: 600px;
+    /*max-height: 1000px;*/
+    max-width: 800px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
-    overflow: auto;
     gap: 10px;
     padding: 10px;
     justify-content: center;
 }
 
-.title{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid var(--pink);
-    margin-bottom: 5px;
-}
+/* --------------------------- */
 
-.modal-content form{
+.stepper {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    /*position: relative;*/
 }
 
-.horizontal-parent{
+
+.stepper-header {
     display: flex;
-    width: 100%;
-    gap: 5px;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    height: 50px;
+}
+
+.stepper-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    border-top: 1px solid var(--white-25);
+    padding: 10px;
+}
+
+.stepper-actions > div {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: transparent;
+    transition: all .3s ease-in-out;
+    color: var(--white);
+}
+
+.stepper-actions > div:hover{
+    background-color: var(--light-blue);
+    user-select: none;
 }
 
 
-.vertical-parent{
+
+.progress-background{
+    height: 2px;
+    border-radius: 10px;
+    width: 75%;
+    position: absolute;
+    z-index: 0;
+    background-color: var(--white);
+}
+
+.progress-content{
+    height: 2px;
+    border-radius: 10px;
+    background-color: var(--lime);
+    transition: width 0.3s ease;
+}
+
+
+.circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: relative;
+    color: #555;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.circle:hover {
+    scale: 1.15;
+}
+
+.circle.active{
+    background: linear-gradient(90deg, var(--lime) 30%, var(--white) 100%) ;
+    height: 35px;
+    width: 35px;
+}
+
+
+.circle.completed{
+    background-color: var(--lime);
+}
+
+.circle > .title{
+    position: absolute;
+    transform: translateY(30px);
+    width: fit-content;
+    text-wrap: nowrap;
+    text-align: start;
+    color: var(--white);
+}
+
+
+.stepper-content{
+    width: 100%;
+    height: 100%;
+    margin-top: 20px;
+    /*min-height: 500px;*/
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.step{
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    transition: all .5s ease;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    position: relative;
+    justify-content: center;
+}
+
+.step > .horizontal-panel{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.horizontal-panel > .left-panel {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    height: 100%;
+    gap: 10px;
+}
+.horizontal-panel > .right-panel {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    /*height: 100%;*/
+    gap: 20px;
+}
+
+.inputBox.height100{
     width: 100%;
 }
 
-.logo-container{
+.left-panel > .logo-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     justify-content: center;
     align-items: center;
-    position: relative;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--white-10);
 }
 
-.logo-container img{
-    width: 200px;
+.left-panel > .logo-container img{
+    width: 100%;
+    aspect-ratio: 16/9;
     border-radius: 2px;
 }
 .select-file-button{
-    position: absolute;
-    width: 35px;
+    width: 100%;
     height: 35px;
     background-color: var(--pink);
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%;
+    border-radius: 5px;
+    gap: 10px;
     overflow: hidden;
     transition: all .3s ease;
+}
 
-    top: 15px;
-    left: 15px;
+.select-file-button > span{
+    color: var(--white);
+    user-select: none;
 }
 
 .select-file-button img{
     width: 20px;
+    height: 20px;
+    max-width: 20px;
     user-select: none;
 }
+
+
 
 .select-file-button:hover{
     background-color: var(--light-blue);
@@ -101,13 +234,13 @@
 }
 
 
-.inputBox.height-30{
-    height: 30%;
+.inputBox.height-100{
+    height: 100%;
 }
 
 .inputBox {
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
     position: relative;
     border: 1px solid var(--white-10);
     border-radius: 5px;
@@ -126,7 +259,7 @@
     border: none;
     color: var(--white-50);
     text-align: center;
-    font-size: 1em;
+    font: 12px/1.5rem "Roboto", sans-serif;
 }
 
 .inputBox:has(input:focus),
@@ -147,26 +280,15 @@
     border: none;
 }
 
-
-.padding-20{
-    padding: 20px;
-    border: 1px solid var(--white-10) !important;
+.inputBox > .length{
+    position: absolute;
+    left: auto;
+    top: 100%;
+    right: 25px !important;
 }
 
-.vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.horizontal {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    width: 100%;
-}
-
-.inputBox span {
+.inputBox span,
+.input-category-box span{
     position: absolute;
     left: 0;
     top: 0;
@@ -180,7 +302,8 @@
     border: 1px solid var(--white-10);
 }
 
-.inputBox p {
+.inputBox p,
+.input-category-box p{
     position: absolute;
     left: 0;
     bottom: 0;
@@ -198,59 +321,314 @@
     border-color: var(--gold);
 }
 
-
-.btn_container{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+.inputBox > .length-area{
+    position: relative;
+    right: 0;
 }
 
-.btn{
-    width: 30px;
-    height: 30px;
+
+.input-category-box{
+    width: 100%;
+    height: 50px;
+    border: 1px solid var(--white-10);
+    border-radius: 5px;
+    position: relative;
+}
+
+.input-category-box.error{
+    border: 1px solid var(--gold);
+}
+
+
+
+.days-grid {
     display: flex;
     justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-height: 550px;
+    overflow-x: auto;
+}
+
+.day-card {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
     align-items: center;
-    border-radius: 50%;
-    overflow: hidden;
-    padding: 5px;
+    background: var(--white-25);
+    padding: 10px 15px;
+    border-radius: 10px;
+    width: auto;
+    height: fit-content;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     transition: all .3s ease;
 }
 
-.btn img{
-    width: 18px;
-    height: 18px;
-}
-
-
-.btn.dark_blue{
-    background-color: var(--dark-blue);
-}
-
-.btn .expand{
-    width: 0;
-    opacity: 0;
-}
-
-.btn:active{
-    background-color: var(--lime);
-}
-
-.btn:hover{
-    border-radius: 5px;
-    width: 100px;
-}
-
-.btn:hover .expand{
-    margin-left: 10px;
-    opacity: 1;
-    width: fit-content;
-}
-
-.btn .expand span{
+h3 {
     color: var(--white);
-    user-select: none;
+    margin-top: 0;
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.time-group {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    transition: opacity 0.2s ease;
+}
+
+.time-group.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.time-block label {
+    font: bold 1rem "Roboto", sans-serif;
+    color: var(--white);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+.closed{
+    background-color: var(--pink_50);
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.time-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-control span {
+    color: var(--white);
+    width: 26px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.time-control button {
+    background: transparent;
+    color: white;
+    border: none;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all .3s ease;
+}
+
+.time-control button:hover:enabled {
+    background: var(--light-blue-50);
+}
+
+.time-control button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+
+
+.details{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.details > .left-panel{
+    width: 40%
+}
+
+.details > .right-panel{
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.details > .right-panel > .info-text {
+    color: var(--white);
+    font: italic 11px/1rem "Roboto", sans-serif;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: -5px;
+    padding: 0;
+}
+
+.summary-box > .content-box > .logo{
+    height: 150px;
+    max-height: 150px;
+    width: auto;
+    border-radius: 5px;
+    aspect-ratio: 16/9;
+}
+
+.summary-box{
+    width: 100%;
+    border: 1px solid var(--white-10);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.summary-box > .title-box > span{
+    font: bold italic 13px/1rem "Roboto", sans-serif;
+    color: var(--white);
+    padding: 5px;
+}
+
+.summary-box > .title-box{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 20%;
+
+    border-radius: 5px 0 0 5px;
+    background-color: var(--white-25);
+}
+
+.summary-box > .title-box.green{
+    background-color: var(--lime_25);
+}
+
+.summary-box > .title-box.pink{
+    background-color: var(--pink_25);
+}
+
+.summary-box > .content-box{
+    display: flex;
+    width: calc(80% - 10px);
+    height: 100%;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+}
+
+.summary-box > .content-box.max{
+    max-height: 100px;
+    overflow: scroll;
+}
+
+
+.summary-box > .content-box > .avatar {
+    width: 25px;
+    height: 25px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.summary-box > .content-box > span{
+    font: 12px/1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+
+
+.result-step-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 30px 0 30px;
+}
+
+.result-step-container > .result-title{
+    font: bold 20px/1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.result-step-container > .result-message{
+    font: italic 16px/1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.result-step-container > .result-icon-bg{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: 2px solid #FF0000;
+}
+
+.result-step-container > .result-icon-bg.success{
+    border: 2px solid #00AC2E;
+}
+
+.result-step-container > .result-icon-bg img{
+    width: 40px;
+    height: 40px;
+}
+
+.result-step-container > .result-button{
+    width: 40%;
+    height: 40px;
+    display: flex;
+    background: #7e0000;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    transition: all .3s ease;
+}
+
+.result-step-container > .result-button:hover{
+    background: #FF0000;
+}
+
+.result-step-container > .result-button.success{
+    background-color:  #007020;
+}
+
+.result-step-container > .result-button.success:hover{
+    background-color: #00AC2E;
+}
+
+
+.result-step-container > .result-button span{
+    font: bold 14px/1rem "Roboto", sans-serif;
+    color: var(--white);
+    letter-spacing: 5px;
+}
+
+.result-step-container > .result-retry-button{
+    width: 10%;
+    height: 40px;
+    background-color: var(--white-10);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.result-step-container > .result-retry-button span{
+    font: bold 14px/1rem "Roboto", sans-serif;
+    color: var(--white);
+}
+
+.result-step-container > .result-retry-button:hover{
+    background: var(--white-25);
 }

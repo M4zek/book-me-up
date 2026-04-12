@@ -1,53 +1,43 @@
-import {Component} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {Component, Input} from '@angular/core';
+import {DatePipe, NgForOf, NgIf} from "@angular/common";
+import {UserContextService} from "../../../service/user-context.service";
+import {ReviewUserDetailsResponse} from "../../../model/http/review.model";
+import {UserResponse} from "../../../model/http/user.model";
+import {getUserAvatar} from "../../../utils.functions";
+
+
+
 
 @Component({
   selector: 'app-user-opinions-list',
-  imports: [
-    NgForOf
-  ],
+    imports: [
+        NgForOf,
+        DatePipe,
+        NgIf
+    ],
   templateUrl: './user-opinions-list.component.html',
   styleUrl: './user-opinions-list.component.css'
 })
 export class UserOpinionsListComponent {
-  loremIpsum: string = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n' +
-      '\n'
 
-  opinions = [
-    {
-      user: 'John Doe 1',
-      date: '2025-10-13',
-      rating: 3,
-      offerName: 'Offer name test 1',
-      opinionMessage: this.loremIpsum,
-    },
-    {
-      user: 'John Doe 2',
-      date: '2025-10-13',
-      rating: 1,
-      offerName: 'Offer name test 2',
-      opinionMessage: this.loremIpsum,
-    },
-    {
-      user: 'John Doe 3',
-      date: '2025-10-13',
-      rating: 5,
-      offerName: 'Offer name test 3',
-      opinionMessage: this.loremIpsum,
-    },
-    {
-      user: 'John Doe 4',
-      date: '2025-10-13',
-      rating: 2,
-      offerName: 'Offer name test 4',
-      opinionMessage: this.loremIpsum,
-    },
-  ]
+  @Input() opinions: ReviewUserDetailsResponse[] = []
+
+  protected logged_id: number | null = null;
+
+  constructor(private uct: UserContextService) {
+      this.uct.getUserContext().subscribe(userContext => {
+          this.logged_id = userContext.id;
+      })
+  }
+
+
+  protected isMyOpinion(user: UserResponse){
+      return this.logged_id == user.id;
+  }
 
   rows(n: number): number[] {
     return Array(n).fill(0).map((_, i) => i);
   }
 
-
-
+    protected readonly getUserAvatar = getUserAvatar;
 }

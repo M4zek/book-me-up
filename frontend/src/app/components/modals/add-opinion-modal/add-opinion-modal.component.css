@@ -41,12 +41,22 @@
 .top img{
     border-radius: 50%;
     aspect-ratio: 1/1;
-    width: 30px;
+    width: 40px;
 }
 
 .top span{
     font: bold 17px/1.5 "Roboto", sans-serif;
     color: var(--white);
+}
+
+.top > .name-cont {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.top .name-cont > span:last-child {
+    font: italic 14px/1.5 "Roboto", sans-serif;
 }
 
 .rating-input,
@@ -56,6 +66,11 @@
     background-color: var(--white-10);
     border-radius: 5px;
     padding: 10px;
+}
+
+.rating-input.invalid,
+.opinion-content.invalid {
+    border: 2px solid var(--gold);
 }
 
 .opinion-content textarea{
@@ -96,3 +111,23 @@
     cursor: pointer;
     background-color: var(--lime);
 }
+
+.modal-content > form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.modal-content > form .opinion-content .length-textarea{
+    color: var(--white);
+    padding: 0;
+    font: bold 11px/1.5 "Roboto", sans-serif;
+    width: 100%;
+    text-align: end;
+    position: absolute;
+    right: 10px;
+    bottom: 45px;
+    transition: all .3s ease;
+}
+

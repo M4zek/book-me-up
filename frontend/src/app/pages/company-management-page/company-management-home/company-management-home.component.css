@@ -23,6 +23,10 @@
     position: relative;
 }
 
+.desc-con{
+    height: 100%;
+}
+
 .logo-name-company-container{
     display: flex;
     flex-flow: column;
@@ -79,7 +83,6 @@
 .company-open-hours-gird {
     display: flex;
     flex-direction: column;
-    align-items: center;
     grid-column: 3/4;
     grid-row: 4;
 }
@@ -185,5 +188,13 @@
     margin: 0;
 }
 
+
+.company-m-home-bg{
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--black-10);
+}
 
 

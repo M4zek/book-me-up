@@ -5,12 +5,15 @@
     justify-content: center;
     align-items: center;
     padding: 1rem;
+    flex-direction: column;
+    gap:10px;
 }
 
 .double-spinner{
-    width: 25px;
+    width: 30%;
+    max-width: 50px;
     aspect-ratio: 1/1;
-    border: 5px solid;
+    border: 8px solid;
     border-radius: 50%;
     border-color: var(--pink) transparent var(--pink) transparent;
     animation: spin .7s linear infinite;

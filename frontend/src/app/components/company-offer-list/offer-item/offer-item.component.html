@@ -1,12 +1,10 @@
-<div class="offer-item-container" (click)="openReservationDialog()">
+<div class="offer-item-container">
     <div class="desc-container">
-        <p class="offer-title-paragraph">{{title}}</p>
-        <p class="offer-description-paragraph">{{description}}</p>
+        <p class="offer-title-paragraph">{{offerItem.name}}</p>
+        <p class="offer-description-paragraph">{{offerItem.description}}</p>
     </div>
     <div class="price-time-container">
-        <p class="offer-price-paragraph">{{price | number: '1.2-2'}} PLN</p>
-        <p class="offer-duration-paragraph">{{duration}} min</p>
+        <p class="offer-price-paragraph">{{offerItem.price | number: '1.2-2'}} PLN</p>
+        <p class="offer-duration-paragraph">{{offerItem.duration}} min</p>
     </div>
 </div>
-
-<app-reservation-modal [isVisible]="isReservationVisible" (closeModal)="hideReservationDialog()"/>

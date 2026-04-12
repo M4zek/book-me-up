@@ -1,260 +1,202 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {NgClass, NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {AvailableSlot, DayAvailability} from "../../model/http/reservation.model";
+import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 
-export interface DateModel{
-  day: number,
-  weekDay: string,
-  status: string,
-  date: Date
+
+type DatePart = 'dayName' | 'dayNumber' | 'monthName' | 'year' | 'full';
+
+export enum ChangeDateEventType {
+    SET_SLOT = 'SET_SLOT',
+    SET_DAY = 'SET_DAY',
+    NEXT_WEEK = 'NEXT_WEEK', PREV_WEEK = 'PREV_WEEK',
+    NEXT_MONTH = 'NEXT_MONTH', PREV_MONTH = 'PREV_MONTH'
 }
 
-export interface BookedSlots {
-  start: Date,
-  end: Date,
-}
+export type ChangeDateEvent =
+    | { type: ChangeDateEventType.SET_SLOT; payload: { slot: AvailableSlot } }
+    | { type: ChangeDateEventType.SET_DAY; payload: { date: Date } }
+    | { type: ChangeDateEventType.NEXT_WEEK }
+    | { type: ChangeDateEventType.PREV_WEEK }
+    | { type: ChangeDateEventType.NEXT_MONTH }
+    | { type: ChangeDateEventType.PREV_MONTH }
 
 @Component({
-  selector: 'app-date-reservation-picker',
-  imports: [
-    NgClass,
-    NgForOf
-  ],
-  templateUrl: './date-reservation-picker.component.html',
-  styleUrl: './date-reservation-picker.component.css'
+    selector: 'app-date-reservation-picker',
+    imports: [
+        NgClass,
+        NgIf,
+        NgForOf,
+        DoubleSpinnerComponent
+    ],
+    templateUrl: './date-reservation-picker.component.html',
+    styleUrl: './date-reservation-picker.component.css'
 })
 export class DateReservationPickerComponent {
-  // DAY PICK VARIABLES
-  animationDateCarouselDirection: string = '';
-  currentMonth!: string;
+    animationDateCarouselDirection: string = '';
+    animationTimeCarouselDirection: string = '';
 
-  currentYear!: number;
-  days: DateModel[] = [];
-  selectedDay!: number;
-  private weekDays = ['Sun', 'Mon', 'Tu', 'Wed', 'Thu', 'Fri', 'Sat'];
+    @Output() changeDate: EventEmitter<ChangeDateEvent> = new EventEmitter();
+    @Input() days: DayAvailability[] = [];
 
-  @Input() closeDays: string[] = ['Saturday', 'Sunday'];
-  @Output() changeDate = new EventEmitter();
-  today = new Date();
+    @Input() isSlotsLoadingFromServer = false;
 
-  activeDate!: Date;
+    selectedDay: DayAvailability | null = null;
+    selectedSlot: AvailableSlot | null = null;
 
-  // TIME HOUR VARIABLES
-  animationTimeCarouselDirection: string = '';
-  slots: { label: string, start: Date, end: Date, disabled: boolean }[] = [];
-  visibleSlots: { label: string, start: Date, end: Date, disabled: boolean }[] = [];
-  selectedSlot?: { label: string, start: Date, end: Date };
-  private index = 0;
+    availableSlots: AvailableSlot[] | null = [];
+    availableStartIndex: number = 0;
+    availableVisibleMax: number = 5;
 
-  visibleCount = 4;
-  isTodayDate: boolean = false;
-  @Input() duration = 30;
-  @Input() startHour = 8;
-  @Input() endHour = 20;
+    constructor() {}
 
-  @Input() bookedSlots: BookedSlots[] = [];
+    protected getDatePart(dateInput: Date | string, part: DatePart): string | number {
+        const date = new Date(dateInput);
 
-  ngOnInit() {
-    this.activeDate = new Date(this.today);
-    this.updateMonthYear();
-    this.generateWeek();
-    this.selectToday();
+        switch (part) {
+            case 'dayName':
+                return date.toLocaleDateString('en-EN', { weekday: 'long' });
 
-    this.generateSlots();
-    this.updateVisible();
-  }
+            case 'dayNumber':
+                return date.getDate();
 
-  private selectToday() {
-    const todayModel = this.days.find(d =>
-        d.date.toDateString() === this.today.toDateString()
-    );
+            case 'monthName':
+                return date.toLocaleDateString('en-EN', { month: 'long' });
 
-    if (todayModel && !this.isClosed(todayModel.date)) {
-      this.selectedDay = todayModel.day;
-      this.isToday(todayModel.date);
-    }
-  }
+            case 'year':
+                return date.toLocaleDateString('en-EN', {year: 'numeric' });
 
-  updateMonthYear() {
-    this.currentYear = this.activeDate.getFullYear();
-    this.currentMonth = this.activeDate.toLocaleString('en-US', { month: 'long' });
-  }
+            case 'full':
+                return date.toLocaleDateString('en-EN', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                });
 
-  generateWeek() {
-    this.days = [];
-    const startOfWeek = new Date(this.activeDate);
-
-    startOfWeek.setDate(this.activeDate.getDate() - this.activeDate.getDay() + 1);
-
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(startOfWeek);
-      d.setDate(startOfWeek.getDate() + i);
-
-      this.days.push({
-        day: d.getDate(),
-        weekDay: this.weekDays[d.getDay()],
-        status: this.getRandomStatus(),
-        date: d
-      });
-    }
-    this.updateMonthYear();
-  }
-
-  // TEST METHOD - GREEN 75% FREE HOUR, YELLOW 50% FREE HOUR, RED - NO FREE HOUR: it will be returned from backend
-  getRandomStatus(): string {
-    const statuses = ['green', 'yellow', 'red'];
-    return statuses[Math.floor(Math.random() * statuses.length)];
-  }
-
-  selectDay(value: DateModel) {
-    this.selectedDay = value.day;
-    this.isToday(value.date);
-    this.selectedSlot = undefined;
-    this.generateSlots();
-    this.updateVisible();
-  }
-
-  nextWeek() {
-    this.animationDateCarouselDirection = 'slide-left';
-    this.activeDate.setDate(this.activeDate.getDate() + 7);
-    this.generateWeek();
-    setTimeout(() => {
-      this.animationDateCarouselDirection = '';
-    }, 300);
-  }
-
-  prevWeek() {
-    const newDate = new Date(this.activeDate);
-    newDate.setDate(this.activeDate.getDate() - 7);
-
-    if (newDate < this.today) return;
-
-    this.animationDateCarouselDirection = 'slide-right';
-    this.activeDate = newDate;
-    this.generateWeek();
-    setTimeout(() => {
-      this.animationDateCarouselDirection = '';
-    }, 300);
-  }
-
-  nextMonth() {
-    this.activeDate.setMonth(this.activeDate.getMonth() + 1);
-    this.generateWeek();
-  }
-
-  prevMonth() {
-    const newDate = new Date(this.activeDate);
-    newDate.setMonth(this.activeDate.getMonth() - 1);
-
-    if (newDate < this.today) return;
-    this.activeDate = newDate;
-    this.generateWeek();
-  }
-
-  isDisabled(d: Date): boolean {
-    return d < new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate());
-  }
-
-  isClosed(d: Date): boolean {
-    if(this.closeDays){
-      const dayOfWeek = d.toLocaleDateString('en-US', {weekday: 'long'})
-      for (let day of this.closeDays){
-        if(day == dayOfWeek){
-          return true;
+            default:
+                return '';
         }
-      }
-    }
-    return false;
-  }
-
-  private isToday(date:Date){
-    const today = new Date();
-    this.isTodayDate = date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
-  }
-
-
-  // TIME HOUR METHODS
-  generateSlots() {
-    this.slots = [];
-
-    const base = new Date(`${this.currentMonth} ${this.selectedDay}, ${this.currentYear}`);
-
-    let baseStartHour = this.startHour;
-    if (this.isTodayDate){
-      baseStartHour = new Date().getHours() + 1;
     }
 
-    base.setHours(baseStartHour, 0, 0, 0);
 
-    const end = new Date(base);
-    end.setHours(this.endHour, 0, 0, 0);
 
-    let current = new Date(base);
+    protected getStatus(percentage: number | null | undefined) {
+        if (!percentage) { return "red"}
 
-    while (current < end) {
-      const slotStart = new Date(current);
-      const slotEnd = new Date(current);
-      slotEnd.setMinutes(slotStart.getMinutes() + this.duration);
-
-      if(slotEnd.getHours() == this.endHour && slotEnd.getMinutes() > 0) { return }
-
-      const disabled = this.isOverlapping(slotStart, slotEnd);
-
-      this.slots.push({
-        label: `${this.formatTime(slotStart)} - ${this.formatTime(slotEnd)}`,
-        start: slotStart,
-        end: slotEnd,
-        disabled
-      });
-
-      current.setMinutes(current.getMinutes() + this.duration);
+        if (percentage >= 75) return  'green';
+        else if (percentage >= 50) return 'yellow';
+        else return  'red';
     }
-  }
 
-  formatTime(date: Date): string {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-
-  updateVisible() {
-    this.visibleSlots = this.slots.slice(this.index, this.index + this.visibleCount);
-  }
-
-  next() {
-    if (this.index + this.visibleCount < this.slots.length) {
-      this.index += this.visibleCount;
-      this.updateVisible();
-      this.animationTimeCarouselDirection = 'slide-left';
-      setTimeout(() => {
-        this.animationTimeCarouselDirection = ''
-      }, 300)
+    protected selectDay(day: DayAvailability) {
+        if(this.selectedDay !== day){
+            this.selectedDay = day;
+            this.selectedSlot = null;
+            this.availableSlots = this.selectedDay.slots;
+            this.changeDate.emit({
+                type: ChangeDateEventType.SET_DAY,
+                payload: this.selectedDay
+            });
+        }
     }
-  }
 
-  prev() {
-    if (this.index - this.visibleCount >= 0) {
-      this.index -= this.visibleCount;
-      this.updateVisible();
-      this.animationTimeCarouselDirection = 'slide-right';
-      setTimeout(() => {
-        this.animationTimeCarouselDirection = ''
-      }, 300)
-    }
-  }
 
-  selectSlot(slot: { label: string, start: Date, end: Date, disabled: boolean }) {
-    if (!slot.disabled) {
-      this.selectedSlot = slot;
-      this.changeDate.emit(this.selectedSlot);
-    }
-  }
+    // Slots time
+    selectSlot(slot: AvailableSlot){
+        if(slot !== this.selectedSlot){
+            this.selectedSlot = slot;
 
-  isOverlapping(start: Date, end: Date): boolean {
-    if(this.bookedSlots){
-      return this.bookedSlots.some(b =>
-          (start < b.end && end > b.start)
-      );
+            this.changeDate.emit({
+                type: ChangeDateEventType.SET_SLOT,
+                payload: {slot: slot}
+            })
+
+        }
     }
-    return false
-  }
+
+    get visibleSlots(): AvailableSlot[] {
+        if(this.availableSlots == null){ return []}
+
+        return this.availableSlots.slice(
+            this.availableStartIndex,
+            this.availableStartIndex + this.availableVisibleMax
+        );
+    }
+
+    nextSlots() {
+        if(this.availableSlots == null){ return }
+        if (this.availableStartIndex + this.availableVisibleMax < this.availableSlots.length) {
+            this.availableStartIndex += this.availableVisibleMax;
+            this.animationTimeCarouselDirection = 'slide-left';
+            setTimeout(() => {
+                this.animationTimeCarouselDirection = ''
+            }, 300)
+        }
+    }
+
+    prevSlots() {
+        if (this.availableStartIndex - this.availableVisibleMax >= 0) {
+            this.availableStartIndex -= this.availableVisibleMax;
+            this.animationTimeCarouselDirection = 'slide-right';
+            setTimeout(() => {
+                this.animationTimeCarouselDirection = ''
+            }, 300)
+        }
+    }
+
+
+    protected getMonthNameAndYearFromFirstDay(days: DayAvailability[]) {
+        if(days !== null && days !== undefined) {
+            let firstDay: DayAvailability = days[0];
+            return `${this.getDatePart(firstDay.date, 'monthName')} (${this.getDatePart(firstDay.date, 'year')})`;
+        }
+        return '';
+    }
+
+    protected isDayBeforeToday(givenDay: DayAvailability) {
+        let today: Date = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let day = new Date(givenDay.date);
+        day.setHours(0, 0, 0, 0);
+        return day < today;
+    }
+
+    protected isCurrentMonth(date: Date): boolean {
+        date = new Date(date);
+        const today = new Date();
+
+        return (
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()
+        );
+    }
+
+    // Gui button handling
+    protected nextMonth() {
+        this.changeDate.emit({
+            type: ChangeDateEventType.NEXT_MONTH,
+        })
+    }
+
+    protected prevMonth() {
+        if(this.isCurrentMonth(new Date(this.days[0].date))){
+            return;
+        }
+        this.changeDate.emit({
+            type: ChangeDateEventType.PREV_MONTH,
+        })
+    }
+
+    protected prevWeek() {
+        this.changeDate.emit({
+            type: ChangeDateEventType.PREV_WEEK,
+        })
+    }
+
+    protected nextWeek() {
+        this.changeDate.emit({
+            type: ChangeDateEventType.NEXT_WEEK,
+        })
+    }
 }

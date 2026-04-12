@@ -1,16 +1,25 @@
-<div class="main-list-container">
-    <div class="list-row-container">
-        <div #container class="row-items-container"
-             [style.transform]="'translateX(' + (-currentIndex * itemWidth) + 'px)'">
-            <app-company-list-item *ngFor="let item of rows(company_list_size)"></app-company-list-item>
+
+<app-double-spinner *ngIf="companies.length == 0"/>
+<div class="list-row"
+     *ngIf="companies.length > 0"
+     tabindex="0">
+    <button class="nav left" aria-label="Scroll left" (click)="scrollByDirection('left')">◀</button>
+    <button class="nav right" aria-label="Scroll right" (click)="scrollByDirection('right')">▶</button>
+
+    <div
+        #track
+        class="track"
+
+    >
+        <div class="card"
+             *ngFor="let company of companies"
+             (pointerdown)="onPointerDown($event)"
+             (pointermove)="onPointerMove($event)"
+             (pointerup)="onPointerUp($event, company)"
+             (pointercancel)="onPointerUp($event)">
+            <app-company-list-item [company]="company"/>
         </div>
-    </div>
 
-    <div class="circle-left" (click)="prev()">
-        <img [src]="left_arrow_icon_path" alt="<" />
     </div>
-    <div class="circle-right" (click)="next()">
-        <img [src]="right_arrow_icon_path" alt=">" />
-    </div>
-
 </div>
+

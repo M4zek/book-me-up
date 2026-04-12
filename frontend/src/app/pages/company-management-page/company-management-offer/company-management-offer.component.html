@@ -2,10 +2,13 @@
     <div class="horizontal">
         <div class="search-bar-cont">
             <app-search-and-sort-bar
+                    [sortByItems]="sortByItems"
                     (searchChanged)="onSearchChange($event)"
                     (sortChanged)="onSortChange($event)"/>
         </div>
-        <div class="add-button-container" (click)="openAddModal()">
+        <div class="add-button-container"
+             *ngIf="this.isEditable"
+             (click)="openAddModal()">
             <img [src]="'icons/plus_icon.svg'" alt="add"/>
             <div class="expand">
                 <span>Add new offer</span>
@@ -13,12 +16,19 @@
         </div>
     </div>
 
-    <div class="offer-card-container">
-        <app-company-management-offer-item *ngFor="let offer of offers" [offer]="offer"/>
+    <div class="full-height">
+        <app-double-spinner *ngIf="isOfferLoading"/>
+        <div class="offer-card-container" *ngIf="!isOfferLoading">
+            <app-company-management-offer-item
+                    [isEditable]="isEditable"
+                    *ngFor="let offer of offers"
+                    [offer]="offer"
+                    [company_id]="searchValue.company_id"
+            />
+        </div>
     </div>
-    <app-paginator [pagination]="paginator"
-                   (itemsPerPageChange)="onItemsPerPageChange($event)"
-                   (pageChange)="onPageChange($event)"/>
+
+    <app-paginator [pagination]="paginator" (paginatorChanged)="onPaginationChanged()"/>
 </div>
 
 

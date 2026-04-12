@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {CompanyHours} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-company-business-hours',
@@ -12,48 +13,11 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
   styleUrl: './company-business-hours.component.css'
 })
 export class CompanyBusinessHoursComponent {
-  openingHours = [
-    {
-      dayOfWeek: "Monday",
-      isOpen: true,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Tuesday",
-      isOpen: true,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Wednesday",
-      isOpen: true,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Thursday",
-      isOpen: true,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Friday",
-      isOpen: true,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Saturday",
-      isOpen: false,
-      openTime: "10:00",
-      closeTime: "12:00",
-    },
-    {
-      dayOfWeek: "Sunday",
-      isOpen: false,
-      openTime: "10:00",
-      closeTime: "12:00",
+  @Input() openingHours: CompanyHours[] = []
+
+
+    isToday(dayOfWeek: string) {
+        const todayName = new Date().toLocaleDateString("en-US", {weekday: "long"});
+        return dayOfWeek == todayName;
     }
-  ]
 }

@@ -6,27 +6,27 @@
         <div class="days-grid">
             <div class="day-card"
                  *ngFor="let day of days"
-                 [class.closed] = "day.closed">
-                <h3>{{ day.name }}</h3>
+                 [class.closed] = "!day.open">
+                <h3>{{ day.dayOfWeek }}</h3>
 
                 <label class="checkbox-wrapper">
-                    <input type="checkbox" class="sc-gJwTLC ikxBAC" [(ngModel)]="day.closed" />
+                    <input type="checkbox" class="sc-gJwTLC ikxBAC" [(ngModel)]="day.open" />
                 </label>
 
-                <div class="time-group" [class.disabled]="day.closed">
+                <div class="time-group" [class.disabled]="!day.open">
                     <div class="time-block">
                         <label>From</label>
                         <div class="time-inputs">
                             <div class="time-control">
-                                <button (click)="adjustTime(day, 'openHour', 1)" [disabled]="day.closed">▲</button>
-                                <span>{{ day.openHour | number:'2.0' }}</span>
-                                <button (click)="adjustTime(day, 'openHour', -1)" [disabled]="day.closed">▼</button>
+                                <button (click)="adjustTime(day, 'openTime', 'hour', 1)" [disabled]="!day.open">▲</button>
+                                <span>{{ day.openTime.split(":")[0] | number:'2.0' }}</span>
+                                <button (click)="adjustTime(day, 'openTime', 'hour', -1)" [disabled]="!day.open">▼</button>
                             </div>
                             <span class="white">:</span>
                             <div class="time-control">
-                                <button (click)="adjustTime(day, 'openMinute', 5)" [disabled]="day.closed">▲</button>
-                                <span>{{ day.openMinute | number:'2.0' }}</span>
-                                <button (click)="adjustTime(day, 'openMinute', -5)" [disabled]="day.closed">▼</button>
+                                <button (click)="adjustTime(day, 'openTime', 'minute', 5)" [disabled]="!day.open">▲</button>
+                                <span>{{ day.openTime.split(":")[1] | number:'2.0' }}</span>
+                                <button (click)="adjustTime(day, 'openTime', 'minute', -5)" [disabled]="!day.open">▼</button>
                             </div>
                         </div>
                     </div>
@@ -35,15 +35,15 @@
                         <label>To</label>
                         <div class="time-inputs">
                             <div class="time-control">
-                                <button (click)="adjustTime(day, 'closeHour', 1)" [disabled]="day.closed">▲</button>
-                                <span>{{ day.closeHour | number:'2.0' }}</span>
-                                <button (click)="adjustTime(day, 'closeHour', -1)" [disabled]="day.closed">▼</button>
+                                <button (click)="adjustTime(day, 'closeTime', 'hour', 1)" [disabled]="!day.open">▲</button>
+                                <span>{{ day.closeTime.split(":")[0] | number:'2.0' }}</span>
+                                <button (click)="adjustTime(day, 'closeTime', 'hour', -1)" [disabled]="!day.open">▼</button>
                             </div>
                             <span class="white">:</span>
                             <div class="time-control">
-                                <button (click)="adjustTime(day, 'closeMinute', 5)" [disabled]="day.closed">▲</button>
-                                <span>{{ day.closeMinute | number:'2.0' }}</span>
-                                <button (click)="adjustTime(day, 'closeMinute', -5)" [disabled]="day.closed">▼</button>
+                                <button (click)="adjustTime(day, 'closeTime', 'minute', 5)" [disabled]="!day.open">▲</button>
+                                <span>{{ day.closeTime.split(":")[1] | number:'2.0' }}</span>
+                                <button (click)="adjustTime(day, 'closeTime', 'minute', -5)" [disabled]="!day.open">▼</button>
                             </div>
                         </div>
                     </div>
@@ -54,6 +54,7 @@
 
         <div class="edit-container-buttons">
             <div class="btn-container dark-bg"
+                 [class.disabled]="!isOpeningHoursChanged()"
                  (click)="confirmEdit()">
                 <img [src]="'icons/confirm_icon.svg'" alt="search" />
                 <div class="expand">

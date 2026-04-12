@@ -1,0 +1,10 @@
+.navigation{
+    height: 10%;
+    max-height: 10%;
+}
+
+.main{
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+}

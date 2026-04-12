@@ -1,21 +1,18 @@
-import { Component } from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {Component, Input} from '@angular/core';
+import {NgForOf, NgIf} from "@angular/common";
+import {EmployeeSummaryResponse} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-company-employee-list',
     imports: [
-        NgForOf
+        NgForOf,
+        NgIf
     ],
   templateUrl: './company-employee-list.component.html',
   styleUrl: './company-employee-list.component.css'
 })
 export class CompanyEmployeeListComponent {
 
-  companyEmployees: string[] = [
-    'John Doe',
-    'John Doe',
-    'John Doe',
-    'John Doe',
-  ]
+  @Input() companyEmployees: EmployeeSummaryResponse[] = []
 
 }

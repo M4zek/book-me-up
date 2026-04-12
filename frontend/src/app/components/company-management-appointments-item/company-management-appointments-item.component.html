@@ -1,44 +1,69 @@
-<div class="appointments-card">
+<div class="appointments-card" *ngIf="reservation">
     <div class="name-container">
-        <h2>Men's haircut</h2>
+        <h2>{{reservation.companyOffer.name}}</h2>
     </div>
     <div class="appointments-data">
         <div class="order-user">
-            <img [src]="'images/user_default_avatar.png'" alt="avatar"/>
-            <span>User name</span>
+            <img [src]="reservation.customer.avatar? 'data:image/jpeg;base64,' + reservation.customer.avatar : 'images/user_default_avatar.png'" alt="avatar"/>
+            <span>{{reservation.customer.firstName}} {{reservation.customer.lastName}}</span>
         </div>
+
+        <div class="order-number">
+            <span>{{reservation.reservationNumber}}</span>
+        </div>
+
         <div class="order-date-information">
             <div>
-                <span>22 - 02 - 2025 (Monday)</span>
+                <span> {{ reservation.reservationDate | date:'dd/MM/yyyy (EEEE)' }}</span>
             </div>
             <div>
-                <span>13:30 - 14:00</span>
+                <span> {{reservation.reservationDate | date:'HH:mm' }} - {{reservation.reservationDate + (reservation.companyOffer.duration * 6000) | date: 'HH:mm'}}</span>
             </div>
             <div>
-                <span>35 PLN</span>
+                <span> {{reservation.companyOffer.price}} PLN</span>
             </div>
         </div>
+
         <div class="pink-75-width-line"></div>
+
         <div class="status-employee-information">
             <app-drop-down-list
+                    [disabled]="!isEditable"
                     (valueChanged)="onPreferredEmployeeChanged($event)"
                     [selectedOption]="selectedEmployee"
                     [options]="toDropDownList()"
                     [placeholder]="'Preferred employee'">
             </app-drop-down-list>
             <app-drop-down-list
+                    [disabled]="!isEditable"
                     (valueChanged)="onStatusChanged($event)"
+                    [noneValue]="false"
                     [selectedOption]="selectedStatus"
                     [options]="statusDropDownList"
                     [placeholder]="'Status'">
             </app-drop-down-list>
         </div>
-        <div class="btn-container"
-        >
-            <img [src]="'icons/confirm_icon.svg'" alt="search" />
-            <div class="expand">
-                <p class="btn-text">Confirm</p>
+
+
+        <div class="buttons" *ngIf="reservationChanged">
+            <div class="btn-container pink" (click)="reset()">
+                <img [src]="'icons/pencil_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text">Reset</p>
+                </div>
+            </div>
+
+            <div class="btn-container"  (click)="confirm()">
+                <img [src]="'icons/confirm_icon.svg'" alt="search" />
+                <div class="expand">
+                    <p class="btn-text">Confirm</p>
+                </div>
             </div>
         </div>
+
+
     </div>
+</div>
+<div class="appointments-card" *ngIf="!reservation">
+    <app-double-spinner/>
 </div>

@@ -23,9 +23,11 @@ export class SearchAndSortBarComponent {
   @Output() sortChanged = new EventEmitter<SortBy>();
   @Output() searchChanged = new EventEmitter<string>();
   @Output() filterChanged = new EventEmitter<string>();
+  @Output() filterChangeAllItem = new EventEmitter<DropDownListItem>();
 
   @Input() placeholder: string = 'Search...';
   @Input() showFilter: boolean = false;
+  @Input() showSort: boolean = true;
 
   searchValue: string = '';
 
@@ -65,6 +67,9 @@ export class SearchAndSortBarComponent {
   onFilterChanged($event: DropDownListItem) {
     if($event.content) {
       this.filterChanged.emit($event.content);
+    }
+    if($event) {
+        this.filterChangeAllItem.emit($event);
     }
   }
 }

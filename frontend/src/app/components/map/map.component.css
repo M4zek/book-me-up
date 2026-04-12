@@ -6,10 +6,17 @@
 }
 
 .map{
-    width: 100%;
-    height: 300px;
+    width: 0;
+    height: 0;
     border-radius: 5px;
     overflow: hidden;
+    transition: opacity .3s ease;
+}
+
+.map.show{
+    width: 100%;
+    height: 300px;
+    opacity: 1;
 }
 
 .map-localization{
@@ -17,9 +24,10 @@
     height: 100%;
     justify-content: center;
     display: flex;
+    padding: 10px;
 }
 
 .map-localization img{
-    width: 300px;
+    width: 100px;
     border-radius: 50%;
 }

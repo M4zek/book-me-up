@@ -1,0 +1,380 @@
+.calendar-wrapper{
+    position:relative;
+    width:100%;
+}
+
+.calendar-container {
+    width:100%;
+    height: auto;
+    overflow:scroll;
+}
+.calendar{
+    display:grid;
+    grid-auto-rows: 20px;
+    background-color: transparent;
+    height: 100%;
+
+}
+
+.calendar > *:first-child {
+    grid-row-start: 1;
+    margin-top: 40px;
+    border-bottom: none;
+}
+
+
+.header{
+    font-weight:bold;
+    text-align:center;
+    color: var(--white-50);
+    border-bottom:1px solid var(--white-25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header.today{
+    color: var(--lime);
+    border-bottom: 1px solid var(--lime);
+}
+
+.header > div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.header > div > .week-day-name{
+    font: bold 16px/1rem "Times New Roman", serif;
+}
+
+.header > div > .week-day-number{
+    font: bold 14px/1rem "Courier New", serif;
+}
+
+
+.time{
+    font-size:1rem;
+    padding-right:4px;
+    text-align:right;
+    color: var(--white-50);
+    cursor: default;
+    transform: translateY(-10px);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+
+.time:not(.show){
+    color: transparent;
+}
+
+.time:hover{
+    color: var(--white);
+    cursor: default;
+    font-size: 15px;
+}
+
+.cell{
+    opacity: .5;
+    border-bottom:1px solid var(--white-25);
+    border-right:1px solid var(--white-25);
+    border-left:1px solid var(--white-25);
+    transition: all .1s ease-in-out;
+}
+
+.cell.today{
+    border-left: 2px solid var(--lime) !important;
+    border-right: 2px solid var(--lime) !important;
+    background-color: var(--lime_10);
+}
+
+
+.cell:hover{
+    background-color: var(--white);
+}
+
+.hour-line{
+    border-bottom:2px solid darkgray !important;
+}
+
+.half-hour-line{
+    border-bottom: 1px solid gray;
+}
+
+
+.events-layer{
+    position:absolute;
+    display:flex;
+    left:50px;
+    right:0;
+    top:20px;
+    bottom:0;
+    pointer-events:none;
+}
+
+
+
+
+.event{
+    position:absolute;
+    color:white;
+    width:100%;
+    height:100%;
+    max-width: 350px;
+    max-height: 250px;
+    font-size:12px;
+    padding: 3px;
+    border-radius:4px;
+    box-sizing: border-box;
+    pointer-events: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all .5s ease;
+}
+
+.event:hover{
+    cursor: pointer;
+    z-index: 5;
+    width: 20% !important;
+    height: 15% !important;
+    transform: translateX(calc(-14% - 3px));
+}
+
+
+.event.right:hover{
+    cursor: pointer;
+    width: 20% !important;
+    height: 15% !important;
+    transform: translateX(calc(-25% - 3px));
+
+}
+
+.event.left:hover{
+    cursor: pointer;
+    width: 20% !important;
+    height: 15% !important;
+    transform: translateX(0);
+}
+
+.event > .inside-event{
+    width:100%;
+    height:100%;
+    background:var(--black-50);
+    border-radius: 5px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    padding:2px;
+}
+
+.event > .inside-event > div > span {
+    margin:0;
+    padding:0;
+    font: 14px/1.5rem "Times New Roman",Arial,italic !important;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.event > .inside-event > img{
+    width:100%;
+    max-width:35px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.event > .inside-event > div {
+    border-radius: 5px;
+    padding:4px;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.event > .inside-event > div > p{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    text-wrap: wrap;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.event.selected{
+    animation: shake 1s infinite;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    z-index: 2;
+    position: absolute;
+}
+
+
+.event.close{
+    border: 2px solid var(--pink);
+    opacity: .5;
+}
+
+
+.container-wrapper{
+    width: 100%;
+    /*height: 100%;*/
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    max-height: 65vh;
+    padding-right: 7px;
+}
+
+.expand{
+    width: 0;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+    background: linear-gradient(var(--dark) 60%, transparent);
+}
+
+.expand.show{
+    opacity: 1;
+    width: 30%;
+}
+
+@keyframes shake {
+    0% {
+        scale: 1.0;
+    }
+    50% {
+         scale: 1.1;
+    }
+    100%{
+        scale: 1;
+    }
+}
+
+.wrapper{
+    width:100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: scroll;
+}
+
+/* Dates Navigation */
+.date-navigation{
+    display:flex;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    background: linear-gradient(var(--dark) 65%,transparent);
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-direction: row;
+    padding: 10px;
+    gap: 20px;
+}
+
+.date-navigation > .date:hover{
+    background-color: transparent;
+    cursor: default;
+}
+
+.date-navigation > .date{
+    display: flex;
+    flex-direction: row;
+}
+
+.date-navigation > div > span{
+    font: bold 18px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: var(--white);
+    text-wrap: nowrap;
+}
+
+.date-navigation > div{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease-in-out;
+}
+
+.date-navigation > div:hover{
+    cursor: pointer;
+    background: var(--white-10);
+    border-radius: 50px;
+
+}
+
+/*      Booking details css     */
+.booking-details-container{
+    width:100%;
+    padding: 10px;
+    border-radius:10px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/*Legends*/
+.color-legends{
+    width:100%;
+    display:flex;
+    flex-direction: row;
+    overflow: auto;
+    scroll-behavior: smooth;
+    gap: 10px;
+    padding: 10px 10px 20px 10px;
+    background: linear-gradient(var(--black), var(--white-10));
+    border-radius: 0 0 5px 5px;
+}
+
+.user-color{
+    display:flex;
+    padding: 5px 10px 5px 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 2px;
+}
+
+.user-color > div{
+    width: 10px;
+    height: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.user-color > img{
+    width: 28px;
+    height: 28px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.user-color > span{
+    font: bold 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: var(--white);
+    text-wrap: nowrap;
+}
+
+h3{
+    color: var(--white);
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+
+

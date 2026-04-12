@@ -1,5 +1,11 @@
-<div class="messages-page">
-    <div class="list-container">
+<div class="messages-page" >
+    <div class="full-wrapper" *ngIf="!isSocketConnected">
+        <app-double-spinner [text]="'Connecting...'"/>
+    </div>
+
+    <div class="left-panel"
+        [class.full]="this.selectedRoom == null"
+    >
         <div class="top">
             <div class="search">
                 <input type="text" placeholder="Search by user or chat name"/>
@@ -14,58 +20,151 @@
             </div>
 
         </div>
-        <div class="list">
-            <div class="list-item" *ngFor="let item of createList(5)">
-                <img [src]="'images/user_default_avatar.png'" alt="img"/>
-                <span>John Doe</span>
-            </div>
+
+        <!--    SECTION ABOUT LEFT PANEL WITH USER ROOMS         -->
+        <div class="full-height" *ngIf="isRoomsLoading">
+            <app-double-spinner />
         </div>
 
-        <app-paginator [pagination]="paginator"
-                       (itemsPerPageChange)="onItemsPerPageChange($event)"
-                       (pageChange)="onPageChange($event)"/>
-    </div>
-
-    <div class="message-content">
-        <div class="room">
-            <div class="cont">
-                <div class="images">
-                    <img *ngFor="let item of createList(15), let i = index"
-                            [src]="'images/user_default_avatar.png'"
-                         alt="img"/>
+        <div class="full-height" *ngIf="!isRoomsLoading && this.userRooms.length == 0">
+            <div class="parent">
+                <div class="message-item full">
+                    <span> You dont have any conversation yet!</span>
                 </div>
-                <span>Room name</span>
             </div>
-            <img [src]="'icons/menu_icon.svg'" alt="menu"/>
         </div>
 
-        <div class="messages">
-            <div class="parent" *ngFor="let item of createList(5), let i = index"
-            [ngClass]="getMessageSide(i)">
-                <div class="message-item">
-                    <div class="top-message">
-                        <div class="user-data">
-                            <img [src]="'images/user_default_avatar.png'" alt="img"/>
-                            <span>John Doe</span>
-                        </div>
-                        <span>14:30</span>
+        <div class="list" *ngIf="!isRoomsLoading && this.userRooms.length > 0">
+            <div *ngFor="let room of userRooms">
+
+                <div class="list-item"
+                     [class.unread-msg]="room.numOfUnreadMessages > 0"
+                     [class.selected]="room == selectedRoom"
+                     *ngIf="room.roomType == RoomType.GROUP" (click)="selectRoom(room)">
+                    <div class="room-member-list" >
+                        <img *ngFor="let member of room.memberProjections | slice:0:5"
+                             class="member-avatar"
+                             [src]="getUserAvatar(member)" alt="img"/>
+
                     </div>
-                    <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                    </span>
+                    <div class="room-information">
+                        <span class="room-name">{{room.name}}</span>
+                        <span class="room-last-message" *ngIf="room.lastMessage">
+                            {{room.lastMessage.sender.id !== this.logged_user_id ? room.lastMessage.sender.firstName : 'You'}}: {{room.lastMessage.content}}
+                        </span>
+                    </div>
+                    <div class="unread-con" *ngIf="room.numOfUnreadMessages > 0">
+                        <span>{{room.numOfUnreadMessages}}</span>
+                    </div>
                 </div>
+
+                <div class="list-item"
+                     [class.unread-msg]="room.numOfUnreadMessages > 0"
+                     [class.selected]="room == selectedRoom"
+                     *ngIf="room.roomType == RoomType.PRIVATE" (click)="selectRoom(room)">
+                    <div class="room-member-list" *ngIf="findChatPartner(room.memberProjections) as mem">
+                        <img class="member-avatar" [src]="getUserAvatar(mem)" alt="img"/>
+                    </div>
+                    <div class="room-information" *ngIf="findChatPartner(room.memberProjections) as mem">
+                        <span class="room-name">{{mem.firstName}} {{mem.lastName}}</span>
+                        <span class="room-last-message" *ngIf="room.lastMessage">
+                            {{room.lastMessage.sender.firstName}}: {{room.lastMessage.content}}
+                        </span>
+                    </div>
+                    <div class="unread-con" *ngIf="room.numOfUnreadMessages > 0">
+                        <span>{{room.numOfUnreadMessages}}</span>
+                    </div>
+                </div>
+
             </div>
-
-
         </div>
-
-        <div class="write">
-            <textarea type="text" placeholder="Write your message here..."></textarea>
-            <img [src]="'icons/plane_icon.svg'" alt="send"/>
-        </div>
-
+        <app-paginator [pagination]="roomPaginator" (paginatorChanged)="onRoomPaginatorChanged($event)"/>
     </div>
 
+    <div class="right-panel"
+    [class.hide]="this.selectedRoom == null"
+    >
+        <div class="message-content" *ngIf="this.selectedRoom != null" >
+
+            <div class="room" *ngIf="this.selectedRoom.roomType == RoomType.GROUP">
+                <div class="cont">
+                    <div class="images">
+                        <img *ngFor="let member of this.selectedRoom.memberProjections | slice:0:10"
+                             [src]="getUserAvatar(member)"
+                             alt="img"/>
+                    </div>
+                    <span>{{this.selectedRoom.name}}</span>
+                </div>
+                <img [src]="'icons/menu_icon.svg'" alt="menu"/>
+            </div>
+
+            <div class="room" *ngIf="this.selectedRoom.roomType == RoomType.PRIVATE">
+                <div class="cont" *ngIf="findChatPartner(this.selectedRoom.memberProjections) as mem">
+                    <div class="images">
+                        <img [src]="getUserAvatar(mem)" alt="img"/>
+                    </div>
+                    <span>{{mem.firstName}} {{mem.lastName}}</span>
+                </div>
+                <img [src]="'icons/menu_icon.svg'" alt="menu"/>
+            </div>
+
+            <app-double-spinner *ngIf="isMessageLoading"/>
+
+            <div class="messages" #htmlMessageList (scroll)="onScroll()">
+                <div class="parent" *ngFor="let message of messages; let i = index"
+                     [class.right]="message.sender.id === this.logged_user_id">
+
+                    <div class="message-created-time"
+                         *ngIf="!isNextDay(i)"
+                         [class.show]="!isToday(message.createdDate) && isNextDay(i)">
+                        <span>{{formatMessageDate(message.createdDate)}}</span>
+                    </div>
+
+                    <div class="message-bg">
+                        <div class="img-wrapper">
+                            <img [src]="getUserAvatar(message.sender)" *ngIf="showSenderAvatar(message)" alt="img"/>
+                        </div>
+                        <div class="message-item">
+                            <span>
+                               {{message.content}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="message-created-time" *ngIf="isNextDay(i)"
+                         [class.show]="!isToday(message.createdDate) && isNextDay(i)">
+                        <span>{{formatMessageDate(message.createdDate)}}</span>
+                    </div>
+
+                    <div class="read-by-container" *ngIf="message.readBy.length > 0">
+                        <img *ngFor="let memberWhoRead of getMembersWhoReadTheMessageWithoutLoggedUser(message)"
+                             [src]="getUserAvatar(memberWhoRead)" alt="img"
+                        />
+                    </div>
+                </div>
+
+                <div class="parent" *ngIf="messages.length == 0 && !isMessageLoading">
+                    <div class="message-item full">
+                        <span> You dont have any message yet!</span>
+                    </div>
+                </div>
+            </div>
+            <div class="write"
+            [class.disabled]="isMessageLoading">
+                <textarea
+                        [(ngModel)]="messageModel"
+                        type="text"
+                        required
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="3"
+                        (keydown.enter)="$event.preventDefault(); sendMessage()"
+                        placeholder="Write your message here..."></textarea>
+                <img [src]="'icons/plane_icon.svg'" alt="send" (click)="sendMessage()"/>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-<app-create-chat-room-modal [isVisible]="isCreateModalVisible" (closeModal)="onCreateModalClose()"> </app-create-chat-room-modal>
+<app-create-chat-room-modal [isVisible]="isCreateModalVisible" (closeModal)="onCreateModalClose()"/>

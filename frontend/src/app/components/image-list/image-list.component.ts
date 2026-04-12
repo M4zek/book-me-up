@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
+import {CompanyPortfolioResponse} from "../../model/http/company.model";
 
 @Component({
   selector: 'app-image-list',
@@ -10,12 +11,8 @@ import {NgClass, NgForOf} from "@angular/common";
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css'
 })
-export class ImageListComponent {
-  imageList: string[] = [
-    '/images/img_1.png',
-    '/images/background.png',
-    '/images/default_logo_company.png',
-  ]
+export class ImageListComponent implements OnInit {
+  @Input() imageList: CompanyPortfolioResponse[] = []
   currentIndex: number = 0;
   timeoutId?: number;
 
@@ -25,6 +22,7 @@ export class ImageListComponent {
   ngOnDestroy() {
     window.clearTimeout(this.timeoutId);
   }
+
   resetTimer() {
     if (this.timeoutId) {
       window.clearTimeout(this.timeoutId);
@@ -56,6 +54,6 @@ export class ImageListComponent {
   }
 
   getImage() {
-    return this.imageList[this.currentIndex];
+    return `data:image/jpeg;base64,${this.imageList.at(this.currentIndex)?.image}`;
   }
 }

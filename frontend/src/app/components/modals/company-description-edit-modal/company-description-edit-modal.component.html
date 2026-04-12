@@ -1,10 +1,18 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="edit-container">
-            <textarea type="text" [value]="description"></textarea>
-        </div>
+        <form class="edit-container">
+            <textarea type="text"
+                      [(ngModel)]="description"
+                      name="desc"
+                      maxlength="2048"
+                      [value]="description"></textarea>
+        </form>
+        <span class="txt-size"
+              [style.color]="textColor"
+        >{{this.description.length}} / 2048</span>
         <div class="edit-container-buttons">
-            <div class="btn-container">
+            <div class="btn-container"
+                [class.disabled]="(this.description === this.descriptionCopy) || this.description.length < 10">
                 <img [src]="'icons/confirm_icon.svg'" alt="confirm" (click)="confirmEdit()"/>
             </div>
             <div class="btn-container" (click)="close()">

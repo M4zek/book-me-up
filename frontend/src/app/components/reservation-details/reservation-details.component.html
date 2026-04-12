@@ -1,0 +1,130 @@
+<div class="booking-return" (click)="return()">
+    <span>Hide</span>
+    <img [src]="'icons/right_arrow_icon.svg'" alt="RETURN">
+</div>
+
+<!-- Details reservation -->
+<div class="parent">
+    <div class="parent-title">
+        <span>Details</span>
+    </div>
+
+    <div class="content">
+        <div class="left">
+            <span>Date:</span>
+        </div>
+        <div class="right">
+            <span>{{reservation?.reservationDate}}</span>
+        </div>
+    </div>
+    <div class="content">
+        <div class="left">
+            <span>Number:</span>
+        </div>
+        <div class="right">
+            <span>{{reservation?.reservationNumber}}</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="left">
+            <span>Status:</span>
+        </div>
+        <div class="right">
+            <span>{{reservation?.status}}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Customer panel -->
+<div class="parent">
+    <div class="parent-title">
+        <span>Customer</span>
+    </div>
+
+    <div class="content">
+        <div class="customer">
+            <img class="customer-avatar" [src]="getUserAvatar(reservation!.customer.avatar)" alt="av"/>
+            <div class="customer-data">
+                <span>{{reservation!.customer.firstName}} {{reservation!.customer.lastName}}</span>
+                <span>{{reservation!.customer.email}}</span>
+                <span>{{reservation!.customer.phoneNumber}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offer details -->
+<div class="parent">
+    <div class="parent-title">
+        <span>Offer</span>
+    </div>
+
+    <div class="parent" style="margin-top: 10px">
+        <div class="parent-title">
+            <span>Name</span>
+        </div>
+        <div class="content">
+            <span class="of-name">{{reservation!.companyOffer.name}}</span>
+        </div>
+    </div>
+
+    <div class="parent" style="margin-top: 15px">
+        <div class="parent-title">
+            <span>Description</span>
+        </div>
+        <div class="content">
+            <span class="of-name">{{reservation!.companyOffer.description}}</span>
+        </div>
+    </div>
+
+    <div class="p-h">
+        <div class="parent" style="margin-top: 15px">
+            <div class="parent-title">
+                <span>Price</span>
+            </div>
+            <div class="content">
+                <span class="of-p">{{reservation!.companyOffer.price}} PLN</span>
+            </div>
+        </div>
+        <div class="parent" style="margin-top: 15px">
+            <div class="parent-title">
+                <span>Duration</span>
+            </div>
+            <div class="content">
+                <span class="of-p">{{reservation!.companyOffer.duration}} min</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RED LINES -->
+<div class="red-line">
+    <div class="line-title">
+        <span>Actions</span>
+    </div>
+</div>
+
+<div class="actions">
+    <app-drop-down-list
+            [noneValue]="false"
+            [selectedOption]="selectedStatus"
+            [options]="statusDropDownList"
+            (valueChanged)="onStatusChanged($event)"
+            [placeholder]="'Status'"/>
+    <app-drop-down-list
+            [noneValue]="false"
+            [selectedOption]="selectedEmployee"
+            [options]="employeesDropDownList"
+            (valueChanged)="onPrefEmployeeChanged($event)"
+            [placeholder]="'Preferred employee'"/>
+</div>
+
+<div class="btn-parent">
+    <div class="button"
+         (click)="confirmChanges()"
+         [class.disabled]="isReservationChanged()">
+        <span *ngIf="!isReservationUpdating">Confirm</span>
+        <app-double-spinner *ngIf="isReservationUpdating"/>
+    </div>
+</div>

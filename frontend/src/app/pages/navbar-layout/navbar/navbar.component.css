@@ -1,0 +1,130 @@
+.navbar{
+    background: var(--dark);
+    display: flex;
+    justify-content: center;
+    height: 60px;
+}
+
+.wrapper{
+    position: relative;
+    display: flex;
+    width: 75%;
+    max-width: 1920px;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+
+.navbar-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-left > h2 {
+    padding: 0;
+    margin: 0;
+}
+
+
+/*   NAVBAR CENTER    */
+
+.navbar-center{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item > a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    height: 60px;
+    text-decoration: none;
+    color: white;
+    transition: all .3s ease;
+}
+
+
+
+.nav-item > a > img{
+    width: 20px;
+    height: 20px;
+    color: red;
+}
+
+.nav-item.active > a > .nav-name,
+.nav-item:hover > a > .nav-name{
+    width: 60px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    opacity: 1;
+    transition: all .3s ease;
+}
+
+.nav-item > a > .nav-name{
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: all .3s ease;
+}
+
+.nav-item > a > .nav-name > span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    font: bold 13px "Roboto", sans-serif;
+}
+
+/*       NAVBAR RIGHT       */
+
+.navbar-right{
+    padding: 0 10px;
+    display: flex;
+    max-width: 250px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+
+.navbar-right > img{
+    width: 28px;
+    height: 28px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.navbar-right > img:last-child{
+    width: 18px;
+    height: 18px;
+}
+
+.navbar-right > span {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.navbar-right > span:first-child{
+    font-style: italic;
+
+}
+
+
+
+
+
+
+

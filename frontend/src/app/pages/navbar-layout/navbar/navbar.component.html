@@ -1,0 +1,37 @@
+<div class="navbar">
+    <div class="wrapper">
+
+        <div class="navbar-left">
+            <h2>Book Me Up</h2>
+        </div>
+
+        <div class="navbar-center" *ngIf="user.isLoggedIn">
+            <div class="nav-item"
+                 *ngFor="let nav of NAV"
+                [ngClass]="router.url.includes(nav.path) ? 'active' : ''"
+            >
+                <a [routerLink]="nav.path" *appRoleChecker="nav.role">
+                    <img [src]="nav.icon" alt="icon"/>
+                    <div class="nav-name">
+                        <span>{{nav.name}}</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
+        <div class="navbar-right" *ngIf="user.isLoggedIn">
+            <img [src]="getUserAvatar(user.avatar)" alt="avatar"/>
+            <span>{{user.firstName}} {{user.lastName}}</span>
+            <img [src]="'icons/logout_icon.svg'" alt="logout" (click)="logout()"/>
+        </div>
+
+        <div class="navbar-right" *ngIf="!user.isLoggedIn">
+            <span (click)="toggleAuthModalVisible()">Sign in or Create an account</span>
+        </div>
+
+
+    </div>
+</div>
+
+<app-auth-modal [isVisible]="authModalVisible" (closeModal)="toggleAuthModalVisible()"></app-auth-modal>

@@ -1,7 +1,7 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="logo-container">
-            <img [src]="copyLogoAndName.logo" alt="company-logo">
+            <img [src]="logoSrc" alt="company-logo">
             <div class="select-image-container"  (click)="openDialogFile()">
                 <img [src]="'icons/file_select_icon.svg'" alt="icon">
                 <div class="expand">
@@ -26,6 +26,7 @@
         <div class="edit-container-buttons">
 
             <div class="btn-container dark-bg"
+                 [class.disabled]="!isDataChange(this.logoAndName, this.copyLogoAndName)"
                  (click)="confirmEdit()">
                 <img [src]="'icons/confirm_icon.svg'" alt="search" />
                 <div class="expand">

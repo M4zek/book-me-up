@@ -31,6 +31,18 @@
 
 .bar{
     width: 100%;
+    transition: all .3s ease-in-out;
+    padding: 0 5px;
+    border-radius: 5px;
+}
+
+.bar.selected{
+    border: 1px solid var(--pink);
+}
+
+.bar:hover{
+    scale: 1.05;
+    cursor: pointer;
 }
 
 /* PARAGRAPHS */
@@ -54,14 +66,25 @@
 .container-list{
     overflow-y: auto;
     height:0;
-    padding: 0 10px;
+    padding: 5px 10px;
     transition: height .3s ease-in-out;
 }
 
 .container-list.show {
-    height: 300px;
-    max-height: 300px;
+    height: 100%;
+    max-height: 100vh;
 }
+
+
+.container-list .center{
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    color: var(--light-blue);
+    cursor: pointer;
+}
+
 
 
 @container opinionsMainContainer (width < 440px){

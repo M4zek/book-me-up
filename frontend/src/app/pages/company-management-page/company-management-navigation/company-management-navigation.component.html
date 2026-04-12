@@ -1,6 +1,10 @@
 <div class="company-management-nav">
     <div class="header">
-        <app-drop-down-list [placeholder]="'Select company'"> </app-drop-down-list>
+        <app-drop-down-list
+                [selectedOption]="selected_company ?? { id: -1, content: ''}"
+                [options]="dropDownCompanyItemList"
+                (valueChanged)="onCompanySelectedChange($event)"
+                [placeholder]="'Select company'"/>
 
         <div class="nav-list">
             <div class="nav-item-cont" *ngFor="let key of navigation">
@@ -25,5 +29,7 @@
 
 <app-company-management-add-company-modal
         [isVisible]="isOpenAddDialog"
+        (companyCreated)="onCompanyCreatedFromModal($event)"
+        (showNewCompany)="onShowNewCompany($event)"
         (closeModal)="closeAddCompanyDialog()"
 />

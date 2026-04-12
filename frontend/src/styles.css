@@ -5,6 +5,7 @@
     --black-25: rgba(0, 0, 0, 0.25);
     --black-50: rgba(0, 0, 0, 0.5);
     --black-75: rgba(0, 0, 0, 0.75);
+    --black: rgb(0, 0, 0);
 
     --gray: #1E1E1E;
 
@@ -25,7 +26,7 @@
     --pink_75: rgba(200, 0, 55, 0.75);
     --red-15: #BC0003;
 
-    --light-blue: #00BBFF;
+    --light-blue: rgba(0, 187, 255, 1.0);
     --light-blue-50: rgba(0, 187, 255, 0.5);
     --light-blue-85: rgba(0, 187, 255, 0.85);
     --light-blue-15: rgba(0, 147, 188, 0.15);
@@ -96,6 +97,8 @@ h2{
     background-color: var(--black-25);
     border-radius: 5px;
     /*padding: 10px;*/
+    box-shadow: 0 4px 10px 0 var(--black-50), 0 6px 20px 0 var(--black-75);
+
 }
 
 @media (min-width: 1920px) {
@@ -113,13 +116,13 @@ a {
 }
 
 body{
-    background: url('/images/background.png');
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
     margin: 0;
-    padding: 0;
+    background:
+            linear-gradient(to bottom, rgba(0,0,0,0) 70%, #000 100%),
+            url('/images/background.png') no-repeat center center;
+    background-size:
+            100% 100%;
+    background-color: var(--black);
 }
 
 @media (max-width: 768px) {
@@ -137,6 +140,7 @@ body{
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
 .checkbox-wrapper p{
@@ -213,4 +217,49 @@ body{
 .disabled {
     opacity: 0.4;
     pointer-events: none;
+}
+
+.gradient-background-hover {
+    position: relative;
+    overflow: hidden;
+}
+
+@property --deg {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+}
+
+.gradient-background-hover:hover {
+    padding: 2px;
+}
+
+
+.gradient-background-hover:hover::before,
+.gradient-background-hover:hover::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    aspect-ratio: 1/1;
+    width: 100%;
+    overflow: hidden;
+    background: conic-gradient(
+            from var(--deg) at center,
+            var(--pink),
+            var(--pink),
+            var(--light-blue),
+            var(--light-blue)
+    );
+    border-radius: 5px;
+    z-index: -1;
+    scale: 2;
+    animation: spin 2s infinite linear;
+}
+
+.gradient-background-hover:hover::after {
+    filter: blur(10px);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

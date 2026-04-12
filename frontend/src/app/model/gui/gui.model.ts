@@ -1,3 +1,5 @@
+import {CompanyHours, CompanyReviewStatistics} from "../http/company.model";
+
 export interface Address{
     city: string;
     street: string;
@@ -34,9 +36,9 @@ export interface HiredEmployeeData {
 }
 
 export enum HiredEmployeeRole{
-    admin = 'Admin',
     owner = 'Owner',
     employee = 'Employee',
+    manager = 'Manager'
 }
 
 export interface PortfolioModel {
@@ -51,4 +53,22 @@ export interface OfferManagementItem {
     description: string;
     price: number;
     duration: number;
+}
+
+export interface ReservationAvailability {
+    companyId: number;
+    fromDate: Date;
+    toDate: Date;
+    duration: number;
+}
+
+
+export interface CompanyHomeManagementModel {
+    id: number;
+    description: string;
+    portfolio: PortfolioModel[];
+    name_logo: CompanyNameAndLogo;
+    address: Address;
+    hours: CompanyHours[];
+    opinions: CompanyReviewStatistics;
 }

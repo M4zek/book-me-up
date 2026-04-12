@@ -9,8 +9,16 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 10px;
-    justify-items: center;
     transition: all .3s ease;
+    height: 75vh;
+}
+
+.full-height{
+    height: 75vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 

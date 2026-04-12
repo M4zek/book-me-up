@@ -1,66 +1,85 @@
 <div class="appointments-container">
     <app-search-and-sort-bar
+            [placeholder]="'Search by offer name... '"
             [showFilter]="true"
             [filterByItems]="filterByItems"
             [sortByItems]="sortByItems"
             (searchChanged)="onSearchChanged($event)"
             (sortChanged)="onSortChange($event)"
             (filterChanged)="onFilterChange($event)"/>
-    <div class="appointments-list">
+
+    <div class="loading-container" *ngIf="isReservationLoading">
+        <app-double-spinner/>
+    </div>
+
+    <div class="appointments-list"
+         [class.show]="!isReservationLoading"
+         *ngIf="!isReservationLoading">
+
         <div class="appointment-item"
              [ngClass]="item.status.toLowerCase()"
-             *ngFor="let item of this.tmpList">
-            <img [src]="'images/default_logo_company.png'" alt="logo"/>
-            <span>Company Name</span>
+             *ngFor="let item of this.reservationList">
 
-            <div class="action-buttons">
-                <div class="button status">
-                    <img [src]="item.image" alt="status"/>
-                    <div class="expand">
-                        <span>{{item.status}}</span>
+            <div class="card-company-info">
+                <img [src]="'images/default_logo_company.png'" alt="logo" *ngIf="!item.companyLogo"/>
+                <img [src]="'data:image/jpeg;base64,' + item.companyLogo"  alt="logo" *ngIf="item.companyLogo"/>
+                <span>{{item.companyName}}</span>
+                <div class="action-buttons">
+                    <div class="button status">
+                        <img [src]="getImage(item.status)"
+                             [class.rotate]="item.status == 'PENDING'"
+                             alt="status"/>
+                        <div class="expand">
+                            <span>{{item.status.substring(0,1).toUpperCase()}}{{item.status.substring(1).toLowerCase()}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="button cancel"
-                     *ngIf="item.status != 'Realized'"
-                     (click)="cancelReservation()">
-                    <img [src]="'icons/plus_icon.svg'" alt="cancel"/>
-                    <div class="expand">
-                        <span>Cancel</span>
+                    <div class="button cancel"
+                         *ngIf="isCancelAvailable(item.status)"
+                         (click)="cancelReservation(item)">
+                        <img [src]="'icons/plus_icon.svg'" alt="cancel"/>
+                        <div class="expand">
+                            <span>Cancel</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="button opinion"
-                     (click)="openAddOpinionModal()"
-                    *ngIf="item.status === 'Realized'">
-                    <img [src]="'icons/white_stroke_star_icon.svg'" alt="cancel"/>
-                    <div class="expand">
-                        <span>Add opinion</span>
+                    <div class="button opinion"
+                         (click)="openAddOpinionModal(item)"
+                        *ngIf="item.status.toLowerCase() === 'completed' && !item.hasUserRatedOffer">
+                        <img [src]="'icons/white_stroke_star_icon.svg'" alt="cancel"/>
+                        <div class="expand">
+                            <span>Add opinion</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="appointment-information">
                 <div class="information-item">
-                    <img [src]="'icons/localization_stroke_icon.svg'" alt="localization"/>
-                    <span> 123 New York </span>
+                    <p class="offer-name"> {{item.offer.name}} </p>
                 </div>
                 <div class="information-item">
-                    <img [src]="'icons/calendar_stroke_icon.svg'" alt="date"/>
-                    <span> Mon, February 3, 14:30 - 15:00 </span>
+                    <span>Order number: </span>
+                    <span> {{item.reservationNumber}}</span>
                 </div>
                 <div class="information-item">
-                    <img [src]="'icons/stroke_bookmark_icon.svg'" alt="bookmark"/>
-                    <span> Men's haircut </span>
+                    <span>Address: </span>
+                    <span> {{item.address.city}}, {{item.address.street}} {{item.address.buildingNumber}}</span>
                 </div>
                 <div class="information-item">
-                    <img [src]="'icons/dollar_icon.svg'" alt="price"/>
-                    <span> 35 PLN </span>
+                    <span>Date: </span>
+                    <span> {{item.reservationDate | date: 'HH:mm, MM-d-y (EEEE)'}} </span>
+                </div>
+                <div class="information-item">
+                    <span>Price: </span>
+                    <span> {{item.offer.price}} PLN</span>
                 </div>
             </div>
-
         </div>
     </div>
-    <app-paginator/>
+    <app-paginator [pagination]="pagination" (paginatorChanged)="onPaginatorChanged()"/>
 </div>
 
-<app-add-opinion-modal [isVisible]="isAddModalOpen" (closeModal)="onAddOpinionModalClose()"/>
+<app-add-opinion-modal
+        [inputData]="opinionModalInput"
+        [isVisible]="isAddModalOpen"
+        (closeModal)="onAddOpinionModalClose($event)"/>

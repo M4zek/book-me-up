@@ -1,43 +1,54 @@
 <div class="hired-employee-view">
 
-    <div class="top-bar">
-        <div class="search">
-            <div class="img-container">
-                <img [src]="'icons/search_icon.svg'" alt="Search"/>
-            </div>
-            <input type="text" placeholder="Search employee"/>
+    <div class="horizontal">
+        <div class="search-bar-cont">
+            <app-search-and-sort-bar
+                    [placeholder]="'Search e.g.: John Doe'"
+                    (searchChanged)="onSearchChanged($event)"
+                    [showSort]="false"/>
         </div>
-        <div class="add-employee" (click)="openAddEmployeeModal()">
+        <div class="add-button-container" (click)="openAddEmployeeModal()">
             <img [src]="'icons/plus_icon.svg'" alt="add"/>
             <div class="expand">
-                <p>Add new employee</p>
+                <span>Add new employee</span>
             </div>
         </div>
     </div>
 
+    <div class="full-size">
 
-    <div class="card-container">
-        <div class="profile-card" *ngFor="let user of users">
-            <img [src]="user.photo" alt="Profile photo" class="avatar" />
-            <h3>{{ user.name }}</h3>
-            <app-drop-down-list [options]="roles" [selectedOption]="getEmployeeRole(user.role)"/>
-            <p class="email">{{ user.email }}</p>
-            <p class="phone">{{ user.phone }}</p>
+        <app-double-spinner *ngIf="isEmployeesLoading"/>
 
-            <div class="fire-employee" (click)="fireEmployee(user.id)">
-                <img [src]="'icons/reject_icon.svg'" alt="remove"/>
-                <div class="expand">
-                    <p>Fire employee</p>
+        <div class="card-container" *ngIf="!isEmployeesLoading">
+            <div class="profile-card" *ngFor="let employee of employeeList">
+                <img [src]="getUserAvatar(employee.avatar)" alt="Profile photo" class="avatar" />
+                <h3>{{ employee.firstName }} {{employee.lastName}}</h3>
+                <app-drop-down-list
+                        [disabled]="!isDataEditable"
+                        [noneValue]="false"
+                        [options]="roles"
+                        [selectedOption]="getEmployeeRole(employee.role_in_company)"
+                        (valueChanged)="onRoleChanged($event, employee)"
+                />
+                <p class="email">{{ employee.email }}</p>
+                <p class="phone">{{ employee.phone }}</p>
+
+                <div class="fire-employee"
+                     *ngIf="employee.role_in_company.toUpperCase() !== 'COMPANY_OWNER'"
+                     (click)="fireEmployee(employee)">
+                    <img [src]="'icons/reject_icon.svg'" alt="remove"/>
+                    <div class="expand">
+                        <p>Fire employee</p>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 
-    <app-paginator [pagination]="pagination"
-                   (itemsPerPageChange)="onItemsPerPageChange($event)"
-                   (pageChange)="onPageChange($event)"></app-paginator>
+
+    <app-paginator [pagination]="pagination" (paginatorChanged)="onPaginationChanged()"></app-paginator>
 </div>
 
-<app-company-add-employee-modal [isVisible]="isAddEmployeeModalOpen" (closeModal)="closeAddEmployeeModal()"></app-company-add-employee-modal>
+<app-company-add-employee-modal [isVisible]="isAddEmployeeModalOpen"
+                                (closeModal)="closeAddEmployeeModal()"></app-company-add-employee-modal>

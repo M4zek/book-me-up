@@ -1,15 +1,20 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
     CompanyManagementOfferItemComponent
 } from "../../../components/company-management-offer-item/company-management-offer-item.component";
-import {NgForOf} from "@angular/common";
-import {Pagination} from "../../../model/search/search.model";
+import {NgForOf, NgIf} from "@angular/common";
+import {CompanyOfferSearch, Pagination} from "../../../model/search/search.model";
 import {PaginatorComponent} from "../../../components/paginator/paginator.component";
-import {OfferManagementItem} from "../../../model/gui/gui.model";
 import {SearchAndSortBarComponent, SortBy} from "../../../components/search-bar/search-and-sort-bar.component";
 import {
     CompanyAddOfferModalComponent
 } from "../../../components/modals/company-add-offer-modal/company-add-offer-modal.component";
+import {DropDownListItem} from "../../../components/drop-down-list/drop-down-list.component";
+import {CompanyContextService} from "../../../service/company-context.service";
+import {CompanyService} from "../../../service/company.service";
+import {CompanyOffersResponse} from "../../../model/http/company.model";
+import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
+import {ToastService} from "../../../service/toast.service";
 
 @Component({
   selector: 'app-company-management-offer',
@@ -18,53 +23,61 @@ import {
         NgForOf,
         PaginatorComponent,
         SearchAndSortBarComponent,
-        CompanyAddOfferModalComponent
+        CompanyAddOfferModalComponent,
+        DoubleSpinnerComponent,
+        NgIf
     ],
   templateUrl: './company-management-offer.component.html',
   styleUrl: './company-management-offer.component.css'
 })
-export class CompanyManagementOfferComponent {
+export class CompanyManagementOfferComponent implements OnInit {
 
     isAddOfferModalOpen = false;
 
-    offers: OfferManagementItem[] = [
-        {
-            id: 0,
-            name: 'Men\'s haircut',
-            price: 30.00,
-            duration: 30,
-            description: 'Some description'
-        },
-        {
-            id: 1,
-            name: 'Men\'s haircut',
-            price: 25.00,
-            duration: 15,
-            description: 'Some descriptions'
-        }
-    ]
+    offers: CompanyOffersResponse[] = []
 
     paginator: Pagination = {
-        totalItems: this.offers.length,
-        itemsPerPage: 10,
-        currentPage: 1,
+        totalItems: 0,
+        itemsPerPage: 5,
+        currentPage: 0,
         itemsPerPageOptions: [5, 10, 25, 50]
     }
 
-    onPageChange(page: number) {
-        this.paginator.currentPage = page;
+    sortByItems: DropDownListItem[] = [
+        {content: 'Price', image: 'icons/sort_number_asc_icon.svg', option: 'price,asc'},
+        {content: 'Price', image: 'icons/sort_number_desc_icon.svg', option: 'price,desc'},
+        {content: 'Duration', image: 'icons/sort_number_desc_icon.svg', option: 'duration,asc'},
+        {content: 'Duration', image: 'icons/sort_number_desc_icon.svg', option: 'duration,desc'},
+    ]
+
+    isEditable: boolean = false;
+    searchValue: CompanyOfferSearch = { company_id: 0 };
+    isOfferLoading: boolean = false;
+
+    constructor(
+        private ctx: CompanyContextService,
+        private toast: ToastService,
+        private companyService: CompanyService) {
     }
 
-    onItemsPerPageChange(num: number) {
-        this.paginator.itemsPerPage = num;
+    ngOnInit() {
+        this.ctx.currentCompany$.subscribe(company => {
+            if(company){
+                this.searchValue = { company_id: company.id };
+                this.isEditable = this.ctx.hasAnyRole("COMPANY_OWNER", "COMPANY_MANAGER")
+                this.searchOffers();
+            }
+        })
     }
 
     onSortChange($event: SortBy) {
-        console.log($event);
+        this.searchValue.sort = $event.sorting;
+        this.searchOffers();
     }
 
     onSearchChange($event: string) {
-        console.log($event);
+        this.searchValue.name = $event;
+        this.searchOffers();
     }
 
     openAddModal() {
@@ -73,6 +86,25 @@ export class CompanyManagementOfferComponent {
 
     closeAddModal(){
         this.isAddOfferModalOpen = false;
+    }
+
+
+    protected searchOffers(){
+        this.isOfferLoading = true;
+        this.companyService.searchCompanyOffers(this.searchValue, this.paginator).subscribe(
+            response => {
+                if(response.status === 200 && response.body){
+                    this.offers = response.body.content;
+                    this.paginator.currentPage = response.body.page.number;
+                    this.paginator.totalItems = response.body.page.totalElements;
+                }
+                this.isOfferLoading = false;
+            }
+        )
+    }
+
+    protected onPaginationChanged() {
+        this.searchOffers();
     }
 
 }

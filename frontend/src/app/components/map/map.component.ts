@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {Address} from "../../model/gui/gui.model";
 import {NgIf} from "@angular/common";
 import {ToastService} from "../../service/toast.service";
+import {timeout} from "rxjs";
 
 @Component({
   selector: 'app-map',
@@ -19,12 +20,15 @@ import {ToastService} from "../../service/toast.service";
   styleUrl: './map.component.css'
 })
 export class MapComponent {
-  @Input() set currentAddress(value: Address) {
-    this._currentAddress = value;
-    this.updateMapWithAddress(value);
-  }
 
   @Output() resultAddressFound = new EventEmitter<boolean>();
+
+  @Input() set currentAddress(value: Address) {
+      if(value !== this._currentAddress) {
+          this._currentAddress = value;
+          this.updateMapWithAddress(value);
+      }
+  }
 
   private _currentAddress: Address = {
     postalCode: '',
@@ -81,7 +85,7 @@ export class MapComponent {
     const addressText = `${address.city} ${address.postalCode}, ${address.street} ${address.buildingNumber}`;
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressText)}`;
 
-    this.http.get<any[]>(url).subscribe({
+    this.http.get<any[]>(url).pipe(timeout(5000)).subscribe({
       next: results => {
         if (results.length > 0) {
           const place = results[0];
@@ -100,12 +104,13 @@ export class MapComponent {
 
           this.isAddressFound = true;
         } else {
-          this.toastService.show('Address not found.', 'error');
+          this.toastService.show('Address not found on the map', 'error');
           this.isAddressFound = false;
         }
       },
       error: err => {
-        console.error(err);
+        console.log(err);
+        this.toastService.show('Ups... Address on the map not found', 'error');
         this.isAddressFound = false;
       },
       complete: () => {
@@ -123,108 +128,3 @@ export class MapComponent {
     this.resultAddressFound.emit(this.isAddressFound);
   }
 }
-
-
-
-// export class MapComponent {
-//   @Input() set currentAddress(value: Address) {
-//     this._currentAddress = value;
-//     this.updateMapWithAddress(value);
-//   }
-//
-//   @Output() resultAddressFound = new EventEmitter();
-//
-//   private _currentAddress: Address = {
-//     postalCode: '',
-//     city: '',
-//     street: '',
-//     buildingNumber: ''
-//   };
-//   get currentAddress(): Address {
-//     return this._currentAddress;
-//   }
-//
-//   isAddressFound = false;
-//
-//   map!: Map;
-//   options = {
-//     layers: [
-//       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         maxZoom: 19,
-//         attribution: '&copy; OpenStreetMap contributors'
-//       })
-//     ],
-//     zoom: 13,
-//     center: latLng(52.2297, 21.0122) // Default Warsaw
-//   };
-//   layers: Marker[] = [];
-//
-//   constructor(private http: HttpClient, private toastService: ToastService) {}
-//
-//   onMapReady(map: Map) {
-//     this.map = map;
-//
-//     if (this.isAddressComplete(this.currentAddress)) {
-//       this.searchAddress(this.currentAddress);
-//     }
-//   }
-//
-//   updateAddress(newAddress: Address) {
-//     this.currentAddress = newAddress;
-//   }
-//
-//   private updateMapWithAddress(address: Address) {
-//     if (this.map && this.isAddressComplete(address)) {
-//       this.searchAddress(address);
-//     }
-//   }
-//
-//   private searchAddress(address: Address) {
-//     if (!this.isAddressComplete(address)) return;
-//
-//     const addressText = `${address.city} ${address.postalCode}, ${address.street} ${address.buildingNumber}`;
-//
-//     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressText)}`;
-//
-//     this.http.get<any[]>(url).subscribe({
-//       next: results => {
-//         if (results.length > 0) {
-//           const place = results[0];
-//           const lat = parseFloat(place.lat);
-//           const lon = parseFloat(place.lon);
-//
-//           this.map.setView([lat, lon], 15);
-//
-//           this.layers = [
-//             marker([lat, lon], {
-//               icon: icon({
-//                 iconUrl: 'icons/localization_icon.svg',
-//               })
-//             })
-//           ];
-//
-//           this.isAddressFound = true;
-//         } else {
-//           this.toastService.show("Address not found.", 'error');
-//           this.isAddressFound = false;
-//         }
-//       },
-//       error: err => {
-//         console.error(err);
-//         this.isAddressFound = false;
-//       },
-//       complete: ()=> {
-//         this.sendResult();
-//       }
-//     });
-//   }
-//
-//   isAddressComplete(address: Address | null): boolean {
-//     if (!address) return false;
-//     return Object.values(address).every(value => value.trim() !== '');
-//   }
-//
-//   sendResult(){
-//     this.resultAddressFound.emit(this.isAddressFound);
-//   }
-// }

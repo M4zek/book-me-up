@@ -4,51 +4,44 @@
     height: 90vh;
 }
 
+.loading-container{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
 .appointments-list{
     display: grid;
-    flex: 1;
+    /*flex: 1;*/
+    height: 100%;
     justify-items: center;
     align-items: start;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
     gap: 10px;
     padding: 15px;
     overflow: auto;
+    opacity: 0;
+    transition: all 1s ease;
 }
 
-@media  (max-width: 849px) {
-    .appointments-list {
-        grid-template-columns: 1fr;
-    }
+.appointments-list.show{
+    opacity: 1;
 }
 
-@media (min-width: 850px) and (max-width: 1299px) {
-    .appointments-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1300px) and (max-width: 1749px) {
-    .appointments-list {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1750px) and (max-width: 2199px) {
-    .appointments-list {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
 
 /* Appointment card item */
 .appointment-item{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
     padding: 10px;
     width: 100%;
-    min-width: 300px;
     border-radius: 5px;
+    height: 100%;
+    gap: 10px;
     background-color: var(--white-10);
     border: 1px solid var(--white-25);
     transition: all .3s ease-in-out;
@@ -68,12 +61,12 @@
     background-color: var(--lime_5);
 }
 
-.appointment-item.realized{
+.appointment-item.completed{
     border: 1px solid var(--green);
     background-color: var(--green-5);
 }
 
-.appointment-item.canceled{
+.appointment-item.cancelled{
     border: 1px solid var(--gold);
     background-color: var(--gold-5);
 }
@@ -84,15 +77,47 @@
 }
 
 
+.card-company-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 40%;
+}
 
-.appointment-item > img{
-    width: 200px;
+
+.card-company-info > img{
+    width: 60px;
     border-radius: 50%;
     aspect-ratio: 1/1;
 }
 
-.appointment-item > span{
-    padding: 10px;
+
+.information-item{
+    width: 100%;
+    display: flex;
+}
+
+.offer-name {
+    padding: 0;
+    margin: 0;
+    color: var(--white);
+    font: bold 18px/1.5 "Andale Mono", monospace;
+}
+
+.information-item > span:last-child{
+    color: var(--white);
+    font: bold 14px/1.5 "Arial", sans-serif;
+}
+
+.card-company-info > span {
+    color: var(--white);
+    font: bold 16px/1.5 "Andale Mono", monospace;
+}
+
+.appointment-information > span{
+    padding: 5px;
     color: var(--white);
     font: bold 20px/1.5 "Roboto", sans-serif;
 }
@@ -135,6 +160,18 @@
     background-color: var(--gold);
 }
 
+.button.status > img.rotate{
+    animation: rotate 1.5s linear infinite;
+}
+
+@keyframes rotate {
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
 
 .button.cancel:active,
 .button.opinion:active{
@@ -178,9 +215,8 @@
 .appointment-information{
     display: flex;
     flex-direction: column;
-    /*width: 100%;*/
     padding: 10px 0;
-    gap: 10px;
+    gap: 3px;
 }
 
 .information-item{

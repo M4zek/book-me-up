@@ -1,137 +1,343 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
 
-        <div class="title">
-            <h2> Add new company</h2>
-        </div>
-
-        <form #companyForm="ngForm" (ngSubmit)="onSubmit(companyForm)">
-            <div class="horizontal-parent">
-                <div class="logo-container">
-                    <img [src]="'images/default_logo_company.png'" alt="logo"/>
-                    <div class="select-file-button">
-                        <img [src]="'icons/file_select_icon.svg'" alt="select"/>
-                    </div>
-                    <app-drop-down-list
-                            (valueChanged)="onCategoryChanged($event)"
-                            [placeholder]="'Select category'" />
-
+        <div class="stepper">
+            <h2>Register Own Company</h2>
+            <div class="stepper-header">
+                <div class="progress-background">
+                    <div class="progress-content"
+                    [style.width.%]="currentStep * (100 / (steps.length - 1))"
+                    ></div>
+                </div>
+                <div class="circle"
+                     *ngFor="let step of steps; let i = index"
+                     [class.active]="currentStep === i"
+                     [class.completed]="currentStep > i"
+                >
+                    <span>{{i + 1}}</span>
+                    <span class="title">{{step.name}}</span>
                 </div>
 
-                <div class="vertical-parent">
-                    <div class="inputBox height-30">
-                        <input type="text"
-                               name="name"
-                               required
-                               #nameCtrl="ngModel"
-                               [(ngModel)]="companyDetails.name"
-                               minlength="3">
-                        <span>Company name</span>
-                        <div *ngIf="nameCtrl.invalid && nameCtrl.touched">
-                            <p *ngIf="nameCtrl.errors?.['required']">Name is required</p>
-                            <p *ngIf="nameCtrl.errors?.['minlength']">Name must be at least 3 characters</p>
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="inputBox">
+            <div class="stepper-content">
+
+                <!-- Step one | form for company logo, name, category and description-->
+                <form class="step"
+                       #detailsForm="ngForm"
+                      *ngIf="currentStep == 0">
+                    <div class="horizontal-panel">
+                        <div class="left-panel">
+                            <div class="logo-container">
+                                <img [src]="getCompanyLogo(details.avatar)" alt="logo"/>
+                                <input
+                                        type="file"
+                                        #fileInput
+                                        style="display: none"
+                                        (change)="onFileSelected($event)"
+                                        multiple accept="image/jpeg, image/jpg"
+                                />
+                                <div class="select-file-button" (click)="fileInput.click()">
+                                    <img [src]="'icons/file_select_icon.svg'" alt="select"/>
+                                    <span>Select company logo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="right-panel">
+                            <div class="inputBox">
+                                <input type="text"
+                                       name="Name"
+                                       required
+                                       #nameCtrl="ngModel"
+                                       [(ngModel)]="details.name"
+                                       minlength="3">
+                                <span>Name</span>
+                                <div *ngIf="nameCtrl.invalid && nameCtrl.touched">
+                                    <p *ngIf="nameCtrl.errors?.['required']">Name is required</p>
+                                    <p *ngIf="nameCtrl.errors?.['minlength']">Name must be at least 3 characters</p>
+                                </div>
+                            </div>
+
+                            <div class="inputBox height-100">
                                 <textarea
                                         name="description"
-                                        [(ngModel)]="companyDetails.description"
+                                        [(ngModel)]="details.description"
                                         required
                                         minlength="10"
+                                        maxlength="1024"
                                         #descCtrl="ngModel">
                                 </textarea>
-                        <span>Description</span>
-                        <div *ngIf="descCtrl.invalid && descCtrl.touched">
-                            <p *ngIf="descCtrl.errors?.['required']">Description is required</p>
-                            <p *ngIf="descCtrl.errors?.['minlength']">Description must be longer</p>
+                                <span>Description</span>
+                                <div *ngIf="descCtrl.invalid && descCtrl.touched">
+                                    <p *ngIf="descCtrl.errors?.['required']">Description is required</p>
+                                    <p *ngIf="descCtrl.errors?.['minlength']">Description must be longer</p>
+                                </div>
+                                <span class="length"
+                                    [style.color]="details.description.length < 10 ? '#BC8100' : 'white'"
+                                >{{details.description.length}} / 2048</span>
+                            </div>
+
+                            <div class="input-category-box"
+                                [class.error]="!details.category.isCorrect && details.category.isTouched"
+                            >
+                                <span>Category</span>
+                                <app-drop-down-list
+                                        [noneValue]="false"
+                                        [options]="categories"
+                                        (valueChanged)="onCategoryChanged($event)"
+                                        [placeholder]="'Select category'" />
+                                <div *ngIf="!details.category.isCorrect && details.category.isTouched">
+                                    <p>Category is required</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="stepper-actions">
+                        <div (click)="nextStep(detailsForm)">Next</div>
+                    </div>
+                </form>
+
+
+                <!-- Step two | form for Address -->
+                <div class="step"
+                     *ngIf="currentStep == 1">
+                    <form class="step" #addressForm="ngForm">
+                        <div class="horizontal-panel">
+                            <div class="left-panel">
+
+                                <app-map *ngIf="addressForm.valid" [currentAddress]="address"/>
+
+                                <app-double-spinner *ngIf="!addressForm.valid" [text]="'Invalid address data'"/>
+                            </div>
+                            <div class="right-panel">
+                                <div class="inputBox">
+                                    <input type="text"
+                                           name="city"
+                                           required
+                                           #cityCtrl="ngModel"
+                                           [(ngModel)]="address.city"
+                                           minlength="3">
+                                    <span>City</span>
+                                    <div *ngIf="cityCtrl.invalid && cityCtrl.touched">
+                                        <p *ngIf="cityCtrl.errors?.['required']">City is required</p>
+                                        <p *ngIf="cityCtrl.errors?.['minlength']">City name must be at least 3 characters</p>
+                                    </div>
+                                </div>
+                                <div class="inputBox">
+                                    <input type="text"
+                                           name="postalCode"
+                                           required
+                                           minlength="5"
+                                           #postalCTRL="ngModel"
+                                           [(ngModel)]="address.postalCode">
+                                    <span>Postal Code</span>
+                                    <div *ngIf="postalCTRL.invalid && postalCTRL.touched">
+                                        <p *ngIf="postalCTRL.errors?.['required']">Postal code is required</p>
+                                        <p *ngIf="postalCTRL.errors?.['minlength']">Postal code must be at least 5 characters</p>
+
+                                    </div>
+                                </div>
+                                <div class="inputBox">
+                                    <input type="text"
+                                           name="street"
+                                           required
+                                           #streetCTRL="ngModel"
+                                           minlength="3"
+                                           [(ngModel)]="address.street">
+                                    <span>Street name</span>
+                                    <div *ngIf="streetCTRL.invalid && streetCTRL.touched">
+                                        <p *ngIf="streetCTRL.errors?.['required']">Street name is required</p>
+                                        <p *ngIf="streetCTRL.errors?.['minlength']">Street name must be at least 3 characters</p>
+                                    </div>
+                                </div>
+                                <div class="inputBox">
+                                    <input type="text"
+                                           name="buildingNumber"
+                                           required
+                                           #buildingCTRL="ngModel"
+                                           [(ngModel)]="address.buildingNumber">
+                                    <span>Building number</span>
+                                    <div *ngIf="buildingCTRL.invalid && buildingCTRL.touched">
+                                        <p *ngIf="buildingCTRL.errors?.['required']">Building number is required</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="stepper-actions">
+                        <div (click)="prevStep()">Prev</div>
+                        <div (click)="nextStep(addressForm)">Next</div>
+                    </div>
+                </div>
+
+                <!-- Step three | form for opening hours-->
+                <div class="step"
+                     *ngIf="currentStep == 2">
+
+                    <div class="days-grid">
+                        <div class="day-card"
+                             *ngFor="let day of hours"
+                             [class.closed] = "!day.open">
+                            <h3>{{ day.dayOfWeek }}</h3>
+
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" class="sc-gJwTLC ikxBAC" [(ngModel)]="day.open" />
+                            </label>
+
+                            <div class="time-group" [class.disabled]="!day.open">
+                                <div class="time-block">
+                                    <label>From</label>
+                                    <div class="time-inputs">
+                                        <div class="time-control">
+                                            <button (click)="adjustTime(day, 'openTime', 'hour', 1)" [disabled]="!day.open">▲</button>
+                                            <span>{{ day.openTime.split(":")[0] | number:'2.0' }}</span>
+                                            <button (click)="adjustTime(day, 'openTime', 'hour', -1)" [disabled]="!day.open">▼</button>
+                                        </div>
+                                        <span class="white">:</span>
+                                        <div class="time-control">
+                                            <button (click)="adjustTime(day, 'openTime', 'minute', 10)" [disabled]="!day.open">▲</button>
+                                            <span>{{ day.openTime.split(":")[1] | number:'2.0' }}</span>
+                                            <button (click)="adjustTime(day, 'openTime', 'minute', -10)" [disabled]="!day.open">▼</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="time-block">
+                                    <label>To</label>
+                                    <div class="time-inputs">
+                                        <div class="time-control">
+                                            <button (click)="adjustTime(day, 'closeTime', 'hour', 1)" [disabled]="!day.open">▲</button>
+                                            <span>{{ day.closeTime.split(":")[0] | number:'2.0' }}</span>
+                                            <button (click)="adjustTime(day, 'closeTime', 'hour', -1)" [disabled]="!day.open">▼</button>
+                                        </div>
+                                        <span class="white">:</span>
+                                        <div class="time-control">
+                                            <button (click)="adjustTime(day, 'closeTime', 'minute', 10)" [disabled]="!day.open">▲</button>
+                                            <span>{{ day.closeTime.split(":")[1] | number:'2.0' }}</span>
+                                            <button (click)="adjustTime(day, 'closeTime', 'minute', -10)" [disabled]="!day.open">▼</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="stepper-actions">
+                        <div (click)="prevStep()">Prev</div>
+                        <div (click)="nextStep(null)">Next</div>
+                    </div>
+                </div>
+
+                <!-- Step four | Summary-->
+                <div class="step"
+                     *ngIf="currentStep == 3">
+                     <div class="details">
+                         <div class="right-panel">
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Owner</span>
+                                 </div>
+                                 <div class="content-box">
+                                     <img class="avatar" [src]="getUserAvatar(owner.avatar)" alt="av"/>
+                                     <span>{{owner.firstName}} {{owner.lastName}}</span>
+                                 </div>
+                             </div>
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Name</span>
+                                 </div>
+                                 <div class="content-box">
+                                     <span>{{details.name}}</span>
+                                 </div>
+                             </div>
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Description</span>
+                                 </div>
+                                 <div class="content-box max">
+                                     <span>{{details.description}}</span>
+                                 </div>
+                             </div>
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Logo</span>
+                                 </div>
+                                 <div class="content-box">
+                                     <img class="logo" [src]="getCompanyLogo(details.avatar)" alt="logo">
+                                 </div>
+                             </div>
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Category</span>
+                                 </div>
+                                 <div class="content-box">
+                                     <span>{{details.category.name}}</span>
+                                 </div>
+                             </div>
+                             <div class="summary-box">
+                                 <div class="title-box">
+                                     <span>Address</span>
+                                 </div>
+                                 <div class="content-box">
+                                     <span>{{address.street}} {{address.buildingNumber}}, {{address.city}} {{address.postalCode}}</span>
+                                 </div>
+                             </div>
+                             <div>
+                                 <div class="summary-box">
+                                     <div class="title-box">
+                                         <span>Opening hours</span>
+                                     </div>
+                                     <div class="content-box" style="flex-flow: column">
+                                         <div class="summary-box" *ngFor="let h of hours">
+                                             <div class="title-box"
+                                             [class.green]="h.open"
+                                             [class.pink]="!h.open"
+                                             >
+                                                 <span>{{h.dayOfWeek}}</span>
+                                             </div>
+                                             <div class="content-box">
+                                                <span>{{h.open ? 'Open' : 'Closed'}} {{h.open ? h.openTime + ' : ' + h.closeTime : ''}}</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <span class="info-text">If all the information is correct, please continue. You can change all of this information (and more) later in the company dashboard.</span>
+                         </div>
+                     </div>
+
+                    <div class="stepper-actions">
+                        <div (click)="prevStep()">Prev</div>
+                        <div (click)="confirm()">Confirm</div>
+                    </div>
+                </div>
+
+                <!-- Step four | Result -->
+                <div class="step"
+                     *ngIf="currentStep == 4">
+                    <div class="result-step-container" *ngIf="!isCompanyCreating">
+                        <span class="result-title">{{companyResponse?.status === 201 ? 'Success' : 'Error'}}</span>
+                        <span class="result-message">{{companyResponse?.status === 201 ? 'Your company has been created' : 'Ups... Something went wrong. Try again later.'}}</span>
+                        <div class="result-icon-bg" [class.success]="companyResponse?.status === 201">
+                            <img [src]="companyResponse?.status === 201 ? 'icons/confirm_icon.svg' : 'icons/reject_icon.svg'" alt="icon"/>
+                        </div>
+                        <div class="result-button"
+                             (click)="continue()"
+                             [class.success]="companyResponse?.status === 201">
+                            <span>Continue</span>
+                        </div>
+                        <div class="result-retry-button"
+                             (click)="confirm(true)"
+                             *ngIf="companyResponse?.status !== 201">
+                            <span>Retry</span>
+                        </div>
+                    </div>
+                    <app-double-spinner [text]="'Please wait...'" *ngIf="isCompanyCreating"/>
                 </div>
             </div>
-
-
-            <div class="inputBox padding-20 vertical">
-                <span>Address</span>
-
-                <div class="horizontal">
-
-                    <div class="inputBox">
-                        <input type="text"
-                               name="city"
-                               required
-                               #cityCtrl="ngModel"
-                               [(ngModel)]="companyDetails.address.city"
-                               minlength="3">
-                        <span>City</span>
-                        <div *ngIf="cityCtrl.invalid && cityCtrl.touched">
-                            <p *ngIf="cityCtrl.errors?.['required']">City is required</p>
-                            <p *ngIf="cityCtrl.errors?.['minlength']">City must be at least 3 characters</p>
-                        </div>
-                    </div>
-
-                    <div class="inputBox">
-                        <input type="text"
-                               name="postalCode"
-                               required
-                               #postalCodeCtrl="ngModel"
-                               [(ngModel)]="companyDetails.address.postalCode"
-                               minlength="3">
-                        <span>Postal code</span>
-                        <div *ngIf="postalCodeCtrl.invalid && postalCodeCtrl.touched">
-                            <p *ngIf="postalCodeCtrl.errors?.['required']">Postal code is required</p>
-                            <p *ngIf="postalCodeCtrl.errors?.['minlength']">Postal code must be at least 3 characters</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="horizontal">
-                    <div class="inputBox">
-                        <input type="text"
-                               name="street"
-                               required
-                               #streetCtrl="ngModel"
-                               [(ngModel)]="companyDetails.address.street"
-                               minlength="3">
-                        <span>Street</span>
-                        <div *ngIf="streetCtrl.invalid && streetCtrl.touched">
-                            <p *ngIf="streetCtrl.errors?.['required']">Street is required</p>
-                            <p *ngIf="streetCtrl.errors?.['minlength']">Street must be at least 3 characters</p>
-                        </div>
-                    </div>
-
-                    <div class="inputBox">
-                        <input type="text"
-                               name="buildingNumber"
-                               required
-                               #buildingNumberCtrl="ngModel"
-                               [(ngModel)]="companyDetails.address.buildingNumber"
-                               minlength="1">
-                        <span>Building number</span>
-                        <div *ngIf="buildingNumberCtrl.invalid && buildingNumberCtrl.touched">
-                            <p *ngIf="buildingNumberCtrl.errors?.['required']">Building number is required</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn_container">
-                <div class="btn dark_blue" (click)="onClear()">
-                    <img [src]="'icons/trash_icon.svg'" alt="reset"/>
-                    <div class="expand">
-                        <span>Clear</span>
-                    </div>
-                </div>
-                <div class="btn dark_blue" (click)="onSubmit(companyForm)">
-                    <img [src]="'icons/confirm_icon.svg'" alt="reset"/>
-                    <div class="expand">
-                        <span>Confirm</span>
-                    </div>
-                </div>
-            </div>
-
-
-        </form>
+        </div>
     </div>
 </div>

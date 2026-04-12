@@ -6,27 +6,64 @@
         </div>
 
         <div class="create-navigation">
-            <div class="navigation-item" (click)="isSingleChat = true"
+            <div class="navigation-item" (click)="changeRoomType(true)"
             [class.active]="isSingleChat"
             >
                 <span>Single chat</span>
             </div>
             <div class="navigation-item"
                  [class.active]="!isSingleChat"
-                 (click)="isSingleChat = false">
+                 (click)="changeRoomType(false)">
                 <span>Group chat</span>
             </div>
         </div>
 
         <div class="create-content-container">
-            <app-search-and-sort-bar/>
+
+            <div class="search-container">
+                <form #searchUserForm="ngForm">
+                    <div class="inputBox">
+                        <input type="text"
+                               required
+                               min="3"
+                               name="firstName"
+                               [(ngModel)]="searchModel.firstName"
+                               #firstNameCtrl="ngModel"
+                               placeholder="First name"/>
+                        <span>First name</span>
+                        <div *ngIf="firstNameCtrl.invalid && firstNameCtrl.touched">
+                            <p *ngIf="firstNameCtrl.errors?.['required']">First name is required to search</p>
+                            <p *ngIf="firstNameCtrl.errors?.['minlength']">First name must be at least 3 characters</p>
+                        </div>
+                    </div>
+                    <div class="inputBox">
+                        <input type="text"
+                               min="3"
+                               name="lastName"
+                               [(ngModel)]="searchModel.lastName"
+                               #lastNameCtr="ngModel"
+                               placeholder="Last name"/>
+                        <span>Last name</span>
+                        <div *ngIf="lastNameCtr.invalid && lastNameCtr.touched">
+                            <p *ngIf="lastNameCtr.errors?.['minlength']">First name must be at least 3 characters</p>
+                        </div>
+                    </div>
+                </form>
+
+                <img [src]="'icons/search_icon.svg'" (click)="searchUsers()"/>
+                <img [src]="'icons/reject_icon.svg'" (click)="clearSearchForm()"/>
+            </div>
 
             <div class="single-chat-container" *ngIf="isSingleChat">
-                <div class="grid-list-container">
+                <app-double-spinner *ngIf="isUsersLoading"/>
+                <div class="grid-list-container" *ngIf="!isUsersLoading">
                     <div class="list-row"
+
                          [ngClass]="{'selected' : item == selectedUser}"
                          (click)="selectUser(item)"
-                         *ngFor="let item of this.resultUserList">
+
+                         *ngFor="let item of this.resultUserList"
+                         [class.me]="item.id === this.ownerId">
                         <img [src]="item.avatar" alt="Avatar">
                         <span>{{ item.name }}</span>
                     </div>
@@ -54,11 +91,13 @@
             <div class="users-list">
                 <div class="result-user-container">
                     <span>Search result</span>
-                    <div class="result-user-list">
+                    <app-double-spinner *ngIf="isUsersLoading"/>
+                    <div class="result-user-list" *ngIf="!isUsersLoading">
                         <div class="list-row"
                              [ngClass]="{'disabled': isUserSelected(item)}"
                              (click)="addUserToSelected(item)"
-                             *ngFor="let item of this.resultUserList">
+                             *ngFor="let item of this.resultUserList"
+                             [class.me]="item.id === this.ownerId">
                             <img [src]="item.avatar" alt="Avatar">
                             <span>{{item.name}}</span>
                         </div>
@@ -77,9 +116,7 @@
                 </div>
             </div>
             </div>
-            <app-paginator [pagination]="paginator"
-                           (itemsPerPageChange)="onItemsPerPageChange($event)"
-                           (pageChange)="onPageChange($event)" />
+            <app-paginator [pagination]="paginator" (paginatorChanged)="onPaginatorChanged($event)"/>
         </div>
 
         <div class="confirm-button" (click)="confirm()">

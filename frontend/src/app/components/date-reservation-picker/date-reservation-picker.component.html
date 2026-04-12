@@ -1,49 +1,55 @@
 <div class="date-reservation-picker-container">
     <div class="calendar-container">
         <div class="month-nav">
-            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prevMonth()"/>
-            <h3>{{ currentMonth }} {{ currentYear }}</h3>
+            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'"
+                 [class.disabled]="isCurrentMonth(this.days[0].date)"
+                 alt="icon" (click)="prevMonth()" />
+            <h3> {{getMonthNameAndYearFromFirstDay(days)}} </h3>
             <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="nextMonth()"/>
         </div>
 
         <div class="carousel">
-            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prevWeek()"/>
+            <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon"
+                 [class.disabled]="isDayBeforeToday(this.days[0])"
+                 (click)="prevWeek()"/>
             <div class="days" [ngClass]="animationDateCarouselDirection">
+
                 <div
-                        *ngFor="let d of days"
-                        (click)="!isDisabled(d.date) && selectDay(d)"
-                        [class.selected]="d.day === selectedDay"
-                        [class.disabled]="isDisabled(d.date)"
-                        [class.closed]="isClosed(d.date)"
+                        *ngFor="let day of days"
+                        [class.selected]="selectedDay == day"
+                        [class.disabled]="isDayBeforeToday(day)"
+                        [class.closed]="!day.isOpen"
                         class="day-box"
+                        (click)="selectDay(day)"
                 >
-                    <div class="weekday">{{ d.weekDay }}</div>
-                    <div class="day">{{ d.day }}</div>
-                    <div class="status" [ngClass]="d.status"></div>
+                    <div class="weekday" *ngIf="!isSlotsLoadingFromServer">{{getDatePart(day.date, "dayName")}}</div>
+                    <div class="day" *ngIf="!isSlotsLoadingFromServer">{{getDatePart(day.date, "dayNumber")}}</div>
+                    <div class="status" [ngClass]="getStatus(day?.freeTimePercentage)" *ngIf="day.isOpen && !isSlotsLoadingFromServer"></div>
+                    <app-double-spinner *ngIf="isSlotsLoadingFromServer"/>
                 </div>
             </div>
 
             <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="nextWeek()"/>
         </div>
     </div>
-    <div class="time-picker">
-        <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prev()"/>
+    <div class="time-picker" [class.show]="selectedDay">
+        <img class="nav-btn" [src]="'icons/left_arrow_icon.svg'" alt="icon" (click)="prevSlots()"/>
         <div class="time-carousel">
             <div class="slots-container">
                 <div class="slots" [ngClass]="animationTimeCarouselDirection">
                     <div
-                            *ngFor="let s of visibleSlots"
-                            (click)="selectSlot(s)"
-                            [class.selected]="selectedSlot?.label === s.label"
-                            [class.disabled]="s.disabled"
+                            *ngFor="let slot of visibleSlots"
+                            [class.selected]="slot === selectedSlot"
+                            [class.disabled]="slot.availableEmployeeIds.length === 0"
                             class="slot-box"
+                            (click)="selectSlot(slot)"
                     >
-                        {{ s.label }}
+                        {{slot.start}}-{{slot.end}}
                     </div>
                 </div>
             </div>
         </div>
-        <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="next()"/>
+        <img class="nav-btn" [src]="'icons/right_arrow_icon.svg'" alt="icon" (click)="nextSlots()"/>
     </div>
 
 </div>

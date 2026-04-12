@@ -1,28 +1,30 @@
-<div class="pagination-wrapper">
+<div class="pagination-wrapper" [class.disabled]="pagination.totalItems === 0">
     <div class="pagination-left">
         <label for="itemsPerPage">On page:</label>
-        <select id="itemsPerPage" (change)="changeItemsPerPage($event)" [value]="this.pagination.itemsPerPage">
-            <option *ngFor="let option of this.pagination.itemsPerPageOptions" [value]="option">{{ option }}</option>
+
+        <select id="itemsPerPage" (change)="changeItemsPerPage($event)" [ngModel]="pagination.itemsPerPage">
+            <option *ngFor="let option of this.pagination.itemsPerPageOptions"
+                    [value]="option">{{ option }}</option>
         </select>
     </div>
 
     <div class="pagination-center">
-        <button (click)="firstPage()" [disabled]="this.pagination.currentPage === 1">«</button>
-        <button (click)="previousPage()" [disabled]="this.pagination.currentPage === 1">‹</button>
+        <button (click)="firstPage()" [disabled]="this.pagination.currentPage === 0">«</button>
+        <button (click)="previousPage()" [disabled]="this.pagination.currentPage === 0">‹</button>
 
         <div *ngFor="let page of visiblePages">
             <button
                     (click)="changePage(page)"
                     [class.active]="page === this.pagination.currentPage">
-                {{ page }}
+                {{ page + 1 }}
             </button>
         </div>
 
-        <button (click)="nextPage()" [disabled]="this.pagination.currentPage === totalPages">›</button>
-        <button (click)="lastPage()" [disabled]="this.pagination.currentPage === totalPages">»</button>
+        <button (click)="nextPage()" [disabled]="this.pagination.currentPage === totalPages - 1">›</button>
+        <button (click)="lastPage()" [disabled]="this.pagination.currentPage === totalPages - 1">»</button>
     </div>
 
     <div class="pagination-right">
-        Page {{ this.pagination.currentPage }} of {{ totalPages }}
+        Page {{ this.pagination.currentPage + 1 }} of {{ totalPages }}
     </div>
 </div>
