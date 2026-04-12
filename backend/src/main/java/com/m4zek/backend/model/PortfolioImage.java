@@ -1,10 +1,9 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.PortfolioImageReadModel;
 import jakarta.persistence.*;
 
 @Entity(name = "PortfolioImages")
-public class PortfolioImage {
+public class PortfolioImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +27,19 @@ public class PortfolioImage {
         this.filename = filename;
     }
 
-    public PortfolioImageReadModel toReadModel(){
-        return PortfolioImageReadModel.builder()
-                .id(this.id)
-                .filename(this.filename)
-                .image(this.image)
-                .downloadUrl("/api/v1/portfolio-images/" + this.id + "/download")
-                .build();
+    public int getId() {
+        return id;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public Company getCompany() {
+        return company;
     }
 }

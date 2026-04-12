@@ -1,6 +1,5 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.UserReadModel;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -16,6 +15,7 @@ public class UserData extends BaseEntity {
     private String lastName;
     private Date dateOfBirth;
     private String phoneNumber;
+    @Lob
     private byte[] photo;
 
     @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
@@ -32,26 +32,28 @@ public class UserData extends BaseEntity {
         this.photo = photo;
     }
 
-    public UserReadModel toUserReadModel(int userId, String email) {
-        return UserReadModel.builder()
-                .id(userId)
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .phoneNumber(phoneNumber)
-                .birthdate(dateOfBirth.toString())
-                .avatar(photo)
-                .build();
+
+    public int getId() {
+        return id;
     }
 
-    public UserReadModel toUserReadModel() {
-        return UserReadModel.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .phoneNumber(phoneNumber)
-                .birthdate(dateOfBirth.toString())
-                .avatar(photo)
-                .build();
+    public String getFirstName() {
+        return firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
 }

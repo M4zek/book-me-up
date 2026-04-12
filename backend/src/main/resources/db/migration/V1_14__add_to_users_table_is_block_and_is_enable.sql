@@ -1,0 +1,3 @@
+ALTER TABLE users
+    ADD COLUMN is_block BOOLEAN NOT NULL,
+    ADD COLUMN is_enable BOOLEAN NOT NULL;

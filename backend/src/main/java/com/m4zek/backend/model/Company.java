@@ -1,7 +1,6 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.projection.CompanyReadModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,14 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 @Entity(name = "companies")
-public class Company {
+public class Company extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
     @Lob
@@ -52,44 +53,63 @@ public class Company {
         this.address = address;
     }
 
-    public void changeName(String newName) {
-        if(!this.name.equals(newName) && !newName.isEmpty())
-            this.name = newName;
+    public void addUserRole(CompanyUserRole companyUserRole){
+        this.users.add(companyUserRole);
     }
 
-    public void changeDescription(String description) {
-        if(!this.description.equals(description) && !description.isEmpty())
-            this.description = description;
+    public void assignLogo(byte[] logo){
+        this.logo = logo;
     }
 
-    public void changeLogo(byte[] newLogo) {
-        this.logo = newLogo;
+    public void assignCompanyHours(List<CompanyHours> companyHours){
+        this.companyHoursList = companyHours;
     }
 
-    public void assignCategory(Category newCategory) {
-        this.category = newCategory;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void assignPortfolioImages(PortfolioImage newPortfolioImage) {
-        this.portfolioImages.add(newPortfolioImage);
+    public int getId() {
+        return id;
     }
 
-    public CompanyReadModel toReadModel() {
-        return CompanyReadModel
-                .builder()
-                .id(this.id)
-                .name(this.name)
-                .description(this.description)
-                .logo(this.logo)
-                .address(address.toReadModel())
-                .category(category.toReadModel())
-                .owner(
-                   this.users.stream()
-                            .filter(item -> item.getRole().getName().equals("COMPANY_OWNER"))
-                            .findFirst()
-                            .map(item -> item.getUsers().toUserReadModel())
-                            .orElse(null)
-                )
-                .build();
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public List<CompanyHours> getCompanyHoursList() {
+        return companyHoursList;
+    }
+
+    public List<CompanyOffer> getCompanyOffers() {
+        return companyOffers;
+    }
+
+    public Set<CompanyUserRole> getUsers() {
+        return users;
+    }
+
+    public int getPortfolioImagesSize() {
+        return portfolioImages.size();
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

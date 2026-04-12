@@ -1,7 +1,6 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.AddressReadModel;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.write.AddressRequest;
 import jakarta.persistence.*;
 
 @Entity(name = "addresses")
@@ -33,29 +32,40 @@ public class Address extends BaseEntity{
     }
 
 
-    public AddressReadModel toReadModel() {
-        return AddressReadModel.builder()
-                .id(this.id)
-                .city(this.city)
-                .postalCode(this.postalCode)
-                .street(this.street)
-                .buildingNumber(this.buildingNumber)
-                .build();
+    public int getId() {
+        return id;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getBuildingNumber() {
+        return buildingNumber;
     }
 
 
-    public void update(AddressWriteModel addressWriteModel) {
-        if(!this.city.equals(addressWriteModel.getCity()) && !addressWriteModel.getCity().isEmpty())
-            this.city = addressWriteModel.getCity();
 
-        if (!this.postalCode.equals(addressWriteModel.getPostalCode()) && !addressWriteModel.getPostalCode().isEmpty())
-            this.postalCode = addressWriteModel.getPostalCode();
+    public void update(AddressRequest addressRequest) {
+        if(!this.city.equals(addressRequest.getCity()) && !addressRequest.getCity().isEmpty())
+            this.city = addressRequest.getCity();
 
-        if (!this.street.equals(addressWriteModel.getStreet()) && !addressWriteModel.getStreet().isEmpty())
-            this.street = addressWriteModel.getStreet();
+        if (!this.postalCode.equals(addressRequest.getPostalCode()) && !addressRequest.getPostalCode().isEmpty())
+            this.postalCode = addressRequest.getPostalCode();
 
-        if (!this.buildingNumber.equals(addressWriteModel.getBuildingNumber()) && !addressWriteModel.getBuildingNumber().isEmpty())
-            this.buildingNumber = addressWriteModel.getBuildingNumber();
+        if (!this.street.equals(addressRequest.getStreet()) && !addressRequest.getStreet().isEmpty())
+            this.street = addressRequest.getStreet();
+
+        if (!this.buildingNumber.equals(addressRequest.getBuildingNumber()) && !addressRequest.getBuildingNumber().isEmpty())
+            this.buildingNumber = addressRequest.getBuildingNumber();
     }
 
     public void assignCompany(Company company) {

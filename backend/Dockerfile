@@ -5,7 +5,7 @@ COPY pom.xml /home/app
 
 RUN mvn -f /home/app/pom.xml clean package -Dtest=BackendApplicationTests#!contextLoads
 
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk
 
 COPY --from=build /home/app/target/api.jar /usr/local/lib/api.jar
 

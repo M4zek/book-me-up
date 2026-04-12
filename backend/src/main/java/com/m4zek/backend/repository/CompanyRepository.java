@@ -3,6 +3,8 @@ package com.m4zek.backend.repository;
 import com.m4zek.backend.model.Company;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -11,7 +13,33 @@ public interface CompanyRepository {
 
     Optional<Company> findById(long id);
 
-    Page<Company> findAll(Pageable pageable);
-
     void delete(Company company);
+
+    @Query("""
+        SELECT c
+        FROM companies c
+        WHERE (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
+          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
+            ORDER BY (
+                SELECT AVG(r.rating)
+                FROM reviews r
+                JOIN r.companyOffer o
+                WHERE o.company = c
+            ) DESC
+    """)
+    Page<Company> findAllOrderByAverageRatingDesc(Pageable pageable, @Param("city") String city, @Param("category") String category);
+
+    @Query("""
+        SELECT c FROM companies c
+        WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
+          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
+    """)
+    Page<Company> searchCompanyByNameAndCityAndCategoryName(
+            Pageable pageable,
+            @Param("name") String name,
+            @Param("city") String city,
+            @Param("category") String category
+    );
+
 }

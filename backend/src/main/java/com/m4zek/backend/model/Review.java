@@ -1,18 +1,18 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.projection.ReviewReadModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @Entity(name = "reviews")
-public class Review {
+public class Review extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 
     @Min(1)
@@ -37,13 +37,26 @@ public class Review {
         this.user = user;
     }
 
-    public ReviewReadModel toReadModel() {
-        return ReviewReadModel.builder()
-                .id(this.id)
-                .comment(this.comment)
-                .rating(this.rating)
-                .author_name(this.user.toUserReadModel().getFirstName())
-                .build();
+
+    //  METHODS
+
+    public int getId() {
+        return id;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public CompanyOffer getCompanyOffer() {
+        return companyOffer;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

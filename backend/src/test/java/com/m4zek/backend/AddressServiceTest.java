@@ -3,7 +3,7 @@ package com.m4zek.backend;
 
 import com.m4zek.backend.exception.AddressNotFoundException;
 import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.write.AddressRequest;
 import com.m4zek.backend.repository.AddressRepository;
 import com.m4zek.backend.service.AddressService;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ public class AddressServiceTest {
     @DisplayName("Should successfully update existing address based on given id")
     void updateAddress_addressFoundWithGivenId_updatesAddress() {
         // given
-        var newAddressData = AddressWriteModel.builder()
+        var newAddressData = AddressRequest.builder()
                 .city("New City")
                 .street("New Street")
                 .postalCode("22-222")
@@ -72,7 +72,7 @@ public class AddressServiceTest {
     @DisplayName("Should create new address")
     void createAddress_addressCreated() {
         // given
-        var newAddressData = AddressWriteModel.builder()
+        var newAddressData = AddressRequest.builder()
                 .city("New City")
                 .street("New Street")
                 .postalCode("22-222")
@@ -80,7 +80,12 @@ public class AddressServiceTest {
                 .build();
 
         var mockAddressRepository = mock(AddressRepository.class);
-        when(mockAddressRepository.save(any(Address.class))).thenReturn(newAddressData.toEntity());
+        when(mockAddressRepository.save(any(Address.class))).thenReturn(new Address(
+                newAddressData.getCity(),
+                newAddressData.getPostalCode(),
+                newAddressData.getStreet(),
+                newAddressData.getBuildingNumber()
+        ));
 
         // system under test
         var toTest = new AddressService(mockAddressRepository);
@@ -89,10 +94,10 @@ public class AddressServiceTest {
         var newAddress = toTest.createNewAddress(newAddressData);
 
         // then
-        assertThat(newAddress.toReadModel().getBuildingNumber()).isEqualTo(newAddressData.getBuildingNumber());
-        assertThat(newAddress.toReadModel().getStreet()).isEqualTo(newAddressData.getStreet());
-        assertThat(newAddress.toReadModel().getCity()).isEqualTo(newAddressData.getCity());
-        assertThat(newAddress.toReadModel().getPostalCode()).isEqualTo(newAddressData.getPostalCode());
+        assertThat(newAddress.getBuildingNumber()).isEqualTo(newAddressData.getBuildingNumber());
+        assertThat(newAddress.getStreet()).isEqualTo(newAddressData.getStreet());
+        assertThat(newAddress.getCity()).isEqualTo(newAddressData.getCity());
+        assertThat(newAddress.getPostalCode()).isEqualTo(newAddressData.getPostalCode());
 
         verify(mockAddressRepository, times(1)).save(any(Address.class));
     }

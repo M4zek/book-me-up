@@ -1,9 +1,8 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.projection.ReservationReadModel;
 import jakarta.persistence.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Entity(name = "reservations")
 public class Reservation extends BaseEntity {
@@ -12,12 +11,12 @@ public class Reservation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private ZonedDateTime reservationDate;
+    private LocalDateTime reservationDate;
 
     private String reservationNumber;
 
     @Enumerated(EnumType.STRING)
-    private ReservationStatus reservationStatus;
+    private ReservationStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,29 +26,57 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "company_offer_id")
     private CompanyOffer companyOffer;
 
+    @ManyToOne
+    @JoinColumn(name = "preferred_user_id")
+    private User preferredUser;
+
     public Reservation() {}
 
-    public Reservation(ZonedDateTime reservationDate, String reservationNumber, User user, CompanyOffer companyOffer) {
+    public Reservation(LocalDateTime reservationDate, String reservationNumber, User user, CompanyOffer companyOffer,  User preferredUser) {
         this.reservationDate = reservationDate;
         this.reservationNumber = reservationNumber;
         this.user = user;
         this.companyOffer = companyOffer;
-        this.reservationStatus = ReservationStatus.PENDING;
+        this.preferredUser = preferredUser;
+        this.status = ReservationStatus.PENDING;
     }
 
 
-    public ZonedDateTime getReservationDate() {
+    public LocalDateTime getReservationDate() {
         return this.reservationDate;
     }
 
-    public ReservationReadModel toReadModel() {
-        return ReservationReadModel.builder()
-                .customer(this.user.toUserReadModel())
-                .status(this.reservationStatus.toString())
-                .companyOffer(this.companyOffer.toReadModel())
-                .reservationNumber(this.reservationNumber)
-                .reservationDate(this.reservationDate)
-                .build();
+
+    public CompanyOffer getCompanyOffer() {
+        return this.companyOffer;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
+    public String getReservationNumber() {
+        return reservationNumber;
+    }
+
+    public String getReservationStatus() {
+        return status.name();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public User getPreferredUser() {
+        return preferredUser;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
+    public void assignNewPreferredUser(User preferredUser) {
+        this.preferredUser = preferredUser;
+    }
 }

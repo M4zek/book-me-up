@@ -3,12 +3,15 @@ package com.m4zek.backend;
 import com.m4zek.backend.exception.CategoryExistsException;
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.projection.CategoryReadModel;
-import com.m4zek.backend.model.projection.CategoryWriteModel;
+import com.m4zek.backend.model.dto.read.CategoryResponse;
+import com.m4zek.backend.model.dto.write.CategoryRequest;
 import com.m4zek.backend.repository.CategoryRepository;
 import com.m4zek.backend.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +28,7 @@ public class CategoryServiceTest {
     @DisplayName("Should create new category")
     void createCategory_categoryCreated() {
         // given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("New category")
                 .build();
 
@@ -40,7 +43,7 @@ public class CategoryServiceTest {
         var newCategory = toTest.saveCategory(categoryDTO);
 
         //then
-        assertThat(newCategory.toReadModel().getName()).isEqualTo(categoryDTO.getName());
+        assertThat(newCategory.getName()).isEqualTo(categoryDTO.getName());
         verify(mockCategoryRepository, times(1)).save(any(Category.class));
 
     }
@@ -49,7 +52,7 @@ public class CategoryServiceTest {
     @DisplayName("saveCategory() - Should throw CategoryExistsException when an entity with that category name already exists")
     void createCategory_categoryAlreadyExists() {
         //given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -78,22 +81,27 @@ public class CategoryServiceTest {
         // given
         Category category1 = new Category("Category1");
         Category category2 = new Category("Category2");
+        var pageable = PageRequest.of(0, 10);
 
         var mockCategoryRepository = mock(CategoryRepository.class);
-        when(mockCategoryRepository.findAll()).thenReturn(List.of(category1, category2));
+        when(mockCategoryRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(category1, category2)));
 
         // system under test
         var toTest = new CategoryService(mockCategoryRepository);
 
+
+
         // when
-        List<CategoryReadModel> categories = toTest.findAllCategories();
+        Page<CategoryResponse> categories = toTest.findAllCategories(pageable);
+        List<CategoryResponse> content = categories.getContent();
 
         // then
-        assertThat(categories).hasSize(2);
-        assertThat(categories.get(0).getName()).isEqualTo("Category1");
-        assertThat(categories.get(1).getName()).isEqualTo("Category2");
+        assertThat(content)
+                .hasSize(2)
+                .extracting(CategoryResponse::getName)
+                .containsExactly("Category1", "Category2");
 
-        verify(mockCategoryRepository, times(1)).findAll();
+        verify(mockCategoryRepository, times(1)).findAll(pageable);
     }
 
 
@@ -101,7 +109,7 @@ public class CategoryServiceTest {
     @DisplayName("updateCategoryName() - Should throw CategoryExistsException when an entity with that category name already exists")
     void updateCategoryName_shouldThrowCategoryExistException() {
         //given
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -130,7 +138,7 @@ public class CategoryServiceTest {
     void updateCategoryName_shouldThrowCategoryNotFoundException() {
         // given
         int categoryId = 1;
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
         var mockCategoryRepository = mock(CategoryRepository.class);
@@ -155,7 +163,7 @@ public class CategoryServiceTest {
     void updateCategory_success() {
         //given
         var categoryId = 0;
-        var categoryDTO = CategoryWriteModel.builder()
+        var categoryDTO = CategoryRequest.builder()
                 .name("Category1")
                 .build();
 
@@ -170,7 +178,7 @@ public class CategoryServiceTest {
         var toTest = new CategoryService(mockCategoryRepository);
 
         //when
-        CategoryReadModel updatedCategory = toTest.updateCategoryName(categoryId, categoryDTO);
+        CategoryResponse updatedCategory = toTest.updateCategoryName(categoryId, categoryDTO);
 
         // then
         assertThat(updatedCategory.getName()).isEqualTo(categoryDTO.getName());

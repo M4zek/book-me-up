@@ -1,17 +1,22 @@
 package com.m4zek.backend.controller;
 
-import com.m4zek.backend.model.projection.ReviewReadModel;
-import com.m4zek.backend.model.projection.ReviewWriteModel;
+import com.m4zek.backend.model.dto.read.UserReviewResponse;
+import com.m4zek.backend.model.dto.write.ReviewRequest;
 import com.m4zek.backend.service.ReviewService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1/companies/reviews")
+@RequestMapping("/api")
+@Validated
 public class CompanyReviewController {
 
     private final ReviewService reviewService;
@@ -20,17 +25,28 @@ public class CompanyReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping
-    public ResponseEntity<ReviewReadModel> createNewReview(@RequestBody @Valid ReviewWriteModel reviewWriteModel) {
-        ReviewReadModel savedReview = this.reviewService.createNewReview(reviewWriteModel);
+
+    /*
+            PRIVATE ENDPOINT
+     */
+    @PostMapping("/v1/companies/reviews")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<UserReviewResponse> createNewReview(@RequestBody @Valid ReviewRequest reviewRequest) {
+        UserReviewResponse savedReview = this.reviewService.createNewReview(reviewRequest);
         return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
     }
 
 
-    @GetMapping("/{company_offer_id}")
-    public ResponseEntity<List<ReviewReadModel>> readAllCompanyOfferReviews(@PathVariable long company_offer_id){
-        return ResponseEntity.ok(this.reviewService.readAllCompanyOfferReviews(company_offer_id));
+    /*
+        PUBLIC ENDPOINT
+     */
+    @GetMapping("/public/companies/{companyId}/reviews")
+    public ResponseEntity<Page<UserReviewResponse>> getCompanyReviews(
+            Pageable pageable,
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
+            @RequestParam(required = false)
+            @Range(min = 1, max = 5, message = "Rating must be from 1 to 5") Integer rating) {
+        return ResponseEntity.ok(this.reviewService.getCompanyReviews(pageable, companyId, rating));
     }
-
 
 }

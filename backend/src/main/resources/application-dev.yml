@@ -12,3 +12,12 @@ spring:
         dialect: org.hibernate.dialect.MariaDBDialect
   jackson:
     time-zone: Europe/Warsaw
+
+# JSON Web Encryption token information
+jwe:
+  token:
+    expirationSec: 360            # 360 = 5 min sec
+    refreshExpirationSec: 1800    # 1800 = 30 min
+    header: Authorization
+    prefix: Bearer
+

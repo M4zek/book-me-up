@@ -1,7 +1,7 @@
 services:
-  maria_db:
+  db:
     image: mariadb:latest
-    container_name: maria_db
+    container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_USERNAME: root
@@ -9,24 +9,30 @@ services:
     ports:
       - "3306:3306"
 
-  api:
-    container_name: backend
+  backend-api:
+    container_name: backend-api
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
-      - maria_db
+      - db
     restart:
       on-failure
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://maria_db:3306/book_me_up?serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/book_me_up?serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MariaDBDialect
       SPRING_JPA_HIBERNATE_NAMING-STRATEGY: org.hibernate.cfg.ImprovedNamingStrategy
 
-
+  frontend-app:
+    container_name: frontend-app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
 

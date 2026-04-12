@@ -3,9 +3,12 @@ package com.m4zek.backend.service;
 import com.m4zek.backend.exception.CategoryExistsException;
 import com.m4zek.backend.exception.CategoryNotFoundException;
 import com.m4zek.backend.model.Category;
-import com.m4zek.backend.model.projection.CategoryReadModel;
-import com.m4zek.backend.model.projection.CategoryWriteModel;
+import com.m4zek.backend.model.dto.read.CategoryResponse;
+import com.m4zek.backend.model.dto.write.CategoryRequest;
 import com.m4zek.backend.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,33 +23,38 @@ public class CategoryService {
     }
 
 
-    public Category saveCategory(CategoryWriteModel categoryWriteModel) {
-        this.categoryRepository.findByName(categoryWriteModel.getName()).ifPresent(category -> {
-            throw new CategoryExistsException("Category with name " + categoryWriteModel.getName() + " already exists");
+    public Category saveCategory(CategoryRequest categoryRequest) {
+        this.categoryRepository.findByName(categoryRequest.getName()).ifPresent(category -> {
+            throw new CategoryExistsException("Category with name " + categoryRequest.getName() + " already exists");
         });
 
-        Category category = categoryWriteModel.toEntity();
+        Category category = categoryRequest.toEntity();
         return this.categoryRepository.save(category);
     }
 
-    public List<CategoryReadModel> findAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(Category::toReadModel)
+
+    public Page<CategoryResponse> findAllCategories(Pageable pageable) {
+        Page<Category> pageCategory = categoryRepository.findAll(pageable);
+
+        List<CategoryResponse> categoryResponses = pageCategory.stream()
+                .map(CategoryResponse::new)
                 .toList();
+
+        return new PageImpl<>(categoryResponses, pageable, pageCategory.getTotalElements());
     }
 
-    public CategoryReadModel updateCategoryName(int id, CategoryWriteModel categoryWriteModel) {
-        this.categoryRepository.findByName(categoryWriteModel.getName()).ifPresent(category -> {
-            throw new CategoryExistsException("Category with name " + categoryWriteModel.getName() + " already exists");
+    public CategoryResponse updateCategoryName(int id, CategoryRequest categoryRequest) {
+        this.categoryRepository.findByName(categoryRequest.getName()).ifPresent(category -> {
+            throw new CategoryExistsException("Category with name " + categoryRequest.getName() + " already exists");
         });
 
         Category currentCategory = this.categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with id " + id + " not found"));
 
-        currentCategory.updateName(categoryWriteModel.getName());
+        currentCategory.updateName(categoryRequest.getName());
         currentCategory = this.categoryRepository.save(currentCategory);
 
-        return currentCategory.toReadModel();
+        return new CategoryResponse(currentCategory);
     }
 
 }

@@ -1,8 +1,9 @@
 package com.m4zek.backend.controller;
 
+import com.m4zek.backend.mapper.AddressMapper;
 import com.m4zek.backend.model.Address;
-import com.m4zek.backend.model.projection.AddressReadModel;
-import com.m4zek.backend.model.projection.AddressWriteModel;
+import com.m4zek.backend.model.dto.read.AddressResponse;
+import com.m4zek.backend.model.dto.write.AddressRequest;
 import com.m4zek.backend.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.net.URI;
 @RequestMapping("api/v1/addresses")
 public class AddressController {
 
+    // TODO This controller will be remove because all operation with addresses will be processing in CompanyController
 
     private final AddressService addressService;
 
@@ -26,21 +28,21 @@ public class AddressController {
 
 
     @PostMapping
-    public ResponseEntity<AddressReadModel> addAddress(@RequestBody @Valid AddressWriteModel addressWriteModel)
+    public ResponseEntity<AddressResponse> addAddress(@RequestBody @Valid AddressRequest addressRequest)
     {
-        Address responseEntity =  this.addressService.createNewAddress(addressWriteModel);
-        int addressId = responseEntity.toReadModel().getId();
+        Address address =  this.addressService.createNewAddress(addressRequest);
+        int addressId = address.getId();
         URI location = URI.create("/api/v1/addresses/" + addressId);
-        return ResponseEntity.created(location).body(responseEntity.toReadModel());
+        return ResponseEntity.created(location).body(AddressMapper.addressToAddressResponse(address));
     }
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateAddress(@PathVariable("id") int id,
-                                           @RequestBody @Valid AddressWriteModel addressWriteModel)
+    public ResponseEntity<AddressResponse> updateAddress(@PathVariable("id") int id,
+                                           @RequestBody @Valid AddressRequest addressRequest)
     {
-        AddressReadModel responseEntity = this.addressService.updateAddress(id, addressWriteModel).toReadModel();
-        return ResponseEntity.ok(responseEntity);
+        Address address = this.addressService.updateAddress(id, addressRequest);
+        return ResponseEntity.ok(AddressMapper.addressToAddressResponse(address));
     }
 
 }

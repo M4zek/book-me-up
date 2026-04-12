@@ -1,7 +1,6 @@
 package com.m4zek.backend.model;
 
 
-import com.m4zek.backend.model.projection.CompanyOfferReadModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,7 +13,10 @@ public class CompanyOffer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
     private double price;
     private int duration;
@@ -24,10 +26,10 @@ public class CompanyOffer extends BaseEntity {
     private Company company;
 
     @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
-    List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "companyOffer", cascade = CascadeType.ALL)
-    List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
 
     public CompanyOffer() {}
 
@@ -39,12 +41,53 @@ public class CompanyOffer extends BaseEntity {
         this.company = company;
     }
 
-    public CompanyOfferReadModel toReadModel() {
-        return CompanyOfferReadModel.builder()
-                .name(this.name)
-                .description(this.description)
-                .price(this.price)
-                .duration(this.duration)
-                .build();
+    // ------------ METHODS -------------
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
