@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Address extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String city;
