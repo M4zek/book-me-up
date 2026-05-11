@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReviewRepository {
 
     boolean existsByUserIdAndCompanyOfferId(int userId, long companyOfferId);
 
     Review save(Review newReview);
+
+    Optional<Review> findById(Integer id);
 
     @Query("""
         SELECT DISTINCT new com.m4zek.backend.model.projection.ReviewStatisticsProjection(

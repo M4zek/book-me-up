@@ -1,9 +1,11 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.model.dto.read.UserReviewResponse;
+import com.m4zek.backend.model.dto.write.ReviewPatchRequest;
 import com.m4zek.backend.model.dto.write.ReviewRequest;
 import com.m4zek.backend.service.ReviewService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,17 @@ public class CompanyReviewController {
     public ResponseEntity<UserReviewResponse> createNewReview(@RequestBody @Valid ReviewRequest reviewRequest) {
         UserReviewResponse savedReview = this.reviewService.createNewReview(reviewRequest);
         return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
+    }
+
+    // Endpoint for updating the review by their owner
+    @PatchMapping("/v1/companies/reviews/{reviewId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<UserReviewResponse> updateReview(
+            @Positive(message = "Review id must be positive number")
+            @NotNull(message = "Review id must not be null")
+            @PathVariable Integer reviewId,
+            @RequestBody @Valid ReviewPatchRequest updateReview) {
+         return ResponseEntity.ok(this.reviewService.updateReview(reviewId, updateReview));
     }
 
 

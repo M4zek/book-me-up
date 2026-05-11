@@ -59,4 +59,12 @@ public class Review extends BaseEntity{
     public User getUser() {
         return user;
     }
+
+    public void changeRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public void changeComment(String comment) {
+        this.comment = comment;
+    }
 }
