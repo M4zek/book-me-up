@@ -28,6 +28,7 @@ import {
 } from "./pages/company-management-page/company-management-bookings-calendar/company-management-bookings-calendar.component";
 import {CompanyRoleGuard} from "./company-role.guard";
 import {ForbiddenPageComponent} from "./pages/forbidden-page/forbidden-page.component";
+import {ServerErrorPageComponent} from "./pages/server-error-page/server-error-page.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -96,5 +97,6 @@ export const routes: Routes = [
           ]}
       ]
     },
-    { path: '**', component: PageNotFoundComponent }
+    { path:'server-error', component: ServerErrorPageComponent },
+    { path: '**', component: PageNotFoundComponent },
 ];

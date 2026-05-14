@@ -5,12 +5,14 @@ import {RefreshTokenResponse} from "./model/http/auth.model";
 import {UserContextService} from "./service/user-context.service";
 import {AuthService} from "./service/auth.service";
 import {ToastService} from "./service/toast.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
     constructor(private userContextService: UserContextService,
                 private authService: AuthService,
+                private router: Router,
                 private toast: ToastService) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -49,6 +51,11 @@ export class AuthInterceptor implements HttpInterceptor {
                                     this.userContextService.deleteUserFromStorage();
                                     this.toast.show("Your session has expired, please log in again...", "warning");
                                 }
+                                break;
+
+                            case 500:
+                                this.router.navigate(['/server-error']);
+                                this.toast.show("Internal server error", "error");
                                 break;
                         }
                     }
