@@ -6,17 +6,14 @@ import {CompanyEmployeeListComponent} from "../../components/company-employee-li
 import {CompanyBusinessHoursComponent} from "../../components/company-business-hours/company-business-hours.component";
 import {CompanyOpinionsComponent} from "../../components/company-opinions/company-opinions.component";
 import {CompanyService} from "../../service/company.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
 import {Address} from "../../model/gui/gui.model";
-import {
-    CompanyDetailsResponse,
-    CompanyOffersResponse,
-    CompanyPortfolioResponse
-} from "../../model/http/company.model";
+import {CompanyDetailsResponse, CompanyOffersResponse, CompanyPortfolioResponse} from "../../model/http/company.model";
 import {Pagination} from "../../model/search/search.model";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-company-view',
@@ -29,7 +26,8 @@ import {PaginatorComponent} from "../../components/paginator/paginator.component
         CompanyOpinionsComponent,
         NgIf,
         DoubleSpinnerComponent,
-        PaginatorComponent
+        PaginatorComponent,
+        RouterLink
     ],
   templateUrl: './company-view.component.html',
   styleUrl: './company-view.component.css'
@@ -70,7 +68,9 @@ export class CompanyViewComponent implements OnInit {
       logo: ''
   };
 
-  requestCompanySuccess = false; // Flag to show data company when request successfully pass
+  isDataLoading = false;
+  hasDataLoadingError = false;
+
   requestCompanyOfferSuccess = false; // Flag to show company offer when request successfully pass
   company_id: number | null = null;
 
@@ -78,11 +78,53 @@ export class CompanyViewComponent implements OnInit {
               private routerActive: ActivatedRoute) {}
 
   ngOnInit(): void {
+
       this.company_id = Number(this.routerActive.snapshot.paramMap.get("id"));
-      if (this.company_id){
-          this.readCompanyFromApi(this.company_id);
-          this.readCompanyOfferFromApi(this.company_id);
-          this.readPortfolioCompanyFromApi(this.company_id);
+
+      if(this.company_id){
+
+          this.isDataLoading = true;
+          this.hasDataLoadingError = false;
+
+          forkJoin([
+              this.companyService.getCompanyDetailById(this.company_id),
+              this.companyService.getCompanyOffersByCompanyId(this.company_id, this.pagination),
+              this.companyService.getCompanyPortfolioByCompanyId(this.company_id),
+          ]).subscribe({
+              next: ([details, offers, portfolio]) => {
+
+                  if(details.body && details.status === 200){
+                      this.company = details.body;
+                      this.company.employees = [this.company.owner, ...this.company.employees];
+                      this.companyAddress = this.getAddressToMap();
+                  }
+
+                  if(portfolio.body && portfolio.status === 200){
+                      this.portfolioItems = portfolio.body.content;
+                  }
+
+                  if(offers.body && portfolio.body){
+                      this.offerItems = offers.body.content
+                      this.pagination.currentPage = offers.body.page.number;
+                      this.pagination.totalItems = offers.body.page.totalElements;
+                      this.requestCompanyOfferSuccess = true;
+                  } else {
+                      this.offerItems = [];
+                      this.requestCompanyOfferSuccess = false;
+                  }
+
+                  this.isDataLoading = false;
+              },
+              error: (err) => {
+                  console.log(err);
+                  this.hasDataLoadingError = true;
+                  this.isDataLoading = false;
+
+              },
+              complete: () => {
+                  this.isDataLoading = false;
+              }
+          })
       }
 
   }
@@ -96,34 +138,6 @@ export class CompanyViewComponent implements OnInit {
   }
 
 
-  private readCompanyFromApi(id: number){
-      this.companyService.getCompanyDetailById(id).subscribe({
-          next: (response) => {
-              if(response.status === 200 && response.body) {
-                  this.company = response.body;
-                  this.company.employees = [this.company.owner, ...this.company.employees];
-                  this.companyAddress = this.getAddressToMap()
-                  this.requestCompanyOfferSuccess = true;
-              }
-          },
-          error: (error) => {
-              this.requestCompanyOfferSuccess = false;
-              const message = error.error;
-              console.log(message);
-          }
-      })
-  }
-
-
-  private readPortfolioCompanyFromApi(id: number){
-    this.companyService.getCompanyPortfolioByCompanyId(id).subscribe({
-        next: (response) => {
-            if(response.status === 200 && response.body) {
-                this.portfolioItems = response.body.content
-            }
-        }
-    })
-  }
 
   private readCompanyOfferFromApi(id: number){
       this.offerItems = []

@@ -12,6 +12,43 @@
     align-items: center;
 }
 
+.no-reservations{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+}
+.no-reservations span{
+    font-size: x-large;
+    color: var(--white);
+}
+
+.no-reservations > .btn{
+    width: fit-content;
+    background-color: var(--dark-blue);
+    padding: 10px;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+}
+
+.no-reservations > .btn:hover{
+    background-color: var(--pink_50);
+    transform: scale(1.05);
+}
+
+
+.no-reservations > .btn > span{
+    color: var(--white);
+    font: bold 14px "Roboto", sans-serif;
+    cursor: pointer;
+    user-select: none;
+}
+
+
 .appointments-list{
     display: grid;
     /*flex: 1;*/

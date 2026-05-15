@@ -1,4 +1,16 @@
-<div class="company-container">
+<div class="company-container" *ngIf="isDataLoading">
+    <app-double-spinner [text]="'Company loading please wait'" />
+</div>
+
+<div class="company-not-found" *ngIf="hasDataLoadingError">
+    <img [src]="'images/404_not_found.png'" alt="404 not found"/>
+    <span class="error-message">Company not found</span>
+    <div class="btn" routerLink="/">
+        <span>Back to home page</span>
+    </div>
+</div>
+
+<div class="company-container" *ngIf="!hasDataLoadingError && !isDataLoading">
     <div class="left-container">
         <app-image-list [imageList]="portfolioItems"></app-image-list>
         <div class="horizontal-container">

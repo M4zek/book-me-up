@@ -1,5 +1,6 @@
 <div class="appointments-container">
     <app-search-and-sort-bar
+            [class.disabled]="reservationList.length == 0"
             [placeholder]="'Search by offer name... '"
             [showFilter]="true"
             [filterByItems]="filterByItems"
@@ -12,9 +13,16 @@
         <app-double-spinner/>
     </div>
 
+    <div class="no-reservations" *ngIf="!isReservationLoading && reservationList.length == 0">
+        <span>You don't have any reservations yet.</span>
+        <div class="btn" routerLink="/app/home/search">
+            <span>Make an reservation!</span>
+        </div>
+    </div>
+
     <div class="appointments-list"
          [class.show]="!isReservationLoading"
-         *ngIf="!isReservationLoading">
+         *ngIf="!isReservationLoading && reservationList.length > 0">
 
         <div class="appointment-item"
              [ngClass]="item.status.toLowerCase()"
