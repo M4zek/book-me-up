@@ -139,8 +139,8 @@ public class CompanyController {
     @GetMapping("/public/companies/recommended")
     public ResponseEntity<Page<CompanySummaryResponse>> recommendedCompanies(
             Pageable pageable,
-            @RequestParam(required = false) @Size(min = 1, message = "City name cannot be empty") String city,
-            @RequestParam(required = false) @Size(min = 1, message = "Category name cannot be empty") String category
+            @RequestParam(required = false) @Size(min = 2, message = "City name cannot be empty (Min 2 chars)") String city,
+            @RequestParam(required = false) @Size(min = 2, message = "Category name cannot be empty (Min 2 chars)") String category
     ) {
         return ResponseEntity.ok(this.companyService.readRecommendedCompany(pageable, city, category));
     }

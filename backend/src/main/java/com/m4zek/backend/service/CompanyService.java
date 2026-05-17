@@ -90,8 +90,7 @@ public class CompanyService {
 
 
     public Page<CompanySummaryResponse> readRecommendedCompany(Pageable pageable, String city, String category) {
-        Page<Company> recommendedCompaniesPage = this.companyRepository
-                .findAllOrderByAverageRatingDesc(pageable, city, category);
+        Page<Company> recommendedCompaniesPage = this.searchCompany(city, category, pageable);
 
         List<CompanySummaryResponse> companySummaryResponse = recommendedCompaniesPage.stream().map(
                 company -> {
@@ -279,6 +278,25 @@ public class CompanyService {
                 throw new BadRequestException("Duplicate days found: " + day);
             }
         }
+    }
+
+    private Page<Company> searchCompany(String city, String category, Pageable pageable){
+        boolean hasCity = city != null && !city.isBlank();
+        boolean hasCategory = category != null && !category.isBlank();
+
+        if (hasCity && hasCategory) {
+            return this.companyRepository.findByCityAndCategory(city, category, pageable);
+        }
+
+        if (hasCity) {
+            return this.companyRepository.findByCity(city, pageable);
+        }
+
+        if (hasCategory) {
+            return this.companyRepository.findByCategory(category, pageable);
+        }
+
+        return this.companyRepository.findAll(pageable);
     }
 
 }

@@ -11,8 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class CategoryService {
 
@@ -34,13 +32,8 @@ public class CategoryService {
 
 
     public Page<CategoryResponse> findAllCategories(Pageable pageable) {
-        Page<Category> pageCategory = categoryRepository.findAll(pageable);
-
-        List<CategoryResponse> categoryResponses = pageCategory.stream()
-                .map(CategoryResponse::new)
-                .toList();
-
-        return new PageImpl<>(categoryResponses, pageable, pageCategory.getTotalElements());
+        Page<CategoryResponse> pageCategory = categoryRepository.findAllToDTO(pageable);
+        return new PageImpl<>(pageCategory.stream().toList(), pageable, pageCategory.getTotalElements());
     }
 
     public CategoryResponse updateCategoryName(int id, CategoryRequest categoryRequest) {

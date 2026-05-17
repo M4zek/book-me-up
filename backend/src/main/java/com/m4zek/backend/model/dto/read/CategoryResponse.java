@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CategoryResponse {
     private int id;
     private String name;
-    private int numberOfCompanies;
+    private long numberOfCompanies;
 
     public CategoryResponse(Category category) {
         this.id = category.getId();

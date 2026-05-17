@@ -15,19 +15,15 @@ public interface CompanyRepository {
 
     void delete(Company company);
 
+
+
     @Query("""
-        SELECT c
-        FROM companies c
-        WHERE (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
-          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
-            ORDER BY (
-                SELECT AVG(r.rating)
-                FROM reviews r
-                JOIN r.companyOffer o
-                WHERE o.company = c
-            ) DESC
+    SELECT c FROM companies c
+    ORDER BY c.averageRating DESC
     """)
-    Page<Company> findAllOrderByAverageRatingDesc(Pageable pageable, @Param("city") String city, @Param("category") String category);
+    Page<Company> findAll(Pageable pageable);
+
+
 
     @Query("""
         SELECT c FROM companies c
@@ -41,5 +37,48 @@ public interface CompanyRepository {
             @Param("city") String city,
             @Param("category") String category
     );
+
+
+
+
+
+// Improvement for searching company by category, cities or both.
+
+    @Query(value = """
+        SELECT c.*
+        FROM companies c
+        JOIN addresses a ON a.company_id = c.id
+        WHERE MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE)
+        ORDER BY c.average_rating DESC
+        """, nativeQuery = true)
+    Page<Company> findByCity(String city, Pageable pageable);
+
+
+    @Query(value = """
+        SELECT c.*
+        FROM companies c
+        JOIN categories cat ON cat.id = c.category_id
+        WHERE MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE)
+        ORDER BY c.average_rating DESC
+    """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM companies c
+        JOIN categories cat ON cat.id = c.category_id
+        WHERE MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE)
+    """, nativeQuery = true)
+    Page<Company> findByCategory(String category, Pageable pageable);
+
+
+    @Query(value = """
+        SELECT c.*
+        FROM companies c
+        JOIN addresses a ON a.company_id = c.id
+        JOIN categories cat ON cat.id = c.category_id
+        WHERE MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE)
+          AND MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE)
+        ORDER BY c.average_rating DESC
+        """, nativeQuery = true)
+    Page<Company> findByCityAndCategory(String city, String category, Pageable pageable);
 
 }

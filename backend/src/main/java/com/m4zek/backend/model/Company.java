@@ -12,7 +12,7 @@ import java.util.Set;
 public class Company extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -24,6 +24,7 @@ public class Company extends BaseEntity{
     @Lob
     private byte[] logo;
 
+    private Double averageRating;
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
     private Address address;
 
@@ -51,6 +52,7 @@ public class Company extends BaseEntity{
         this.logo = logo;
         this.category = category;
         this.address = address;
+        this.averageRating = 0.0;
     }
 
     public void addUserRole(CompanyUserRole companyUserRole){
