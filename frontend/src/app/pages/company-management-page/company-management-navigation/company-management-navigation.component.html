@@ -1,8 +1,9 @@
-<div class="company-management-nav">
+<div class="company-management-nav" *ngIf="user_companies.length > 0">
     <div class="header">
         <app-drop-down-list
                 [selectedOption]="selected_company ?? { id: -1, content: ''}"
                 [options]="dropDownCompanyItemList"
+                [noneValue]="false"
                 (valueChanged)="onCompanySelectedChange($event)"
                 [placeholder]="'Select company'"/>
 
@@ -26,6 +27,22 @@
     </div>
 
 </div>
+
+<!--    Show when the user has no companies      -->
+<ng-container *ngIf="user_companies.length == 0">
+    <div class="user-no-companies-container">
+        <span class="span-1">You don't have any companies yet.</span>
+        <span class="span-2">It looks like you don't have any companies listed. <br>
+                    Add your first company to start managing your team and your listings.</span>
+        <div class="add-company-button" (click)="openAddCompanyDialog()">
+            <img [src]="'icons/plus_icon.svg'" alt="add"/>
+            <div class="expand">
+                <span>Add first company</span>
+            </div>
+        </div>
+    </div>
+
+</ng-container>
 
 <app-company-management-add-company-modal
         [isVisible]="isOpenAddDialog"

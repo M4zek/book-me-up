@@ -13,6 +13,7 @@ import {UserContextService} from "../../service/user-context.service";
 import {concatMap} from "rxjs";
 import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
 import {UserReservationResponse} from "../../model/http/reservation.model";
+import {RouterLink} from "@angular/router";
 
 
 export interface Status{
@@ -30,7 +31,8 @@ export interface Status{
         NgIf,
         AddOpinionModalComponent,
         DatePipe,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        RouterLink
     ],
   templateUrl: './user-appointments-page.component.html',
   styleUrl: './user-appointments-page.component.css'

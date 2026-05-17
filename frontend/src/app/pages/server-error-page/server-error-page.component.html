@@ -1,0 +1,16 @@
+<div class="error-cont">
+    <div class="error">
+        <img [src]="'images/server_internal_error.png'" alt='server-error'/>
+        <span class="txt_500">500</span>
+        <span class="txt_error">Internal server error</span>
+        <div class="red-line"></div>
+        <span class="txt_error_info">
+            Unexpected error occurred on the server.
+            <br>
+            Please try again later.
+        </span>
+        <div class="btn-go-home" (click)="goToHomePage()">
+            <span>Go To Homepage</span>
+        </div>
+    </div>
+</div>

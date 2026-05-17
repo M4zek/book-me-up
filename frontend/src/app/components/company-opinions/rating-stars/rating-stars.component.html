@@ -6,14 +6,14 @@
         (click)="setRating(i + 1)"
         >
             <defs>
-                <linearGradient [attr.id]="'grad' + star">
+                <linearGradient [attr.id]="'grad-' + uniqueId + '-' + star">
                     <stop [attr.offset]="getStarFill(star) + '%'" stop-color="gold"/>
                     <stop [attr.offset]="getStarFill(star) + '%'" stop-color="rgba(255, 255, 255, 0.2)"/>
                 </linearGradient>
             </defs>
             <polygon
                     points="12,2 15,9 22,9 17,14 18,21 12,17 6,21 7,14 2,9 9,9"
-                    [attr.fill]="'url(#grad' + star + ')'"
+                    [attr.fill]="'url(#grad-' + uniqueId + '-' + star + ')'"
             />
         </svg>
     </ng-container>

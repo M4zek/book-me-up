@@ -8,12 +8,34 @@
             </div>
             <div class="star-icon-container">
                 <img src="/icons/star_icon.svg" alt="star" *ngFor="let index of rows(opinion.rating)"/>
+
             </div>
         </div>
         <div class="opinion-actions-container" *ngIf="logged_id">
-            <img src="/icons/flag_icon.svg" alt="flag"/>
-            <img src="/icons/trash_icon.svg" alt="flag" *ngIf="isMyOpinion(opinion.author)"/>
-            <img src="/icons/pencil_icon.svg" alt="flag" *ngIf="isMyOpinion(opinion.author)"/>
+            <div class="img-bg"
+                (click)="onReportOpinion()"
+            >
+                <img src="/icons/flag_icon.svg" alt="flag"/>
+                <div class="tooltip">
+                    <span>Report this opinion</span>
+                </div>
+            </div>
+            <div class="img-bg"  *ngIf="isMyOpinion(opinion.author)"
+                        (click)="onDeleteClick()"
+            >
+                <img src="/icons/trash_icon.svg" alt="flag"/>
+                <div class="tooltip">
+                    <span>Delete</span>
+                </div>
+            </div>
+            <div class="img-bg" *ngIf="isMyOpinion(opinion.author)">
+                <img src="/icons/pencil_icon.svg" alt="flag"
+                     (click)="onEditOpinion(opinion)"
+                />
+                <div class="tooltip">
+                    <span>Edit</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="content-opinion">
@@ -21,3 +43,8 @@
         <p class="opinion-message">{{opinion.comment}}</p>
     </div>
 </div>
+
+<app-edit-opinion-modal
+        [opinion]="opinionToEdit"
+        [isVisible]="isModalToEditOpen"
+        (onClose)="onEditModalClose()"/>

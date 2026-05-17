@@ -1,0 +1,44 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <form class="form" [formGroup]="editOpinionForm">
+            <div class="rating-input"
+                 [class.invalid]="editOpinionForm.controls.rating.invalid"
+            >
+                <ng-container>
+
+                    <app-rating-stars
+                            [rating]="editOpinionForm.controls.rating.value ? editOpinionForm.controls.rating.value : 1"
+                            (ratingChanged)="onRatingChanged($event)"
+                            [isEditing]="true"/>
+                </ng-container>
+            </div>
+
+            <div class="opinion-content"
+                 [class.invalid]="editOpinionForm.controls.comment.invalid"
+            >
+            <textarea
+                    formControlName="comment"
+                    [maxLength]="MAX_COMMENT_LENGTH"
+                    placeholder="Write your opinion here..."></textarea>
+                <span class="length-textarea">
+                    {{editOpinionForm.controls.comment.value ? editOpinionForm.controls.comment.value.length : '0'}} / {{MAX_COMMENT_LENGTH}}
+                </span>
+            </div>
+        </form>
+        <div class="inform">
+            <span>Please be informed that it is only possible to edit a review once within a 24-hour period.</span>
+        </div>
+        <div class="btns">
+            <div class="btn cancel" (click)="onCancel()">
+                <span>Cancel</span>
+            </div>
+            <div class="btn"
+                 [class.disabled]="!isDataChanged() || !editOpinionForm.valid"
+                 (click)="onConfirm()">
+                <span>Confirm</span>
+            </div>
+        </div>
+
+    </div>
+</div>

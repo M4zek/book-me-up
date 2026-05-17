@@ -120,3 +120,25 @@
     text-wrap: nowrap;
     user-select: none;
 }
+
+
+.user-no-companies-container{
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-no-companies-container > .span-1{
+    color: var(--white);
+    font: bold 25px/1.5 "Roboto", sans-serif;
+}
+
+.user-no-companies-container > .span-2{
+    color: var(--white);
+    font: italic 15px/1.5 "Roboto", sans-serif;
+    text-align: center;
+}

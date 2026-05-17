@@ -1,0 +1,73 @@
+
+.error-cont{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.error{
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: -10%;
+}
+
+.error > img{
+    width: 50%;
+
+}
+
+.error > .txt_500{
+    color: var(--white);
+    font: 700 5rem 'Roboto', sans-serif;
+}
+
+
+.error > .txt_error{
+    color: var(--white);
+    font: 700 2.5rem 'Roboto', sans-serif;
+}
+
+.error > .red-line{
+    width: 30%;
+    padding: 1px;
+    margin-top: 5px;
+    background: red;
+    border: 2px solid red;
+    border-radius: 15px;
+}
+
+.error > .txt_error_info{
+    color: var(--white);
+    margin-top: 20px;
+    text-align: center;
+    font: 700 1rem 'Roboto', sans-serif;
+}
+
+.error > .btn-go-home{
+    width: 30%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    background: var(--pink);
+    border-radius: 2px;
+    transition: all .3s ease-in-out;
+}
+
+.error > .btn-go-home:hover{
+    background: var(--pink_50);
+}
+
+.error > .btn-go-home > span{
+    color: var(--white);
+    font: 700 1rem 'Courier New', sans-serif;
+    user-select: none;
+}

@@ -10,6 +10,7 @@ import {NgForOf} from "@angular/common";
   styleUrl: './rating-stars.component.css'
 })
 export class RatingStarsComponent {
+  uniqueId = crypto.randomUUID();
   @Input() rating: number = 0;
   @Input() isEditing = false;
   @Output() ratingChanged = new EventEmitter<number>();

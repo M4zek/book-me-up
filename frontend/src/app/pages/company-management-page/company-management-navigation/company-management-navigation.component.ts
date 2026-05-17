@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DropDownListComponent, DropDownListItem} from "../../../components/drop-down-list/drop-down-list.component";
-import {NgClass, NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
 import {
     CompanyManagementAddCompanyModalComponent
@@ -27,7 +27,8 @@ export interface CompanyManagementNavigation {
         NgForOf,
         NgClass,
         RouterLink,
-        CompanyManagementAddCompanyModalComponent
+        CompanyManagementAddCompanyModalComponent,
+        NgIf
     ],
   templateUrl: './company-management-navigation.component.html',
   styleUrl: './company-management-navigation.component.css'
