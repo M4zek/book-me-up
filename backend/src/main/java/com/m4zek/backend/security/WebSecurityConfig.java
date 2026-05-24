@@ -3,6 +3,7 @@ package com.m4zek.backend.security;
 import com.m4zek.backend.security.jwt.AuthenticationTokenFilter;
 import com.m4zek.backend.security.jwt.JwtAuthEntryPoint;
 import com.m4zek.backend.security.service.MyUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -21,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @Configuration
@@ -28,6 +31,9 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableMethodSecurity(prePostEnabled = true)
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class WebSecurityConfig {
+
+    @Value("${app.cors.allowed-origins}")
+    private List<String> allowedOrigins;
 
     private final MyUserDetailsService myUserDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
@@ -78,21 +84,25 @@ public class WebSecurityConfig {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+
+        String[] origins = allowedOrigins.toArray(String[]::new);
+
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://127.0.0.1", "http://localhost:4200")
+                        .allowedOriginPatterns(origins)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("Origin", "X-Requested-With", "Content-Type", "Accept")
                         .allowCredentials(true)
                         .maxAge(3600);
 
                 registry.addMapping("/ws/**")
-                        .allowedOrigins("http://127.0.0.1", "http://localhost:4200")
+                        .allowedOriginPatterns(origins)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(true)
+                        .maxAge(3600);
             }
         };
     }
