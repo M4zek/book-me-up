@@ -8,3 +8,22 @@
     display: flex;
     flex-flow: column;
 }
+
+
+.footer{
+    width: 100%;
+    margin-top: 30px;
+    background-color: var(--black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer > .information-container {
+    width: 75%;
+}
+
+.footer > .information-container > .info-content-paragraph{
+    color: var(--white);
+    text-align: center;
+}
