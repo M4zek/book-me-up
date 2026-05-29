@@ -14,6 +14,7 @@ import {
     WebSocketNotification
 } from "../model/http/chat.model";
 import {AuthService} from "./auth.service";
+import {environment} from "../../environments/environment.development";
 
 
 @Injectable({
@@ -29,7 +30,7 @@ export class WebsocketService {
     connectStatus$ = new BehaviorSubject<boolean>(false);
 
 
-    private ws_url: string = "http://localhost:8080/ws";
+    private ws_url: string = environment.wsUrl;
     private token: string = '';
     private loggedUserId: number | null = null;
     private subscriptions: Map<string, StompSubscription> = new Map();
