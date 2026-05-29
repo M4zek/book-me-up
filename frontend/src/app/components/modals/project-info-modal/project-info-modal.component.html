@@ -1,0 +1,23 @@
+<div class="modal-backdrop" *ngIf="isVisible">
+    <div class="m-content">
+        <h2>Hi there! Great to have you here</h2>
+        <span>
+            This project was created solely for <strong>educational purposes</strong>
+            to develop my programming skills (Angular + Java Spring Boot + Docker).
+        </span>
+        <span>
+        <strong>Important note:</strong> All data displayed on this website (users, posts, email addresses) is completely
+        <strong>fictional</strong>.
+            It was generated automatically using a Python script with the
+            <code>Faker</code> library.
+        </span>
+
+        <span>Want to learn more about the app?
+            <strong><a href="https://github.com/M4zek/book-me-up">Check it out here.</a></strong>
+        </span>
+        <span>Want to see my other projects?
+            <strong><a href="https://github.com/M4zek">Check out my GitHub</a></strong>
+        </span>
+        <button class="modal-btn" (click)='close()'>I understand, proceed to the website</button>
+    </div>
+</div>
