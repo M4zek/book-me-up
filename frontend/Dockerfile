@@ -5,7 +5,7 @@ WORKDIR /usr/local/app
 COPY ./ /usr/local/app/
 
 RUN npm install --force
-RUN npm run build
+RUN npm run build --configuration production # Set up production config
 
 FROM nginx:latest
 

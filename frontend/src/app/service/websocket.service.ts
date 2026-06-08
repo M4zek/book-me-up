@@ -14,7 +14,7 @@ import {
     WebSocketNotification
 } from "../model/http/chat.model";
 import {AuthService} from "./auth.service";
-import {environment} from "../../environments/environment.development";
+import {environment} from "../../environments/environment";
 
 
 @Injectable({
