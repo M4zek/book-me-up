@@ -23,4 +23,4 @@ jwe:
 
 app:
   cors:
-    allowed-origins: https://prod_domain:4200
+    allowed-origins: http://localhost:4200, http://127.0.0.1:4200, wss://m4zek.com.pl, https://m4zek.com.pl
