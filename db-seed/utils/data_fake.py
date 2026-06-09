@@ -1,0 +1,176 @@
+import os
+import random
+from datetime import datetime, timedelta
+
+from faker import Faker
+from faker.decode import unidecode
+
+from model.db_models import UserData, User, Company, CompanyHour, CompanyOffer, Review, CompanyUserRole, Address, \
+    PortfolioImage
+
+fake = Faker("pl_PL")
+
+reviewer_start_id = 2000
+reviewer_end_id = 4500
+
+employee_start_id = 1000
+employee_end_id = 3000
+
+owner_start_id = 1
+owner_end_id = 999
+
+
+
+
+def generate_email(first_name, last_name):
+    first_name = remove_polish_chars(first_name)
+    last_name = remove_polish_chars(last_name)
+
+    e_mail = random.choice(['abc', 'zxc', 'qwe', 'asd', 'qaz'])
+    return f"{first_name.lower()}.{last_name.lower()}@{e_mail}.com"
+
+def remove_polish_chars(text):
+    return unidecode((text))
+
+def read_random_image():
+    files = os.listdir("images")
+    random_file = random.choice(files)
+
+    file_path = os.path.join("images", random_file)
+
+    with open(file_path, "rb") as f:
+        image_bytes = f.read()
+
+    return image_bytes
+
+def random_birthdate(min_age=18, max_age=65):
+    today = datetime.today()
+
+    start_date = today.replace(year=today.year - max_age)
+    end_date = today.replace(year=today.year - min_age)
+
+    random_days = random.randint(0, (end_date - start_date).days)
+    random_birth = start_date + timedelta(days=random_days)
+
+    return random_birth
+
+
+def create_user_data():
+    first_name = fake.first_name()
+    last_name = fake.last_name()
+    date_of_birth = random_birthdate()
+    phone_number = fake.phone_number()
+    photo = read_random_image()
+
+    user_data = UserData(
+        first_name=first_name,
+        last_name=last_name,
+        date_of_birth=date_of_birth,
+        phone_number=phone_number,
+        photo=photo
+    )
+    return user_data
+
+
+def create_user():
+    user_data = create_user_data()
+
+    email = generate_email(first_name=user_data.first_name, last_name=user_data.last_name)
+    password = "$2a$10$PVkQ4ffxidufAlppUz8nAOXje8.OkgUSgStuLL/HRy2jnb41ZnLum" # Default -> Password1!
+
+    user = User(
+        address_email=email,
+        password=password,
+        user_data=user_data,
+    )
+    user.is_block = True
+    return user
+
+
+def create_company():
+    name = fake.company()
+    description = fake.paragraph(nb_sentences=random.randint(12, 20))
+    logo = read_random_image()
+    category_id = random.randint(1, 20)
+
+    return Company(
+        name=name,
+        description=description,
+        logo=logo,
+        category_id=category_id,
+    )
+
+
+def create_day_of_week(day: str):
+    open = random.choices([True, False], weights=[80,20])[0]
+    start_time = f"{random.randint(6, 10):02}:{random.choice([0, 10, 20, 30, 40, 50]):02}"
+    end_time = f"{random.randint(16, 20):02}:{random.choice([0, 10, 20, 30, 40, 50]):02}"
+
+    return CompanyHour(
+        day_of_week=day,
+        open_time=start_time,
+        close_time=end_time,
+        is_open=open,
+    )
+
+
+def create_offer():
+    name = fake.sentence(nb_words=5)
+    description = fake.paragraph(nb_sentences=random.randint(5, 10))
+    price = random.choice([15, 20, 25, 30, 35, 40, 55, 60, 70, 80, 90, 100])
+    duration = random.choice([10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100])
+    return CompanyOffer(
+        name=name,
+        description=description,
+        price=price,
+        duration=duration,
+    )
+
+
+def create_review(reviewer_id):
+    comment = fake.paragraph(nb_sentences=random.randint(1,5))
+    rating = random.randint(1,5)
+    return Review(
+        comment=comment,
+        rating=rating,
+        user_id=reviewer_id,
+    )
+
+def create_owner(company_id, owner_id):
+    role_id = 3
+    return CompanyUserRole(
+        user_id=owner_id,
+        company_id=company_id,
+        company_role_id=role_id,
+    )
+
+
+def create_employee_in_company(company_id, employee_id):
+    role_id = random.choices([1,2], weights=[75,25])
+    return CompanyUserRole(
+        user_id=employee_id,
+        company_id=company_id,
+        company_role_id=role_id,
+    )
+
+
+def create_address():
+    city = fake.city()
+    street = fake.street_name()
+    building_number = fake.building_number()
+    postal_code = fake.postalcode()
+    return Address(
+        city=city,
+        postal_code=postal_code,
+        street=street,
+        building_number=building_number,
+    )
+
+
+def create_portfolio_Image():
+    fileName = fake.word() + ".jpg"
+    image = read_random_image()
+    return PortfolioImage(
+        filename=fileName,
+        image=image
+    )
