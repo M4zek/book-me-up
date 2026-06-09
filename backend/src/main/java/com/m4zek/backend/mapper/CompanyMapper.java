@@ -19,7 +19,7 @@ public class CompanyMapper {
                 .name(company.getName())
                 .logo(ImageMapper.byteImageToBase64(company.getLogo()))
                 .address(AddressMapper.addressToAddressResponse(company.getAddress()))
-                .rating(reviewStatisticsProjection.getAverageRating())
+                .rating(reviewStatisticsProjection.getAverageRating() != null ? reviewStatisticsProjection.getAverageRating() : 0)
                 .numberOfReviews(Integer.parseInt(reviewStatisticsProjection.getTotalReviews().toString()))
                 .build();
     }
