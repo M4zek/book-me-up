@@ -100,7 +100,17 @@ export class CompanyViewComponent implements OnInit {
                   }
 
                   if(portfolio.body && portfolio.status === 200){
-                      this.portfolioItems = portfolio.body.content;
+                      if(this.company.logo && this.company.logo != ''){
+                          const logo = {
+                              id: -1,
+                              filename: 'logo',
+                              image: this.company.logo,
+                              downloadUrl: ''
+                          }
+                          this.portfolioItems.push(logo);
+                      }
+                      this.portfolioItems = [...this.portfolioItems, ...portfolio.body.content];
+
                   }
 
                   if(offers.body && portfolio.body){

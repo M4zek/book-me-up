@@ -11,6 +11,12 @@
     justify-content: center;
 }
 
+.star-container.center{
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+}
+
 .overall-opinions{
     display: flex;
     flex-flow: column;
