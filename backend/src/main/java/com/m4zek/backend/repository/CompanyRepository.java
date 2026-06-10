@@ -25,12 +25,15 @@ public interface CompanyRepository {
 
 
 
-    @Query("""
-        SELECT c FROM companies c
-        WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
-          AND (:city IS NULL OR LOWER(c.address.city) LIKE LOWER(CONCAT('%', :city, '%')))
-          AND (:category IS NULL OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :category, '%')))
-    """)
+    @Query(value = """
+        SELECT c.*
+        FROM companies c
+        JOIN addresses a ON a.company_id = c.id
+        JOIN categories cat ON cat.id = c.category_id
+        WHERE (:name IS NULL OR MATCH(c.name) AGAINST(CONCAT(:name, '*') IN BOOLEAN MODE))
+          AND (:city IS NULL OR MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE))
+          AND (:category IS NULL OR MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE))
+    """, nativeQuery = true)
     Page<Company> searchCompanyByNameAndCityAndCategoryName(
             Pageable pageable,
             @Param("name") String name,
@@ -50,7 +53,15 @@ public interface CompanyRepository {
         JOIN addresses a ON a.company_id = c.id
         WHERE MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE)
         ORDER BY c.average_rating DESC
-        """, nativeQuery = true)
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM companies c
+        JOIN addresses a ON a.company_id = c.id
+        WHERE MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE)
+        """,
+            nativeQuery = true
+    )
     Page<Company> findByCity(String city, Pageable pageable);
 
 
