@@ -26,14 +26,24 @@ public interface CompanyRepository {
 
 
     @Query(value = """
-        SELECT c.*
-        FROM companies c
-        JOIN addresses a ON a.company_id = c.id
-        JOIN categories cat ON cat.id = c.category_id
-        WHERE (:name IS NULL OR MATCH(c.name) AGAINST(CONCAT(:name, '*') IN BOOLEAN MODE))
-          AND (:city IS NULL OR MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE))
-          AND (:category IS NULL OR MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE))
-    """, nativeQuery = true)
+            SELECT c.*
+            FROM companies c
+            JOIN addresses a ON a.company_id = c.id
+            JOIN categories cat ON cat.id = c.category_id
+            WHERE (:name IS NULL OR MATCH(c.name) AGAINST(CONCAT(:name, '*') IN BOOLEAN MODE))
+              AND (:city IS NULL OR MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE))
+              AND (:category IS NULL OR MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE))
+    """,
+        countQuery = """
+            SELECT COUNT(*)
+            FROM companies c
+            JOIN addresses a ON a.company_id = c.id
+            JOIN categories cat ON cat.id = c.category_id
+            WHERE (:name IS NULL OR MATCH(c.name) AGAINST(CONCAT(:name, '*') IN BOOLEAN MODE))
+              AND (:city IS NULL OR MATCH(a.city) AGAINST(CONCAT(:city, '*') IN BOOLEAN MODE))
+              AND (:category IS NULL OR MATCH(cat.name) AGAINST(CONCAT(:category, '*') IN BOOLEAN MODE))
+        """,
+        nativeQuery = true)
     Page<Company> searchCompanyByNameAndCityAndCategoryName(
             Pageable pageable,
             @Param("name") String name,
