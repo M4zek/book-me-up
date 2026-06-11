@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
 import {CompanyPortfolioResponse} from "../../model/http/company.model";
+import {getCompanyLogo} from "../../utils.functions";
 
 @Component({
   selector: 'app-image-list',
@@ -54,6 +55,6 @@ export class ImageListComponent implements OnInit {
   }
 
   getImage() {
-    return `data:image/jpeg;base64,${this.imageList.at(this.currentIndex)?.image}`;
+    return getCompanyLogo(this.imageList.at(this.currentIndex)?.image);
   }
 }

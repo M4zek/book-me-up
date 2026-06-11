@@ -1,6 +1,8 @@
 <div class="opinions-main-container">
     <h2>Opinions</h2>
-    <div class="star-container">
+    <div class="star-container"
+        [class.center]="opinionsDetails.totalReviews == 0"
+    >
         <div class="overall-opinions">
             <p class="overall-value-opinion">{{opinionsDetails.rating | number:'1.1-1'}} / 5</p>
             <app-rating-stars [rating]="opinionsDetails.rating"></app-rating-stars>
@@ -16,14 +18,15 @@
             </div>
         </div>
     </div>
-    <div class="checkbox-wrapper">
+    <div class="checkbox-wrapper" *ngIf="opinionsDetails.totalReviews != 0">
         <input type="checkbox" class="sc-gJwTLC ikxBAC"
                [(ngModel)]="showUserOpinionsList"
                (change)="onShowUserOpinionsListChange($event)">
         <p>Show user opinions</p>
     </div>
     <div class="container-list" #scrollContainer
-    [class.show]="showUserOpinionsList">
+         *ngIf="opinionsDetails.totalReviews != 0"
+        [class.show]="showUserOpinionsList">
         <app-double-spinner *ngIf="isUserOpinionsLoading && opinions.length == 0"/>
         <app-user-opinions-list *ngIf="opinions.length != 0" [opinions]="opinions"></app-user-opinions-list>
 
