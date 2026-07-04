@@ -3,7 +3,7 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.model.dto.read.UserReviewResponse;
 import com.m4zek.backend.model.dto.write.ReviewPatchRequest;
 import com.m4zek.backend.model.dto.write.ReviewRequest;
-import com.m4zek.backend.service.ReviewService;
+import com.m4zek.backend.service.facade.ReviewFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class CompanyReviewController {
 
-    private final ReviewService reviewService;
 
-    public CompanyReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
+    private final ReviewFacade reviewFacade;
+
+    public CompanyReviewController(ReviewFacade reviewFacade) {
+        this.reviewFacade = reviewFacade;
     }
-
 
     /*
             PRIVATE ENDPOINT
@@ -34,7 +34,7 @@ public class CompanyReviewController {
     @PostMapping("/v1/companies/reviews")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<UserReviewResponse> createNewReview(@RequestBody @Valid ReviewRequest reviewRequest) {
-        UserReviewResponse savedReview = this.reviewService.createNewReview(reviewRequest);
+        UserReviewResponse savedReview = this.reviewFacade.createReview(reviewRequest);
         return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
     }
 
@@ -46,7 +46,8 @@ public class CompanyReviewController {
             @NotNull(message = "Review id must not be null")
             @PathVariable Integer reviewId,
             @RequestBody @Valid ReviewPatchRequest updateReview) {
-         return ResponseEntity.ok(this.reviewService.updateReview(reviewId, updateReview));
+         UserReviewResponse response = this.reviewFacade.updateReview(reviewId, updateReview);
+         return ResponseEntity.ok(response);
     }
 
 
@@ -59,7 +60,8 @@ public class CompanyReviewController {
             @Positive(message = "Company id must be positive number") @PathVariable int companyId,
             @RequestParam(required = false)
             @Range(min = 1, max = 5, message = "Rating must be from 1 to 5") Integer rating) {
-        return ResponseEntity.ok(this.reviewService.getCompanyReviews(pageable, companyId, rating));
+        Page<UserReviewResponse> response = this.reviewFacade.readCompanyReviews(companyId, rating, pageable);
+        return ResponseEntity.ok(response);
     }
 
 }

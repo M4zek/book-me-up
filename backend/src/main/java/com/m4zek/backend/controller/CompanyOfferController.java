@@ -4,7 +4,7 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import com.m4zek.backend.model.dto.write.CompanyOfferRequest;
-import com.m4zek.backend.service.CompanyOfferService;
+import com.m4zek.backend.service.facade.CompanyOfferFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 public class CompanyOfferController {
 
 
-    private final CompanyOfferService companyOfferService;
+    private final CompanyOfferFacade companyOfferFacade;
 
-    public CompanyOfferController(CompanyOfferService companyOfferService) {
-        this.companyOfferService = companyOfferService;
+    public CompanyOfferController(CompanyOfferFacade companyOfferFacade) {
+        this.companyOfferFacade = companyOfferFacade;
     }
 
     // Private endpoints
@@ -30,7 +30,7 @@ public class CompanyOfferController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
     public ResponseEntity<CompanyOfferResponse> createCompanyOffer(@RequestBody @Valid CompanyOfferRequest companyOffer, @PathVariable int companyId) {
-        CompanyOfferResponse companyOfferResponse = this.companyOfferService.createNewOffer(companyOffer, companyId);
+        CompanyOfferResponse companyOfferResponse = this.companyOfferFacade.createOffer(companyOffer, companyId);
         return ResponseEntity.ok(companyOfferResponse);
     }
 
@@ -42,7 +42,8 @@ public class CompanyOfferController {
             Pageable pageable)
 
     {
-        return ResponseEntity.ok(this.companyOfferService.searchCompanyOfferByName(companyId, pageable, name));
+        Page<CompanyOfferResponse> offers = this.companyOfferFacade.searchCompanyOfferByName(companyId, name, pageable);
+        return ResponseEntity.ok(offers);
     }
 
     @PatchMapping("/v1/company/{companyId}/offers/{offerId}")
@@ -53,7 +54,8 @@ public class CompanyOfferController {
             @PathVariable int offerId,
             @RequestBody CompanyOfferRequest companyOfferRequest)
     {
-        return ResponseEntity.ok(this.companyOfferService.updateOffer(companyOfferRequest, offerId, companyId));
+        CompanyOfferResponse response = this.companyOfferFacade.updateOffer(companyId, offerId, companyOfferRequest);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -63,7 +65,8 @@ public class CompanyOfferController {
 
     @GetMapping("/public/company/{companyId}/offers")
     public ResponseEntity<Page<CompanyOfferResponse>> readAllCompanyOffers(@PathVariable int companyId, Pageable pageable) {
-        return ResponseEntity.ok(this.companyOfferService.getAllCompanyOffers(companyId, pageable));
+        Page<CompanyOfferResponse> offers = this.companyOfferFacade.findCompanyOffer(companyId, pageable);
+        return ResponseEntity.ok(offers);
     }
 
 

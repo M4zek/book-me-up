@@ -1,6 +1,5 @@
 package com.m4zek.backend.model;
 
-import com.m4zek.backend.model.dto.write.AddressRequest;
 import jakarta.persistence.*;
 
 @Entity(name = "addresses")
@@ -18,7 +17,7 @@ public class Address extends BaseEntity{
 
     private String buildingNumber;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")
     private Company company;
 
@@ -52,20 +51,20 @@ public class Address extends BaseEntity{
         return buildingNumber;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
 
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
 
-    public void update(AddressRequest addressRequest) {
-        if(!this.city.equals(addressRequest.getCity()) && !addressRequest.getCity().isEmpty())
-            this.city = addressRequest.getCity();
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-        if (!this.postalCode.equals(addressRequest.getPostalCode()) && !addressRequest.getPostalCode().isEmpty())
-            this.postalCode = addressRequest.getPostalCode();
-
-        if (!this.street.equals(addressRequest.getStreet()) && !addressRequest.getStreet().isEmpty())
-            this.street = addressRequest.getStreet();
-
-        if (!this.buildingNumber.equals(addressRequest.getBuildingNumber()) && !addressRequest.getBuildingNumber().isEmpty())
-            this.buildingNumber = addressRequest.getBuildingNumber();
+    public void setBuildingNumber(String buildingNumber) {
+        this.buildingNumber = buildingNumber;
     }
 
     public void assignCompany(Company company) {

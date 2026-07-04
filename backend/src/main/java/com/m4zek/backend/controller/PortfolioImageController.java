@@ -1,14 +1,11 @@
 package com.m4zek.backend.controller;
 
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
-import com.m4zek.backend.model.PortfolioImage;
-import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
-import com.m4zek.backend.service.PortfolioImagesService;
+import com.m4zek.backend.model.dto.read.ImageResponse;
+import com.m4zek.backend.service.facade.CompanyPortfolioFacade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +17,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class PortfolioImageController {
 
-    private final PortfolioImagesService portfolioImagesService;
+    private final CompanyPortfolioFacade portfolioFacade;
 
-    public PortfolioImageController(PortfolioImagesService portfolioImagesService) {
-        this.portfolioImagesService = portfolioImagesService;
+    public PortfolioImageController(CompanyPortfolioFacade portfolioFacade) {
+        this.portfolioFacade = portfolioFacade;
     }
 
 
@@ -31,14 +28,14 @@ public class PortfolioImageController {
     @PostMapping("/v1/companies/{companyId}/portfolio-images")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
-    public ResponseEntity<List<PortfolioImageResponse>> uploadNewImage(
+    public ResponseEntity<List<ImageResponse>> uploadNewImage(
             @PathVariable("companyId") int companyId,
             List<MultipartFile> images)
     {
-        List<PortfolioImageResponse> portfolioImageResponses =
-                this.portfolioImagesService.saveImages(companyId, images);
+        List<ImageResponse> imageRespons =
+                this.portfolioFacade.uploadPortfolioImages(images, companyId);
 
-        return ResponseEntity.ok().body(portfolioImageResponses);
+        return ResponseEntity.ok().body(imageRespons);
     }
 
 
@@ -48,30 +45,20 @@ public class PortfolioImageController {
     public ResponseEntity<HttpStatus> removeImage(
             @PathVariable("companyId") int companyId,
             @PathVariable("imageId") int imageId){
-        this.portfolioImagesService.deleteImage(imageId, companyId);
+        this.portfolioFacade.deleteCompanyPortfolioImage(imageId, companyId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/v1/companies/portfolio-images/{imageId}/download")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<byte[]> downloadImage(@PathVariable("imageId") int imageId) {
-        PortfolioImage readModel = this.portfolioImagesService.getImageById(imageId);
-        byte[] image = readModel.getImage();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        headers.setContentDispositionFormData("attachment", readModel.getFilename());
-
-        return new ResponseEntity<>(image, headers, HttpStatus.OK);
-    }
 
 
     // Public endpoints
+    // Read company portfolio
     @GetMapping("/public/companies/{companyId}/portfolio-images")
-    public ResponseEntity<Page<PortfolioImageResponse>> getPortfolioImages(
+    public ResponseEntity<Page<ImageResponse>> getPortfolioImages(
             @PathVariable("companyId") int companyId, Pageable pageable)
     {
-        return ResponseEntity.ok().body(this.portfolioImagesService.readImages(companyId, pageable));
+        Page<ImageResponse> response = this.portfolioFacade.readCompanyPortfolios(companyId, pageable);
+        return ResponseEntity.ok().body(response);
     }
 
 

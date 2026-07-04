@@ -3,14 +3,19 @@ package com.m4zek.backend.aspect;
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.exception.AccessDeniedException;
 import com.m4zek.backend.security.service.MyUserDetails;
-import com.m4zek.backend.service.CompanyRoleService;
+import com.m4zek.backend.service.UserCompanyService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,10 +24,12 @@ import java.util.List;
 @Component
 public class CompanyRoleAspect {
 
-    private final CompanyRoleService companyRoleService;
+    private final static Logger logger = LoggerFactory.getLogger(CompanyRoleAspect.class);
 
-    public CompanyRoleAspect(CompanyRoleService companyRoleService) {
-        this.companyRoleService = companyRoleService;
+    private final UserCompanyService userCompanyService;
+
+    public CompanyRoleAspect(UserCompanyService userCompanyService) {
+        this.userCompanyService = userCompanyService;
     }
 
 
@@ -34,13 +41,24 @@ public class CompanyRoleAspect {
         Integer companyId = extractCompanyId(joinPoint);
         List<String> requiredRoles = Arrays.stream(hasAnyCompanyRole.value()).toList();
 
-        boolean hasAnyRole = this.companyRoleService.hasAnyRoleInCompany(companyId, userId, requiredRoles);
+        boolean hasAnyRole = this.userCompanyService.hasAnyRoleInCompany(companyId, userId, requiredRoles);
 
         if(!hasAnyRole) {
+            Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+
+            RequestMapping mapping =
+                    AnnotatedElementUtils.findMergedAnnotation(
+                            method,
+                            RequestMapping.class
+                    );
+
+            if(mapping != null)
+                logger.info("[PERMISSION DENIED] User [{}] cannot invoke endpoint {}",
+                    userDetails.getEmail(),
+                        Arrays.toString(mapping.path())
+                );
             throw new AccessDeniedException("Permission denied");
         }
-
-        requiredRoles.forEach(role -> System.out.printf("[%d]-[%d] -> [%s]%n", userId, companyId, role));
     }
 
     private Integer extractCompanyId(JoinPoint joinPoint) {

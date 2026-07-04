@@ -1,24 +1,20 @@
 package com.m4zek.backend.service;
 
-import com.m4zek.backend.exception.CompanyNotFoundException;
+import com.m4zek.backend.exception.AccessDeniedException;
 import com.m4zek.backend.exception.ReviewBadRequestException;
 import com.m4zek.backend.exception.ReviewExistsException;
-import com.m4zek.backend.exception.UserNotFoundException;
-import com.m4zek.backend.mapper.ReviewMapper;
+import com.m4zek.backend.exception.ReviewNotFoundException;
 import com.m4zek.backend.model.CompanyOffer;
 import com.m4zek.backend.model.Review;
 import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.dto.read.UserReviewResponse;
 import com.m4zek.backend.model.dto.write.ReviewPatchRequest;
 import com.m4zek.backend.model.dto.write.ReviewRequest;
-import com.m4zek.backend.repository.CompanyOfferRepository;
+import com.m4zek.backend.model.projection.ReviewStatisticsProjection;
 import com.m4zek.backend.repository.ReviewRepository;
-import com.m4zek.backend.repository.UserRepository;
-import com.m4zek.backend.security.service.MyUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -28,77 +24,128 @@ import java.util.List;
 @Service
 public class ReviewService {
 
+    private final static Logger logger = LoggerFactory.getLogger(ReviewService.class);
+
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
-    private final CompanyOfferRepository companyOfferRepository;
 
-
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, CompanyOfferRepository companyOfferRepository) {
+    public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
-        this.companyOfferRepository = companyOfferRepository;
     }
 
 
-    public UserReviewResponse createNewReview(ReviewRequest reviewRequest) {
+    public Page<Review> findCompanyReviews(Pageable pageable, int company_id, Integer rating){
+        return this.reviewRepository.findAllByCompanyIdAndRating(company_id, pageable, rating);
+    }
 
-        if(reviewRepository.existsByUserIdAndCompanyOfferId(reviewRequest.getAuthor_id(), reviewRequest.getCompany_offer_id())){
+
+    public void isUserAlreadyHaveReview(int authorId, int offerId){
+        if(reviewRepository.existsByUserIdAndCompanyOfferId(authorId, offerId)){
             throw new ReviewExistsException("You can only add one review to an offer!");
         }
+    }
 
-        User author = userRepository.findById(reviewRequest.getAuthor_id())
-                .orElseThrow(() -> new UserNotFoundException("Author not found"));
-
-        CompanyOffer companyOffer = companyOfferRepository.findById(reviewRequest.getCompany_offer_id())
-                .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
-
-        if(companyOffer.getReservations().stream()
+    public Review createAndSaveReview(User author, CompanyOffer offer, ReviewRequest request){
+        // If author don't have reservations throw exception
+        if(offer.getReservations().stream()
                 .noneMatch(reservation -> reservation.getUser().equals(author))){
             throw new ReviewBadRequestException("Cannot add review without reservation!");
         }
 
-        Review savedReview = this.reviewRepository.save(new Review(
-                reviewRequest.getComment(),
-                reviewRequest.getRating(),
-                companyOffer,
+        // Create new entity with review
+        Review review = new Review(
+                request.getComment(),
+                request.getRating(),
+                offer,
                 author
-        ));
+        );
 
-        return ReviewMapper.reviewsToUserReviewResponse(savedReview);
+        // Save new review and return entity
+        review = this.save(review);
+        return review;
     }
 
-
-
-    public Page<UserReviewResponse> getCompanyReviews(Pageable pageable, int company_id, Integer rating) {
-        Page<Review> companyReviews = this.reviewRepository.findAllByCompanyIdAndRating(company_id, pageable, rating);
-        List<UserReviewResponse> userReviewResponses = companyReviews.stream()
-                .map(ReviewMapper::reviewsToUserReviewResponse)
-                .toList();
-        return new PageImpl<>(userReviewResponses, pageable, companyReviews.getTotalElements());
-    }
-
-    /**
-     * Method for updating review by id and data including in DTO
-     * @param reviewId - id for updating review
-     * @param patchData - DTO, data for update review (new comment , new rating)
-     * @return Updated review or exception not found review by id
-     */
-    public UserReviewResponse updateReview(Integer reviewId, ReviewPatchRequest patchData) {
-        Review reviewToUpdate = this.reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new CompanyNotFoundException("Company review not found"));
-
+    //    Method for udpating review
+    public Review updateReview(Review review, User loggedUser ,ReviewPatchRequest request){
 
         // If the person calling the endpoint is not the owner of the review
         // , an “Access Denied” exception must be thrown.
-        if(!isReviewOwner(reviewToUpdate)){
-            throw new ReviewBadRequestException("Permission denied!");
+        if(!this.isReviewOwner(review, loggedUser)){
+            throw new AccessDeniedException("Access denied");
         }
 
         // If the last update was 24 hours ago,
         // throw an exception indicating that updates can be performed once an hour.
-        boolean cannotEdit = reviewToUpdate.getModifiedDate().isAfter(LocalDateTime.now().minusHours(24));
-        if(cannotEdit){
-            LocalDateTime mod_plus_24 = reviewToUpdate.getModifiedDate().plusHours(24);
+        isReviewCanUpdate(review);
+
+        // If the new rating isn't empty and differs from the old one, change it.
+        updateReviewRating(review, request);
+
+        // If the new comment isn't empty and differs from the old one, change it.
+        updateReviewComment(review, request);
+
+
+        // Save changes into db and return saved entity
+        review = this.reviewRepository.save(review);
+        logger.info("Review [{}] has been updated successfully", review.getId());
+        return review;
+    }
+
+
+
+    public Review save(Review review){
+        Review saved = this.reviewRepository.save(review);
+        logger.info("Review [{}] has been created by Author [{}]", saved.getId(), saved.getUser().getId());
+        return saved;
+    }
+
+
+    public List<Object[]> findCompanyReviewsData(int companyId) {
+        return this.reviewRepository.findAllByCompanyId(companyId);
+    }
+
+    public ReviewStatisticsProjection findCompanyReviewsStats(int companyId){
+        return this.reviewRepository.findReviewStatsByCompanyId(companyId);
+    }
+
+    public Review findReviewByIdOrElseThrow(int id){
+        return this.reviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
+    }
+
+    // Private Methods =================
+
+    private boolean isReviewOwner(Review review, User user){
+        return review.getUser().getId() == user.getId();
+    }
+
+
+    // Update review rating if request rating is different that rating in review
+    private void updateReviewRating(Review review, ReviewPatchRequest request){
+        if(request.getRating() != null && !review.getRating().equals(request.getRating())){
+            int oldRating = review.getRating();
+            review.changeRating(request.getRating());
+
+            logger.info("Review [{}] rating has been changed from [{}] to [{}]", review.getId(), oldRating, review.getRating());
+        }
+    }
+
+    private void updateReviewComment(Review review, ReviewPatchRequest request){
+        if(request.getComment() != null
+                && !request.getComment().isEmpty()
+                && !review.getComment().equals(request.getComment())){
+            String oldComment = review.getComment();
+            review.changeComment(request.getComment());
+
+            logger.info("Review [{}] comment has been changed from [{}] to [{}]",
+                    review.getId(), oldComment, review.getComment()
+            );
+        }
+    }
+
+    private void isReviewCanUpdate(Review review){
+        if(review.getModifiedDate().isAfter(LocalDateTime.now().minusHours(24)))
+        {
+            LocalDateTime mod_plus_24 = review.getModifiedDate().plusHours(24);
 
             Duration duration = Duration.between(LocalDateTime.now(), mod_plus_24);
 
@@ -111,32 +158,5 @@ public class ReviewService {
 
             throw new ReviewBadRequestException("You can update your review once every 24 hours. Update available for: " + time);
         }
-
-        // If the new rating isn't empty and differs from the old one, change it.
-        if(patchData.getRating() != null && !reviewToUpdate.getRating().equals(patchData.getRating())){
-            reviewToUpdate.changeRating(patchData.getRating());
-        }
-
-        // If the new comment isn't empty and differs from the old one, change it.
-        if(patchData.getComment() != null
-                && !patchData.getComment().isEmpty()
-                && !reviewToUpdate.getComment().equals(patchData.getComment())){
-            reviewToUpdate.changeComment(patchData.getComment());
-        }
-
-        // Save changes into db
-        Review updatedReview = this.reviewRepository.save(reviewToUpdate);
-
-        // Convert and return
-        return ReviewMapper.reviewsToUserReviewResponse(updatedReview);
     }
-
-
-//    Private methods
-    private boolean isReviewOwner(Review review){
-        MyUserDetails myUserDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        int loggedUserId = myUserDetails.getId();
-        return review.getUser().getId() == loggedUserId;
-    }
-
 }

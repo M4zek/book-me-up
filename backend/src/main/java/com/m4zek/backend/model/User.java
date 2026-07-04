@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     private Boolean isEnable;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userDataId")
     private UserData userData;
 

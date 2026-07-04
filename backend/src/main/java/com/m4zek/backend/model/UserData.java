@@ -15,21 +15,21 @@ public class UserData extends BaseEntity {
     private String lastName;
     private Date dateOfBirth;
     private String phoneNumber;
-    @Lob
-    private byte[] photo;
+
 
     @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
     private User user;
 
+    @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
+    private StoredFile avatar;
 
     public UserData() {}
 
-    public UserData(String firstName, String lastName, Date dateOfBirth, String phoneNumber, byte[] photo) {
+    public UserData(String firstName, String lastName, Date dateOfBirth, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
-        this.photo = photo;
     }
 
 
@@ -53,7 +53,8 @@ public class UserData extends BaseEntity {
         return phoneNumber;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+
+    public StoredFile getAvatar(){
+        return this.avatar;
     }
 }

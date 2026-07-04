@@ -62,6 +62,10 @@ public class CompanyHours extends BaseEntity{
         this.closeTime = closeTime;
     }
 
+    public Company getCompany() {
+        return company;
+    }
+
     @Override
     public String toString() {
         return "CompanyHours{" +

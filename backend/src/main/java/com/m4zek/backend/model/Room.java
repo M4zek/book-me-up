@@ -44,6 +44,14 @@ public class Room extends BaseEntity {
         return messages;
     }
 
+    public void addMembers(List<RoomUser> members){
+        this.roles.addAll(members);
+    }
+
+    public void addMessage(Message message){
+        this.messages.add(message);
+    }
+
     public List<RoomUser> getRoles() {
         return roles;
     }

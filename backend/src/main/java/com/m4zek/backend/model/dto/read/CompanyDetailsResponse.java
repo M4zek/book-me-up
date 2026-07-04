@@ -21,6 +21,6 @@ public class CompanyDetailsResponse {
     private ReviewStatisticsResponse reviewStatistics;
     private EmployeeSummaryResponse owner;
     private List<EmployeeSummaryResponse> employees;
-    private String logo;
+    private String logo_url;
 
 }
