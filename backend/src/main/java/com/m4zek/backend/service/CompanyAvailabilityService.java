@@ -242,8 +242,11 @@ public class CompanyAvailabilityService {
 
         return reservations.stream()
                 .filter(r -> {
-                    LocalTime time = r.getReservationDate().toLocalTime();
-                    return time.isBefore(slotEnd) && time.isAfter(slotStart);
+                    LocalTime reservationStart = r.getReservationDate().toLocalTime();
+                    LocalTime reservationEnd = r.getReservationDate().toLocalTime().plusMinutes(r.getCompanyOffer().getDuration());
+
+                    return slotStart.isBefore(reservationEnd)
+                            && slotEnd.isAfter(reservationStart);
                 })
                 .map(r -> r.getPreferredUser().getId())
                 .collect(Collectors.toSet());
