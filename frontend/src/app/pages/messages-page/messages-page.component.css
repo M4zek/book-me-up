@@ -208,7 +208,7 @@
     flex-direction: row;
 }
 
-.images img{
+.images app-my-img{
     width: 30px;
     margin-left: -10px;
     transition: all .5s ease-in-out;
@@ -217,14 +217,14 @@
     aspect-ratio: 1/1;
 }
 
-.images img:first-child{
+.images app-my-img:first-child{
     margin-left: 0;
 }
 
-.images:hover img:first-child{
+.images:hover imapp-my-imgg:first-child{
     margin-left: 0;
 }
-.images:hover img{
+.images:hover app-my-img{
     margin-left: 5px;
 }
 
@@ -237,7 +237,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    padding: 5px 10px;
+    padding: 8px 12px;
     gap: 10px;
     border: 1px solid var(--white-25);
     border-radius: 15px;
@@ -368,17 +368,29 @@
     display: flex;
     flex-direction: row;
     justify-content: end;
-    gap: 5px;
     right: 0;
     padding: 2px 10px 10px 5px;
 }
 
-.parent > .read-by-container > img{
+.parent > .read-by-container > app-my-img{
     width: 1.2rem;
     height: 1.2rem;
     aspect-ratio: 1/1;
     border-radius: 50%;
-    border: 1px solid var(--pink);
+    border: 1px solid var(--white-50);
+    margin-left: -5px;
+}
+
+.parent > .read-by-container > app-my-img:hover{
+    transition: all .3s ease;
+    width: 50px;
+    height: 50px;
+    aspect-ratio: 1/1;
+    z-index: 2;
+}
+
+.parent > .read-by-container > app-my-img:first-child{
+    margin-left: 0;
 }
 
 
@@ -450,10 +462,12 @@
 
 .room-member-list{
     max-width: 30%;
+    display: flex;
 }
 
-.room-member-list > .member-avatar{
+.room-member-list > app-my-img{
     width: 30px;
+    height: 30px;
     margin-left: -15px;
     aspect-ratio: 1/1;
     border-radius: 50%;
@@ -461,7 +475,7 @@
     border: 2px solid var(--white-50);
 }
 
-.room-member-list > .member-avatar:first-child{
+.room-member-list > app-my-img:first-child{
     margin-left: 0;
 }
 

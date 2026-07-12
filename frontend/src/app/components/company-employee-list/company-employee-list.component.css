@@ -13,6 +13,7 @@
 
 .employees{
     width: 100%;
+    position: relative;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
@@ -24,14 +25,16 @@
     gap: 5px;
 }
 
-.employee img{
+.employee > app-my-img{
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
     border: 2px solid var(--white);
+    aspect-ratio: 1/1;
+    overflow: hidden !important;
 }
 
-.employee:nth-child(1) img{
+.employee:nth-child(1) app-my-img{
     border: 2px solid var(--gold)
 }
 

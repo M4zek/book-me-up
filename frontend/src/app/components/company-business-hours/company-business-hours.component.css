@@ -5,36 +5,42 @@
 
 .content{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     min-width: 90px;
-    min-height: 74px;
+
     gap: .5rem;
     padding: .5rem;
     border-radius: 5px;
+
+    position: relative;
+    transition: all .3s ease-in-out;
+}
+
+.content.margin{
+    margin-bottom: 20px;
 }
 
 .content.open{
     background-color: var(--lime_10);
-    box-shadow: inset 0 0 10px var(--lime);
+    box-shadow: inset 0 0 10px var(--lime_50);
 }
 
 .content.closed{
     background-color: var(--pink_10);
-    box-shadow: inset 0 0 10px var(--pink);
+    box-shadow: inset 0 0 10px var(--pink_50);
 
 }
 
 .content.today{
-    border: 2px solid var(--white);
-    box-shadow: inset 0 0 10px var(--white);
+    box-shadow: inset 0 0 5px var(--light-blue);
 }
 
 .parent{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     width: 100%;
     height: 100%;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     align-items: stretch;
 }
 
@@ -59,14 +65,16 @@
     color: var(--white);
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
 .hour-from-paragraph{
-    font: .8rem "Times New Roman", sans-serif;
+    font: 14px "Times New Roman", sans-serif;
     color: var(--white);
     margin: 0;
     padding: 0;
     height: 100%;
+    text-align: center;
 }
 
 .hour-to-paragraph{
@@ -75,4 +83,38 @@
     margin: 0;
     padding: 0;
     height: 100%;
+}
+
+.content > .progress-bar{
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+    box-shadow: 0 0 25px 10px var(--light-blue-50);
+    background-color: var(--light-blue-65);
+    left: 5%;
+    width: 2px;
+    justify-content: center;
+    transform: translateY(-.5rem);
+}
+
+.content > .progress-bar.closed{
+    box-shadow: 0 0 25px 10px var(--pink_50);
+    background-color: var(--pink_75);
+}
+
+.content > .progress-bar > span{
+    position: absolute;
+    color: var(--white);
+    font-size: .8rem;
+
+    left: -13px;
+    bottom: -18px;
+}
+
+
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
 }

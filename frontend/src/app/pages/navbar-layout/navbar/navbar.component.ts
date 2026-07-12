@@ -3,9 +3,10 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
 import {UserContextService} from "../../../service/user-context.service";
 import {Role} from "../../../model/http/auth.model";
-import {getUserAvatar} from "../../../utils.functions";
 import {AuthModalComponent} from "../../../components/modals/auth-modal/auth-modal.component";
 import {RoleCheckerDirective} from "../../../role-checker.directive";
+import {MyImgComponent} from "../../../components/my-img/my-img.component";
+import {FileType} from "../../../model/http/company.model";
 
 
 export interface NAVIGATION{
@@ -30,15 +31,15 @@ export interface UserProfile{
         NgClass,
         NgIf,
         AuthModalComponent,
-        RoleCheckerDirective
+        RoleCheckerDirective,
+        MyImgComponent
     ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
 
-    protected readonly getUserAvatar = getUserAvatar;
-
+    protected readonly FileType = FileType;
     authModalVisible = false;
 
     NAV: NAVIGATION [] = [
@@ -66,7 +67,7 @@ export class NavbarComponent {
             this.user.isLoggedIn = state.isLoggedIn;
             this.user.firstName = state.userData?.firstName;
             this.user.lastName = state.userData?.lastName;
-            this.user.avatar = state.userData?.avatar;
+            this.user.avatar = state.userData?.avatar_url;
         })
     }
 
@@ -77,4 +78,5 @@ export class NavbarComponent {
     protected toggleAuthModalVisible(){
         this.authModalVisible = !this.authModalVisible;
     }
+
 }

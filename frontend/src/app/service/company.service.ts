@@ -28,9 +28,21 @@ export class CompanyService {
   constructor(private http: HttpClient) { }
 
 
-    createCompany(companyRequest: CompanyRequest) {
+    createCompany(companyRequest: CompanyRequest, logo: File | null) {
         const url = '/api/v1/companies';
-        return this.http.post<CompanyDetailsResponse>(url, companyRequest, {observe: 'response'});
+
+        let formDate = new FormData();
+
+        formDate.append('companyRequest',
+            new Blob([JSON.stringify(companyRequest)], {
+                type: 'application/json'
+            })
+        );
+
+        if(logo)
+            formDate.append('file', logo);
+
+        return this.http.post<CompanyDetailsResponse>(url, formDate, {observe: 'response'});
     }
 
   getCompanyRecommended(pagination: Pagination, searchValueOptions?: SearchCompanyOptions) {
@@ -178,13 +190,17 @@ export class CompanyService {
   updateLogoOrNameInCompany(company_id: number, data: LogoName) {
       let  url: string = `/api/v1/companies/${company_id}/profile`;
 
-      // Convert name data to json
-      let json_data = JSON.stringify({name: data.name});
       const formData = new FormData();
+
+      console.log(data.name)
 
       // Assigned data to request (name or logo or both)
       if(data.file) formData.append("logo", data.file)
-      if(data.name) formData.append("data", new Blob([json_data], {type: 'application/json'}));
+
+      // Convert name data to json
+      let json_data = JSON.stringify({name: data.name});
+
+      formData.append("data", new Blob([json_data], {type: 'application/json'}));
 
       return this.http.patch<CompanyDetailsResponse>(url, formData, {observe: 'response'});
   }
@@ -207,7 +223,7 @@ export class CompanyService {
           dayOfWeek: day.dayOfWeek,
           openTime: day.openTime,
           closeTime: day.closeTime,
-          isOpen: day.open
+          open: day.open
       }));
 
       return this.http.patch<CompanyHours[]>(url, body, {observe: 'response'});

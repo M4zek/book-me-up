@@ -21,7 +21,7 @@ export interface Member{
     id: number,
     firstName: string,
     lastName: string,
-    avatar: string | null,
+    avatar: string,
     role: RoomRole,
 }
 

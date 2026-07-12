@@ -107,4 +107,9 @@ export class CompanyManagementOfferComponent implements OnInit {
         this.searchOffers();
     }
 
+    protected onOfferAddToList($event: CompanyOffersResponse | null) {
+        if($event) {
+            this.offers.push($event)
+        }
+    }
 }

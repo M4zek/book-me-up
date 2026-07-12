@@ -34,8 +34,7 @@
                              [class.disabled]="isEmployeeSelected(employee.id)"
                              [class.hired]="isEmployeeAlreadyHired(employee.companyIds)"
                         >
-                            <img [src]="'data:image/jpeg;base64,' + employee.avatar" *ngIf="employee.avatar !== '' && employee.avatar" alt="Avatar"/>
-                            <img [src]="'images/user_default_avatar'" *ngIf="!employee.avatar" alt="Avatar"/>
+                            <app-my-img [src]="employee.avatar_url" [type]="FileType.IMG_USER_AVATAR" alt="Avatar"/>
                             <h2>{{employee.firstName}} {{employee.lastName}}</h2>
                         </div>
 
@@ -51,8 +50,7 @@
                              *ngFor="let empl of selectedEmployee"
                              (click)="removeEmployeeFromSelected(empl.id)"
                         >
-                            <img [src]="'data:image/jpeg;base64,' + empl.avatar" *ngIf="empl.avatar !== '' && empl.avatar" alt="Avatar"/>
-                            <img [src]="'images/user_default_avatar'" *ngIf="!empl.avatar" alt="Avatar"/>
+                            <app-my-img [src]="empl.avatar_url" [type]="FileType.IMG_USER_AVATAR" alt="Avatar"/>
                             <h2>{{empl.firstName}} {{empl.lastName}}</h2>
                         </div>
                     </div>
@@ -90,8 +88,8 @@
                     <div class="employee-item added"
                          *ngFor="let empl of resultEmployeeList"
                     >
-                        <img [src]="'data:image/jpeg;base64,' + empl.avatar" *ngIf="empl.avatar !== '' && empl.avatar" alt="Avatar"/>
-                        <img [src]="'images/user_default_avatar'" *ngIf="!empl.avatar" alt="Avatar"/>
+                        <app-my-img [src]="empl.avatar" [type]="FileType.IMG_USER_AVATAR" alt="Avatar"/>
+
                         <h2>{{empl.firstName}} {{empl.lastName}}</h2>
                     </div>
                 </div>

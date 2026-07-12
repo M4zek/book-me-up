@@ -115,6 +115,9 @@ export class MapComponent {
       },
       complete: () => {
         if (emitResult) this.sendResult();
+        setTimeout(()=>{
+          this.map.invalidateSize()
+        },100)
       }
     });
   }

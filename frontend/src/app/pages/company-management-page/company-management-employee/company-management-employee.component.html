@@ -20,8 +20,15 @@
         <app-double-spinner *ngIf="isEmployeesLoading"/>
 
         <div class="card-container" *ngIf="!isEmployeesLoading">
-            <div class="profile-card" *ngFor="let employee of employeeList">
-                <img [src]="getUserAvatar(employee.avatar)" alt="Profile photo" class="avatar" />
+            <div class="profile-card" *ngFor="let employee of employeeList"
+            [class.owner]="employee.role_in_company.includes('COMPANY_OWNER')"
+            [class.manager]="employee.role_in_company.includes('COMPANY_MANAGER')"
+            >
+                <div class="avatar">
+                    <app-my-img [src]="employee.avatar" [alt]="'Profile photo'" [type]="FileType.IMG_USER_AVATAR"/>
+                </div>
+
+
                 <h3>{{ employee.firstName }} {{employee.lastName}}</h3>
                 <app-drop-down-list
                         [disabled]="!isDataEditable"
@@ -32,7 +39,6 @@
                 />
                 <p class="email">{{ employee.email }}</p>
                 <p class="phone">{{ employee.phone }}</p>
-
                 <div class="fire-employee"
                      *ngIf="employee.role_in_company.toUpperCase() !== 'COMPANY_OWNER'"
                      (click)="fireEmployee(employee)">

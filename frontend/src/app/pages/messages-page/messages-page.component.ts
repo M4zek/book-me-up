@@ -24,6 +24,8 @@ import {filter} from "rxjs";
 import {FormsModule} from "@angular/forms";
 import {ToastService} from "../../service/toast.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
+import {MyImgComponent} from "../../components/my-img/my-img.component";
+import {FileType} from "../../model/http/company.model";
 
 
 @Component({
@@ -36,7 +38,8 @@ import {CdkTextareaAutosize} from "@angular/cdk/text-field";
         SlicePipe,
         DoubleSpinnerComponent,
         FormsModule,
-        CdkTextareaAutosize
+        CdkTextareaAutosize,
+        MyImgComponent
     ],
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.css'
@@ -402,4 +405,6 @@ export class MessagesPageComponent implements OnInit {
             ]
         }
     }
+
+    protected readonly FileType = FileType;
 }

@@ -2,6 +2,7 @@
     <div class="wrapper">
 
         <div class="navbar-left">
+            <img [src]="'images/app-logo.png'" alt="Logo"/>
             <h2 routerLink="/">Book Me Up</h2>
         </div>
 
@@ -21,7 +22,11 @@
 
 
         <div class="navbar-right" *ngIf="user.isLoggedIn">
-            <img [src]="getUserAvatar(user.avatar)" alt="avatar"/>
+            <app-my-img
+                    [type]="FileType.IMG_USER_AVATAR"
+                    [src]="user.avatar? user.avatar : '' "
+                    [alt]="'avatar'"/>
+
             <span class="user-name-txt">{{user.firstName}} {{user.lastName}}</span>
             <img [src]="'icons/logout_icon.svg'" alt="logout" (click)="logout()"/>
         </div>

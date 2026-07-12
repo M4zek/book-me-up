@@ -1,11 +1,13 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
-import {CompanySummaryResponse} from "../../model/http/company.model";
+import {CompanySummaryResponse, FileType} from "../../model/http/company.model";
+import {MyImgComponent} from "../my-img/my-img.component";
 
 @Component({
     selector: 'app-company-list-item',
     imports: [
-        DecimalPipe
+        DecimalPipe,
+        MyImgComponent
     ],
     templateUrl: './company-list-item.component.html',
     styleUrl: './company-list-item.component.css'
@@ -28,4 +30,6 @@ export class CompanyListItemComponent implements OnChanges {
             }
         }
     }
+
+    protected readonly FileType = FileType;
 }

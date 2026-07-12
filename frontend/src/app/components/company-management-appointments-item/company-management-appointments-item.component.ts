@@ -8,6 +8,8 @@ import {CompanyContextService} from "../../service/company-context.service";
 import {ConfirmService} from "../../service/confirm.service";
 import {ReservationService} from "../../service/reservation.service";
 import {ToastService} from "../../service/toast.service";
+import {MyImgComponent} from "../my-img/my-img.component";
+import {FileType} from "../../model/http/company.model";
 
 
 @Component({
@@ -16,12 +18,14 @@ import {ToastService} from "../../service/toast.service";
         DropDownListComponent,
         NgIf,
         DoubleSpinnerComponent,
-        DatePipe
+        DatePipe,
+        MyImgComponent
     ],
   templateUrl: './company-management-appointments-item.component.html',
   styleUrl: './company-management-appointments-item.component.css'
 })
 export class CompanyManagementAppointmentsItemComponent implements OnChanges {
+  protected readonly FileType = FileType;
 
   @Input() isEditable = false;
   @Input() selectedStatus: DropDownListItem = { content: ''};
@@ -83,7 +87,7 @@ export class CompanyManagementAppointmentsItemComponent implements OnChanges {
       let prefEmpl = this.reservation.preferredEmployee;
 
       if(prefEmpl){
-            this.selectedEmployee = {id: prefEmpl.id, content: prefEmpl.firstName + " " + prefEmpl.lastName, image: prefEmpl.avatar ? prefEmpl.avatar : undefined};
+            this.selectedEmployee = {id: prefEmpl.id, content: prefEmpl.firstName + " " + prefEmpl.lastName, image: prefEmpl.avatar};
       } else {
           this.selectedEmployee = {id: 0, content: 'None'};
       }
@@ -156,4 +160,11 @@ export class CompanyManagementAppointmentsItemComponent implements OnChanges {
   protected reset() {
       this.setSelectedStatusAndEmployee();
   }
+
+  getReservationEndDate(reservation: ReservationResponse): number {
+      return new Date(reservation.reservationDate).getTime()
+          + reservation.companyOffer.duration * 60000;
+  }
+
+
 }

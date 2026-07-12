@@ -2,7 +2,6 @@
     <div class="slider-container">
         <div class="slider-track">
             <div class="slide" *ngFor="let img of images; let i = index">
-
                 <img class="portfolio-image" [src]="this.getImgUrl(i)" alt="IMG"/>
                 <div class="remove-container"
                      *ngIf="isEditable"

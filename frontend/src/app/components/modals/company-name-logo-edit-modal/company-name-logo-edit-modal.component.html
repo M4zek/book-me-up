@@ -1,7 +1,7 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="logo-container">
-            <img [src]="logoSrc" alt="company-logo">
+            <app-my-img [src]="copyLogoAndName.logo" [type]="FileType.IMG_COMPANY_LOGO" [alt]="'company-logo'"/>
             <div class="select-image-container"  (click)="openDialogFile()">
                 <img [src]="'icons/file_select_icon.svg'" alt="icon">
                 <div class="expand">

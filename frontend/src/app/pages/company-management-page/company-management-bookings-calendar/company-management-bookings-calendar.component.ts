@@ -4,12 +4,13 @@ import {getUserAvatar, getWeekdayNumber, idToColor} from "../../../utils.functio
 import {CompanyService} from "../../../service/company.service";
 import {CompanyContextService} from "../../../service/company-context.service";
 import {filter} from "rxjs";
-import {CompanyHours, EmployeeSummaryResponse} from "../../../model/http/company.model";
+import {CompanyHours, EmployeeSummaryResponse, FileType} from "../../../model/http/company.model";
 import {CompanyReservationsSearch, Pagination} from "../../../model/search/search.model";
 import {ReservationService} from "../../../service/reservation.service";
 import {ReservationResponse} from "../../../model/http/reservation.model";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {ReservationDetailsComponent} from "../../../components/reservation-details/reservation-details.component";
+import {MyImgComponent} from "../../../components/my-img/my-img.component";
 
 interface CalendarEvent{
     id: number;
@@ -38,7 +39,8 @@ interface DatePicker{
         NgIf,
         DatePipe,
         DoubleSpinnerComponent,
-        ReservationDetailsComponent
+        ReservationDetailsComponent,
+        MyImgComponent
     ],
   templateUrl: './company-management-bookings-calendar.component.html',
   styleUrl: './company-management-bookings-calendar.component.css'
@@ -277,7 +279,6 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
                     if(response.body)
                         this.employees = response.body;
                         this.employees = this.sortEmployeesByCountOfReservations(this.employees);
-
                 }, error: error => {
                     console.error(error);
                 }, complete: () => {
@@ -411,7 +412,7 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
                 id: reservation.preferredEmployee.id,
                 firstName: reservation.preferredEmployee.firstName,
                 lastName: reservation.preferredEmployee.lastName,
-                avatar: reservation.preferredEmployee.avatar ? reservation.preferredEmployee.avatar : ''
+                avatar: reservation.preferredEmployee.avatar
             }
         };
     }
@@ -444,4 +445,6 @@ export class CompanyManagementBookingsCalendarComponent implements OnInit {
             this.countReservationsForEmployee(b) - this.countReservationsForEmployee(a)
         )
     }
+
+    protected readonly FileType = FileType;
 }

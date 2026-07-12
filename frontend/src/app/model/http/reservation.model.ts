@@ -29,7 +29,7 @@ export interface ReservationResponse {
     reservationNumber: string;
     status: string;
     customer: UserResponse,
-    preferredEmployee: UserResponse,
+    preferredEmployee: EmployeeSummaryResponse,
     companyOffer: CompanyOffersResponse
 }
 

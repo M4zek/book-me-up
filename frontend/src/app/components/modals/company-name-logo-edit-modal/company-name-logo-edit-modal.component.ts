@@ -5,8 +5,9 @@ import {FormsModule} from "@angular/forms";
 import {ToastService} from "../../../service/toast.service";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyContextService} from "../../../service/company-context.service";
-import {CompanyDetailsResponse} from "../../../model/http/company.model";
+import {CompanyDetailsResponse, FileType} from "../../../model/http/company.model";
 import {ConfirmService} from "../../../service/confirm.service";
+import {MyImgComponent} from "../../my-img/my-img.component";
 
 
 export interface LogoName {
@@ -16,15 +17,19 @@ export interface LogoName {
 
 @Component({
   selector: 'app-company-name-logo-edit-modal',
-  imports: [
-    NgIf,
-    FormsModule
-  ],
+    imports: [
+        NgIf,
+        FormsModule,
+        MyImgComponent
+    ],
   templateUrl: './company-name-logo-edit-modal.component.html',
   styleUrl: './company-name-logo-edit-modal.component.css'
 })
 export class CompanyNameLogoEditModalComponent implements OnChanges{
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+    protected readonly FileType = FileType;
+
+
+    @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   @Input() isVisible = false;
   @Output() closeModal = new EventEmitter<void>();
@@ -127,7 +132,7 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
                       next: result => {
                           if(result.body && result.status === 200){
                               let response = result.body as CompanyDetailsResponse;
-                              this.logoAndName.logo = response.logo;
+                              this.logoAndName.logo = response.logo_url;
                               this.logoAndName.companyName = response.name;
                               this.close();
 
@@ -158,18 +163,4 @@ export class CompanyNameLogoEditModalComponent implements OnChanges{
     return false;
   }
 
-  // Method to get image
-  get logoSrc(): string {
-      const logo = this.copyLogoAndName?.logo;
-
-      if (!logo) {
-          return 'images/default_logo_company.png';
-      }
-
-      if (logo.startsWith('data:image')) {
-          return logo;
-      }
-
-      return `data:image/jpeg;base64,${logo}`;
-  }
 }

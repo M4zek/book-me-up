@@ -38,10 +38,11 @@
     border-bottom: 2px solid var(--pink);
 }
 
-.top img{
+.top app-my-img{
     border-radius: 50%;
     aspect-ratio: 1/1;
-    width: 40px;
+    overflow: hidden;
+    width: 50px;
 }
 
 .top span{

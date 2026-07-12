@@ -32,4 +32,6 @@
 </div>
 
 
-<app-company-add-offer-modal [isVisible]="isAddOfferModalOpen" (closeModal)="closeAddModal()"/>
+<app-company-add-offer-modal [isVisible]="isAddOfferModalOpen"
+                             (onOfferAdd)="onOfferAddToList($event)"
+                             (closeModal)="closeAddModal()"/>

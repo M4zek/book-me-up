@@ -1,14 +1,14 @@
 <div class="user-opinion-container" *ngFor="let opinion of opinions">
     <div class="head-opinion-container">
         <div class="user-information-container">
-            <img [src]="getUserAvatar(opinion.author.avatar)" class="user-avatar" alt="avatar"/>
+            <app-my-img class="user-avatar" [src]="opinion.author.avatar_url" [alt]="'av'" [type]="FileType.IMG_USER_AVATAR"/>
+
             <div class="user-information">
                 <p class="name">{{opinion.author.firstName}} {{opinion.author.lastName}}</p>
-                <p class="date">{{opinion.created_at | date:'HH:mm  dd.MM.yyyy'}}</p>
+                <p class="date">{{ opinion.created_at | date:'HH:mm  dd.MM.yyyy'}}</p>
             </div>
             <div class="star-icon-container">
                 <img src="/icons/star_icon.svg" alt="star" *ngFor="let index of rows(opinion.rating)"/>
-
             </div>
         </div>
         <div class="opinion-actions-container" *ngIf="logged_id">

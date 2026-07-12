@@ -50,8 +50,8 @@
                     </div>
                 </form>
 
-                <img [src]="'icons/search_icon.svg'" (click)="searchUsers()"/>
-                <img [src]="'icons/reject_icon.svg'" (click)="clearSearchForm()"/>
+                <img [src]="'icons/search_icon.svg'" (click)="searchUsers()" alt="search"/>
+                <img [src]="'icons/reject_icon.svg'" (click)="clearSearchForm()" alt="reject"/>
             </div>
 
             <div class="single-chat-container" *ngIf="isSingleChat">
@@ -64,7 +64,13 @@
 
                          *ngFor="let item of this.resultUserList"
                          [class.me]="item.id === this.ownerId">
-                        <img [src]="item.avatar" alt="Avatar">
+
+                        <div class="avatar">
+                            <app-my-img [src]="item.avatar"
+                                        [type]="FileType.IMG_USER_AVATAR" [alt]="'Avatar'"/>
+                        </div>
+
+
                         <span>{{ item.name }}</span>
                     </div>
                 </div>
@@ -98,7 +104,10 @@
                              (click)="addUserToSelected(item)"
                              *ngFor="let item of this.resultUserList"
                              [class.me]="item.id === this.ownerId">
-                            <img [src]="item.avatar" alt="Avatar">
+                            <div class="avatar">
+                                <app-my-img [src]="item.avatar"
+                                            [type]="FileType.IMG_USER_AVATAR" [alt]="'Avatar'"/>
+                            </div>
                             <span>{{item.name}}</span>
                         </div>
                     </div>
@@ -109,7 +118,10 @@
                         <div class="list-row"
                              (click)="removeUserFromSelected(item)"
                              *ngFor="let item of this.selectedUserList">
-                            <img [src]="item.avatar" alt="Avatar">
+                            <div class="avatar">
+                                <app-my-img [src]="item.avatar"
+                                            [type]="FileType.IMG_USER_AVATAR" [alt]="'Avatar'"/>
+                            </div>
                             <span>{{item.name}}</span>
                         </div>
                     </div>

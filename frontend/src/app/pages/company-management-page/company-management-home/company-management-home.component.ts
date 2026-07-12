@@ -24,11 +24,12 @@ import {
     CompanyPortfolioAddModalComponent
 } from "../../../components/modals/company-portfolio-add-modal/company-portfolio-add-modal.component";
 import {CompanyContextService} from "../../../service/company-context.service";
-import {CompanyDetailsResponse} from "../../../model/http/company.model";
+import {CompanyDetailsResponse, FileType} from "../../../model/http/company.model";
 import {CompanyService} from "../../../service/company.service";
 import {concatMap} from "rxjs";
 import {NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
+import {MyImgComponent} from "../../../components/my-img/my-img.component";
 
 @Component({
   selector: 'app-company-management-home',
@@ -43,12 +44,14 @@ import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-
         CompanyBusinessHourEditModalComponent,
         CompanyPortfolioAddModalComponent,
         NgIf,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        MyImgComponent
     ],
   templateUrl: './company-management-home.component.html',
   styleUrl: './company-management-home.component.css'
 })
 export class CompanyManagementHomeComponent implements OnInit {
+    protected readonly FileType = FileType;
 
   openEditDescriptionModal: boolean = false;
   openEditAddressModal: boolean = false;
@@ -78,7 +81,7 @@ export class CompanyManagementHomeComponent implements OnInit {
                                   tmpList.push({
                                       id: element.id,
                                       name: element.filename,
-                                      photo: element.image
+                                      photo: element.imageUrl
                                   })
                               })
                               this.companyPortfolioData = tmpList;
@@ -157,7 +160,7 @@ export class CompanyManagementHomeComponent implements OnInit {
           description: response.description,
           portfolio: this.companyPortfolioData,
           name_logo: {
-              logo: response.logo,
+              logo: response.logo_url,
               logoName: 'none',
               companyName: response.name
           },

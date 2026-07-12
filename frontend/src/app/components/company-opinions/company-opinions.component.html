@@ -27,10 +27,11 @@
     <div class="container-list" #scrollContainer
          *ngIf="opinionsDetails.totalReviews != 0"
         [class.show]="showUserOpinionsList">
+
         <app-double-spinner *ngIf="isUserOpinionsLoading && opinions.length == 0"/>
         <app-user-opinions-list *ngIf="opinions.length != 0" [opinions]="opinions"></app-user-opinions-list>
 
-        <div class="center" *ngIf="this.opinions.length != pagination.totalItems" (click)="showMore()">
+        <div class="center" *ngIf="this.opinions.length != pagination.totalItems && showUserOpinionsList" (click)="showMore()">
             <app-double-spinner *ngIf="isUserOpinionsLoading && opinions.length != 0"/>
             <p *ngIf="!isUserOpinionsLoading">Show more...</p>
         </div>

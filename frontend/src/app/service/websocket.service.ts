@@ -51,6 +51,12 @@ export class WebsocketService {
 
         this.ucs.getUserToken().subscribe(token => {
             this.token = token;
+            if(this.client?.active){
+                this.client.deactivate().then(() => {
+                    this.client.activate();
+                })
+            }
+
         })
     }
 

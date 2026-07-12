@@ -9,8 +9,9 @@
 
     <div class="image-list">
         <div class="image-item">
-            <img class="image"
+            <app-my-img
                  [src]="getImage()"
+                 [type]="FileType.IMG_COMPANY_PORTFOLIO"
                  alt="Image"
             />
         </div>
@@ -21,9 +22,7 @@
                 *ngFor="let slide of imageList; let slideIndex = index"
                 (click)="goToSlide(slideIndex)"
         >
-            <div class="dot" [ngClass]="currentIndex===slideIndex ? 'white' : ''">
-                ●
-            </div>
+            <div class="dot" [ngClass]="currentIndex===slideIndex ? 'white' : ''"></div>
         </div>
     </div>
 </div>

@@ -4,7 +4,7 @@
 <div class="wrapper" *ngIf="companyGUIData && !isCompanyDataLoading">
     <div class="company-name-logo-grid">
         <div class="logo-name-company-container">
-            <img [src]="'data:image/jpeg;base64,' + companyGUIData.name_logo.logo" alt="Logo"/>
+            <app-my-img  [src]="companyGUIData.name_logo.logo" [alt]="'logo'" [type]="FileType.IMG_COMPANY_LOGO" />
             <h3>{{companyGUIData.name_logo.companyName}}</h3>
         </div>
         <div class="edit-container-action top-right"

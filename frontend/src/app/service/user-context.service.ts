@@ -23,7 +23,7 @@ export class UserContextService {
         phoneNumber: "",
         email: "",
         birthdate: "",
-        avatar: ""
+        avatar_url: ""
     })
 
     constructor(private router: Router) {

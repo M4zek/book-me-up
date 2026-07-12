@@ -88,9 +88,9 @@
             <div class="con">
                 <div class="users-data custom">
                     <p>Customer</p>
-                    <img [src]="'data:image/jpeg;base64,' + reservationResponse.customer.avatar"
-                         *ngIf="reservationResponse.customer.avatar" alt="avatar"/>
-                    <img [src]="'images/user_default_avatar.png'" *ngIf="!reservationResponse.customer.avatar" alt="img"/>
+                    <div class="avatar">
+                        <app-my-img [src]="reservationResponse.customer.avatar_url" [type]="FileType.IMG_USER_AVATAR" [alt]="'img'"/>
+                    </div>
                     <div class="horizontal">
                         <span>{{reservationResponse.customer.firstName}} {{reservationResponse.customer.lastName}}</span>
                         <span>{{reservationResponse.customer.email}}</span>
@@ -99,13 +99,11 @@
                 </div>
                 <div class="users-data custom" *ngIf="reservationResponse.preferredEmployee != null">
                     <p>Preferred employee</p>
-                    <img [src]="'data:image/jpeg;base64,' + reservationResponse.preferredEmployee.avatar"
-                         *ngIf="reservationResponse.preferredEmployee.avatar" alt="avatar"/>
-                    <img [src]="'images/user_default_avatar.png'" *ngIf="!reservationResponse.preferredEmployee.avatar" alt="img"/>
+                    <div class="avatar">
+                        <app-my-img [src]="reservationResponse.preferredEmployee.avatar" [type]="FileType.IMG_USER_AVATAR" [alt]="'img'"/>
+                    </div>
                     <div class="horizontal">
                         <span>{{reservationResponse.preferredEmployee.firstName}} {{reservationResponse.preferredEmployee.lastName}}</span>
-                        <span>{{reservationResponse.preferredEmployee.email}}</span>
-                        <span>{{reservationResponse.preferredEmployee.phoneNumber}}</span>
                     </div>
                 </div>
             </div>

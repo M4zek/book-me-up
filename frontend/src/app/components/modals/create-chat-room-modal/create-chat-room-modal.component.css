@@ -88,9 +88,10 @@
     border-radius: 4px;
     transition: all 0.3s ease;
     max-height: 50px;
+    height: 100%;
 }
 
-.list-row img {
+.list-row .avatar {
     width: 35px;
     height: 35px;
     border-radius: 50%;

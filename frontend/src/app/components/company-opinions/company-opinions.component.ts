@@ -113,6 +113,8 @@ export class CompanyOpinionsComponent {
       } else {
           this.selected_rating = null;
       }
+
+      this.pagination.currentPage = 0;
       this.opinions = [];
       this.readOpinions();
   }
@@ -125,4 +127,5 @@ export class CompanyOpinionsComponent {
          this.readOpinions();
      }
   }
+
 }

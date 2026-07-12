@@ -2,14 +2,10 @@
     <p class="title-employees">Employees</p>
     <div class="employees">
         <div class="employee" *ngFor="let employee of companyEmployees">
-            <img
-                    *ngIf="employee.avatar"
-                    [src]="'data:image/jpeg;base64,' + employee.avatar"
-                    alt="Avatar"/>
-            <img
-                    *ngIf="!employee.avatar"
-                    [src]="'images/user_default_avatar.png'"
-                    alt="Avatar"/>
+            <app-my-img [src]="employee.avatar"
+                        [alt]="'avatar'"
+                        [type]="FileType.IMG_USER_AVATAR"
+            />
             <p class="employee-name-paragraph">{{employee.firstName}} {{employee.lastName}}</p>
         </div>
     </div>

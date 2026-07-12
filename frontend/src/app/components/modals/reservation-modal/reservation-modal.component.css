@@ -261,6 +261,12 @@
     align-items: center;
 }
 
+.users-data .avatar{
+    width: 60px;
+    height: 60px;
+    border-radius: 50px !important;
+}
+
 .offer-data > div {
     display: flex;
     flex-direction: row;

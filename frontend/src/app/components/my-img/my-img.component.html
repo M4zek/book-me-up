@@ -1,0 +1,17 @@
+<div class="img-container">
+    @if (finalSrc()){
+        <img
+        [ngSrc]="finalSrc()"
+        [alt]="alt()"
+        [class.ratio-1-1]="type() == FileType.IMG_USER_AVATAR"
+        [class.avatar]="type() == FileType.IMG_USER_AVATAR"
+        draggable="false"
+        priority
+        fill
+        />
+    } @else {
+        <div class="loading-shimmer"
+        [class.radius-50]="type() == FileType.IMG_USER_AVATAR"
+        ></div>
+    }
+</div>
