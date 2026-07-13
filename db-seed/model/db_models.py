@@ -1,9 +1,17 @@
-from typing import List, Optional
+from argparse import FileType
 from datetime import datetime
-from sqlalchemy import ForeignKey, String, Integer, Text, LargeBinary, Boolean, Double, DateTime, BigInteger, func, \
-    Float
+from enum import Enum as PyEnum
+from typing import List, Optional
+
+from sqlalchemy import ForeignKey, String, Integer, Text, Boolean, Double, DateTime, BigInteger, func, \
+    Float, Enum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+
+class FileType(PyEnum):
+    IMG_USER_AVATAR = "IMG_USER_AVATAR",
+    IMG_COMPANY_LOGO = "IMG_COMPANY_LOGO",
+    IMG_COMPANY_PORTFOLIO = "IMG_COMPANY_PORTFOLIO"
 
 
 class Base(DeclarativeBase):
@@ -41,10 +49,10 @@ class Category(Base):
 
 class Company(Base):
     __tablename__ = "companies"
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(Text)
     description: Mapped[str] = mapped_column(Text)
-    logo: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     average_rating: Mapped[float] = mapped_column(Float)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
     created_date: Mapped[datetime] = mapped_column(server_default=func.now())
@@ -54,13 +62,30 @@ class Company(Base):
     address: Mapped["Address"] = relationship(back_populates="company", cascade="all, delete-orphan")
     hours: Mapped[List["CompanyHour"]] = relationship(back_populates="company", cascade="all, delete-orphan")
     offers: Mapped[List["CompanyOffer"]] = relationship(back_populates="company", cascade="all, delete-orphan")
-    portfolio_images: Mapped[List["PortfolioImage"]] = relationship(back_populates="company",
-                                                                    cascade="all, delete-orphan")
+
+    images: Mapped[List["StoredFile"]] = relationship(back_populates="company", cascade="all, delete-orphan")
 
     staff_links: Mapped[List["CompanyUserRole"]] = relationship(
         back_populates="company",
         cascade="all, delete-orphan"
     )
+
+class StoredFile(Base):
+    __tablename__ = "stored_file"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    object_key: Mapped[str] = mapped_column(String(255))
+    original_file_name: Mapped[str] = mapped_column(String(255))
+    content_type: Mapped[str] = mapped_column(String(255))
+    size: Mapped[int] = mapped_column(Integer)
+    type: Mapped[FileType] = mapped_column(Enum(FileType))
+
+    company_id: Mapped[Optional[int]] = mapped_column(ForeignKey("companies.id"))
+    user_data_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users_data.id"), unique=True)
+
+    company: Mapped[Optional["Company"]] = relationship(back_populates="images")
+    user_data: Mapped[Optional["UserData"]] = relationship(back_populates="avatar")
+
 
 
 class Address(Base):
@@ -77,18 +102,20 @@ class Address(Base):
     company: Mapped["Company"] = relationship(back_populates="address")
 
 
+
 class UserData(Base):
     __tablename__ = "users_data"
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     first_name: Mapped[Optional[str]] = mapped_column(String(255))
     last_name: Mapped[Optional[str]] = mapped_column(String(255))
     date_of_birth: Mapped[datetime] = mapped_column(DateTime)
     phone_number: Mapped[Optional[str]] = mapped_column(String(255))
-    photo: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     created_date: Mapped[datetime] = mapped_column(server_default=func.now())
 
     user: Mapped["User"] = relationship(back_populates="user_data")
 
+    avatar: Mapped[Optional["StoredFile"]] = relationship(back_populates="user_data", cascade="all, delete-orphan")
 
 class User(Base):
     __tablename__ = "users"
@@ -168,17 +195,6 @@ class CompanyHour(Base):
     company_id: Mapped[Optional[int]] = mapped_column(ForeignKey("companies.id", ondelete="CASCADE"))
 
     company: Mapped["Company"] = relationship(back_populates="hours")
-
-
-class PortfolioImage(Base):
-    __tablename__ = "portfolio_images"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    filename: Mapped[str] = mapped_column(String(255))
-    image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
-    company_id: Mapped[Optional[int]] = mapped_column(ForeignKey("companies.id", ondelete="CASCADE"))
-
-    company: Mapped["Company"] = relationship(back_populates="portfolio_images")
-
 
 
 class Room(Base):

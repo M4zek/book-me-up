@@ -1,12 +1,12 @@
 import os
 import random
+import uuid
 from datetime import datetime, timedelta
 
 from faker import Faker
 from faker.decode import unidecode
 
-from model.db_models import UserData, User, Company, CompanyHour, CompanyOffer, Review, CompanyUserRole, Address, \
-    PortfolioImage
+from model.db_models import UserData, User, Company, CompanyHour, CompanyOffer, Review, CompanyUserRole, Address, StoredFile, FileType
 
 fake = Faker("pl_PL")
 
@@ -34,7 +34,30 @@ def remove_polish_chars(text):
 
 def read_random_image():
     files = os.listdir("images")
-    random_file = random.choice(files)
+
+    non_avatar_files = [f for f in files if "avatar" not in f.lower()]
+
+    if not non_avatar_files:
+        return None
+
+    random_file = random.choice(non_avatar_files)
+
+    file_path = os.path.join("images", random_file)
+
+    with open(file_path, "rb") as f:
+        image_bytes = f.read()
+
+    return image_bytes
+
+
+def read_random_avatar():
+    files = os.listdir("images")
+    avatar_files = [f for f in files if "avatar" in f.lower()]
+    if not avatar_files:
+        return None
+
+
+    random_file = random.choice(avatar_files)
 
     file_path = os.path.join("images", random_file)
 
@@ -60,14 +83,12 @@ def create_user_data():
     last_name = fake.last_name()
     date_of_birth = random_birthdate()
     phone_number = fake.phone_number()
-    photo = read_random_image()
 
     user_data = UserData(
         first_name=first_name,
         last_name=last_name,
         date_of_birth=date_of_birth,
-        phone_number=phone_number,
-        photo=photo
+        phone_number=phone_number
     )
     return user_data
 
@@ -83,20 +104,71 @@ def create_user():
         password=password,
         user_data=user_data,
     )
+
     user.is_block = True
     return user
 
+def create_stored_file_cmp_portfolio(company_id):
+    file_name = f'{fake.word()}.webp'
+
+    file_uuid = remove_polish_chars(f'{uuid.uuid4()}-{file_name}').replace(" ", "")
+
+    content_type = "image/webp"
+    size = random.randint(10000000, 2000000000)
+
+    object_key = f'companies/{company_id}/portfolio/{file_uuid}'
+
+    return StoredFile(
+        object_key=object_key,
+        original_file_name=file_name,
+        content_type=content_type,
+        size=size,
+        type=FileType.IMG_COMPANY_PORTFOLIO
+    )
+
+def create_stored_file_cmp_logo(company_id):
+    file_name = f'{fake.word()}.webp'
+
+    file_uuid = remove_polish_chars(f'{uuid.uuid4()}-{file_name}').replace(" ", "")
+
+    content_type = "image/webp"
+    size = random.randint(10000000, 2000000000)
+
+    object_key = f'companies/{company_id}/logo/{file_uuid}'
+
+    return StoredFile(
+        object_key=object_key,
+        original_file_name=file_name,
+        content_type=content_type,
+        size=size,
+        type=FileType.IMG_COMPANY_LOGO
+    )
+
+def create_stored_file_avatar(user_id):
+    file_name = f'{fake.word()}.webp'
+
+    file_uuid = remove_polish_chars(f'{uuid.uuid4()}-{file_name}').replace(" ", "")
+    content_type = "image/webp"
+    size = random.randint(10000000, 2000000000)
+
+    object_key = f'users/{user_id}/avatar/{file_uuid}'
+
+    return StoredFile(
+        object_key=object_key,
+        original_file_name=file_name,
+        content_type=content_type,
+        size=size,
+        type=FileType.IMG_USER_AVATAR
+    )
 
 def create_company():
     name = fake.company()
     description = fake.paragraph(nb_sentences=random.randint(12, 20))
-    logo = read_random_image()
     category_id = random.randint(1, 20)
 
     return Company(
         name=name,
         description=description,
-        logo=logo,
         category_id=category_id,
     )
 
@@ -118,7 +190,7 @@ def create_offer():
     name = fake.sentence(nb_words=5)
     description = fake.paragraph(nb_sentences=random.randint(5, 10))
     price = random.choice([15, 20, 25, 30, 35, 40, 55, 60, 70, 80, 90, 100])
-    duration = random.choice([10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100])
+    duration = random.choice([10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90])
     return CompanyOffer(
         name=name,
         description=description,
@@ -164,13 +236,4 @@ def create_address():
         postal_code=postal_code,
         street=street,
         building_number=building_number,
-    )
-
-
-def create_portfolio_Image():
-    fileName = fake.word() + ".jpg"
-    image = read_random_image()
-    return PortfolioImage(
-        filename=fileName,
-        image=image
     )

@@ -2,7 +2,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-from utils.create_utils import add_category, add_user, add_complex_company, read_all_users_ids
+from utils.create_utils import add_complex_company, read_all_users_ids, add_category, add_user
 from utils.data_fake import create_user
 
 TOTAL_USERS = 5000
@@ -61,7 +61,7 @@ def insert():
     user_start_time = time.time()
 
     with ThreadPoolExecutor(max_workers=10) as executor:
-        executor.map(add_user, 
+        executor.map(add_user,
                      (create_user() for _ in range(TOTAL_USERS)))
 
     current_time = time.time()
@@ -70,8 +70,8 @@ def insert():
 
 
     # Companies -----------------------------------------------
-    company_start_time = time.time()
 
+    company_start_time = time.time()
     ALL_USER_IDS = read_all_users_ids()
 
     with ThreadPoolExecutor(max_workers=10) as executor:

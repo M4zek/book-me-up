@@ -1,15 +1,17 @@
+import os
 import random
 import sys
-import os
-import psutil
 
+import psutil
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from database import Session
 from model.db_models import Category, User, Role
+from storage import save_images
 from utils.data_fake import create_company, create_day_of_week, create_offer, create_review, create_owner, \
-    create_employee_in_company, create_address, create_portfolio_Image
+    create_employee_in_company, create_address, create_stored_file_avatar, read_random_avatar, \
+    create_stored_file_cmp_portfolio, read_random_image, create_stored_file_cmp_logo
 
 
 def add_category(name: str):
@@ -43,11 +45,24 @@ def add_user(user: User):
         role_user = session.execute(select(Role).where(Role.id == 2)).scalars().one()
         user.roles.append(role_user)
         session.add(user)
+
+        session.flush()
+        session.refresh(user)
+
+        avatar_file = create_stored_file_avatar(user.id)
+        session.add(avatar_file)
+        user.user_data.avatar = avatar_file
+
+
+        avatar_bytes = read_random_avatar()
+        save_images(avatar_bytes, avatar_file.object_key)
+
         session.commit()
         sys.stdout.write(f"\r\033[K🔄 User [{user.id}] [{user.user_data.first_name} {user.user_data.last_name}] has been added | {get_ram_usage()}")
 
-    except SQLAlchemyError as e:
+    except SQLAlchemyError | Exception as e:
         session.rollback()
+        print(e)
         sys.stdout.write(f"\r\033[K❌ Error [{user.user_data.first_name} {user.user_data.last_name}]")
         return None
     finally:
@@ -61,6 +76,7 @@ def add_complex_company(user_ids):
 
         # 1. Create main company object
         new_company = create_company()
+        session.add(new_company)
 
         # 2. Adding company business hours (Monday - Sunday)
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -107,14 +123,26 @@ def add_complex_company(user_ids):
         address = create_address()
         new_company.address = address
 
+        session.add(new_company)
+        session.flush()
+
         # 7. Create company portfolio
+
+        # Create logo file
+        logo_file = create_stored_file_cmp_logo(new_company.id)
+        new_company.images.append(logo_file)
+        logo_img = read_random_image()
+        save_images(logo_img, logo_file.object_key)
+
         num_portfolios = random.randint(2, 4)
         for i in range(num_portfolios):
-            random_img = create_portfolio_Image()
-            new_company.portfolio_images.append(random_img)
+            portfolio_file = create_stored_file_cmp_portfolio(new_company.id)
+            new_company.images.append(portfolio_file)
+
+            img_bytes = read_random_image()
+            save_images(img_bytes, portfolio_file.object_key)
 
         # 8. Saved all into database
-        session.add(new_company)
         session.commit()
         # session.expunge_all()
 
@@ -138,6 +166,8 @@ def read_all_users_ids():
         ).scalars().all()
     except SQLAlchemyError as e:
         return None
+    finally:
+        Session.remove()
 
     return ALL_USER_IDS
     
