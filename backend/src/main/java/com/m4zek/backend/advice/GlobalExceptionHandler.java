@@ -73,6 +73,17 @@ class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ReviewNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleReviewNotFound(ReviewNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
     @ExceptionHandler(CompanyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleCompanyNotFound(CompanyNotFoundException e, WebRequest request) {
@@ -244,9 +255,9 @@ class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(PortfolioImageLimitExceededException.class)
+    @ExceptionHandler(ImageLimitExceededException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handlePortfolioImageLimitExceededException(PortfolioImageLimitExceededException e, WebRequest request) {
+    public ErrorMessage handlePortfolioImageLimitExceededException(ImageLimitExceededException e, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -289,4 +300,26 @@ class GlobalExceptionHandler {
     }
 
 
+    // Minio Handler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(StorageException.class)
+    public ErrorMessage handleMinioException(StorageException e, WebRequest request){
+        return new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StoredFileNotFoundException.class)
+    public ErrorMessage handleStoredFileNotFoundException(StoredFileNotFoundException e, WebRequest request){
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                e.getMessage(),
+                request.getDescription(true)
+        );
+    }
 }

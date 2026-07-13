@@ -28,3 +28,13 @@ jwe:
 app:
   cors:
     allowed-origins: http://localhost:4200, http://127.0.0.1:4200, wss://m4zek.com.pl, https://m4zek.com.pl
+
+
+# MINIO Config
+minio:
+  endpoint:
+    url: https://minio:9000 # Change on your domain where minio is deployed
+  access-key: minioadmin  # Change to your own access key
+  secret-key: minioadmin  # Change to your own access key
+  bucket: app-storage
+  presigned-url-expiration: 900  # 15 min

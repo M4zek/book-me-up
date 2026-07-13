@@ -1,79 +1,63 @@
 package com.m4zek.backend.mapper;
 
+import com.m4zek.backend.minio.MinioUrlResolver;
 import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.UserData;
 import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
 import com.m4zek.backend.model.dto.read.UserToHiredResponse;
 import com.m4zek.backend.model.projection.MemberProjection;
-import com.m4zek.backend.security.service.MyUserDetails;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class UserMapper {
 
-    private UserMapper() {}
+    private final MinioUrlResolver resolver;
 
-    public static EmployeeSummaryResponse toEmployeeSummaryResponse(User user) {
-        UserData userData = user.getUserData();
+    private UserMapper(MinioUrlResolver resolver) {
+        this.resolver = resolver;
+    }
+
+    public EmployeeSummaryResponse toEmployeeSummaryResponse(User user) {
         return EmployeeSummaryResponse.builder()
                 .id(user.getId())
-                .firstName(userData.getFirstName())
-                .lastName(userData.getLastName())
-                .avatar(ImageMapper.byteImageToBase64(userData.getPhoto()))
+                .firstName(user.getUserData().getFirstName())
+                .lastName(user.getUserData().getLastName())
+                .avatar(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .build();
     }
 
-    public static EmployeeDetailsResponse toEmployeeDetailsResponse(User user, String role) {
-        UserData userData = user.getUserData();
+    public EmployeeDetailsResponse toEmployeeDetailsResponse(User user, String role) {
+
         return EmployeeDetailsResponse.builder()
                 .id(user.getId())
                 .email(user.getAddressEmail())
-                .firstName(userData.getFirstName())
-                .lastName(userData.getLastName())
-                .phone(userData.getPhoneNumber())
+                .firstName(user.getUserData().getFirstName())
+                .lastName(user.getUserData().getLastName())
+                .phone(user.getUserData().getPhoneNumber())
                 .role_in_company(role)
-                .avatar(ImageMapper.byteImageToBase64(userData.getPhoto()))
+                .avatar(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .build();
 
     }
 
 
-    public static MyUserDetails toMyUserDetails(User user) {
-        List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-
-        return new MyUserDetails(
-                user.getId(),
-                user.getAddressEmail(),
-                user.getPassword(),
-                user.getBlock(),
-                user.getEnable(),
-                user.getUserData().getId(),
-                grantedAuthorities
-        );
-    }
-
-    public static UserResponse toUserResponse(User user) {
-        UserData userData = user.getUserData();
+    public UserResponse toUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .firstName(userData.getFirstName())
-                .lastName(userData.getLastName())
+                .firstName(user.getUserData().getFirstName())
+                .lastName(user.getUserData().getLastName())
                 .email(user.getAddressEmail())
-                .birthdate(userData.getDateOfBirth().toString())
-                .phoneNumber(userData.getPhoneNumber())
-                .avatar(userData.getPhoto())
+                .birthdate(user.getUserData().getDateOfBirth().toString())
+                .phoneNumber(user.getUserData().getPhoneNumber())
+                .avatar_url(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .build();
     }
 
 
-    public static UserToHiredResponse userToUserToHiredResponse(User user) {
+    public UserToHiredResponse userToUserToHiredResponse(User user) {
         return UserToHiredResponse.builder()
                 .id(user.getId())
                 .firstName(user.getUserData().getFirstName())
@@ -82,17 +66,17 @@ public class UserMapper {
                         .map(cur -> cur.getCompany().getId())
                         .collect(Collectors.toList())
                 )
-                .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
+                .avatar_url(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .build();
     }
 
 
-    public static MemberProjection userToMemberProjection(User user) {
+    public MemberProjection userToMemberProjection(User user) {
         return MemberProjection.builder()
                 .id(user.getId())
                 .firstName(user.getUserData().getFirstName())
                 .lastName(user.getUserData().getLastName())
-                .avatar(ImageMapper.byteImageToBase64(user.getUserData().getPhoto()))
+                .avatar(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .role(null)
                 .build();
     }

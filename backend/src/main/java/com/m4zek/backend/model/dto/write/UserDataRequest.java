@@ -1,8 +1,8 @@
 package com.m4zek.backend.model.dto.write;
 
-import com.m4zek.backend.model.UserData;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -28,13 +28,5 @@ public class UserDataRequest {
             message = "Phone number must contain only digits and optional leading +, length 7-15"
     )
     private String phoneNumber;
-
-    @Size(max = 2_000_000, message = "Photo size cannot exceed 2MB")
-    private byte[] photo;
-
-
-    public UserData toEntity() {
-        return new UserData(this.firstName, this.lastName, this.dateOfBirth, this.phoneNumber, this.photo);
-    }
 
 }

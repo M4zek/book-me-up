@@ -6,7 +6,7 @@ import com.m4zek.backend.model.dto.read.ReservationResponse;
 import com.m4zek.backend.model.dto.read.UserReservationResponse;
 import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
-import com.m4zek.backend.service.ReservationService;
+import com.m4zek.backend.service.facade.ReservationFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -26,12 +26,11 @@ import java.time.LocalDate;
 @RequestMapping(value = "/api/v1")
 public class ReservationController {
 
-    private final ReservationService reservationService;
+    private final ReservationFacade reservationFacade;
 
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
+    public ReservationController(ReservationFacade reservationFacade) {
+        this.reservationFacade = reservationFacade;
     }
-
 
     // Endpoints for management company reservations
     @GetMapping("/companies/{companyId}/reservations")
@@ -47,22 +46,26 @@ public class ReservationController {
             Pageable pageable
             )
     {
-        return ResponseEntity.ok(this.reservationService.getAllCompanyReservations(companyId, name, status, userId, pageable, fromDate, toDate));
+        Page<ReservationResponse> companyReservations = this.reservationFacade.readCompanyReservation(
+                companyId, name, status, userId, pageable, fromDate, toDate
+        );
+        return ResponseEntity.ok(companyReservations);
     }
 
+    // Endpoint for updating reservation (Status, preferred empl)
     @PatchMapping("/companies/{companyId}/reservations/{reservationId}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-//    @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_EMPLOYEE", "COMPANY_MANAGER"})
     public ResponseEntity<ReservationResponse> updateCompanyReservation(
             @PathVariable @Positive(message = "Company id must be positive number") Integer companyId,
             @PathVariable @Positive(message = "Reservation id must be positive number") Integer reservationId,
             @Valid @RequestBody ReservationPatchRequest request
     ){
-        return ResponseEntity.ok(this.reservationService.updateReservation(companyId, reservationId, request));
+        ReservationResponse response = this.reservationFacade.updateReservation(companyId, reservationId, request);
+        return ResponseEntity.ok(response);
     }
 
 
-    // Endpoints for user reservations
+    // Endpoints for reading user reservations
     @GetMapping("/reservations/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<Page<UserReservationResponse>> readAllUserReservations(
@@ -70,13 +73,18 @@ public class ReservationController {
             @RequestParam(required = false) @Size(min = 1, message = "Offer name cannot be empty") String name,
             @RequestParam(required = false) @Size(min = 1, message = "Status can not be empty") String status,
             @PathVariable @Positive(message = "User id must be positive number") int userId) {
-        return ResponseEntity.ok(this.reservationService.getUserReservations(pageable, userId, status, name));
+        Page<UserReservationResponse> reservations = this.reservationFacade.readUserReservations(
+                pageable, userId, status, name
+        );
+        return ResponseEntity.ok(reservations);
     }
 
+    // Endpoint for cancel reservation
     @PatchMapping("/reservations/{id}/cancel")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<UserReservationResponse> cancelReservationById(@PathVariable int id){
-        return ResponseEntity.ok(this.reservationService.cancelReservation(id));
+        UserReservationResponse response = this.reservationFacade.cancelReservation(id);
+        return ResponseEntity.ok(response);
     }
 
     // General endpoints for reservations
@@ -88,12 +96,16 @@ public class ReservationController {
             @RequestParam @DateTimeFormat(pattern = "MM-dd-yyyy") LocalDate toDate,
             @RequestParam @Range(min = 10, max = 90) int duration
     ) {
-        return ResponseEntity.ok(this.reservationService.generateFreeSlotsBetweenDates(companyId, fromDate, toDate, duration));
+        AvailableReservationSlotsResponse slots = this.reservationFacade.findFreeReservationsSlots(
+                companyId, fromDate, toDate, duration
+        );
+        return ResponseEntity.ok(slots);
     }
 
     @PostMapping("/companies/reservations")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody @Valid ReservationRequest reservation) {
-        return ResponseEntity.ok(this.reservationService.createNewReservation(reservation));
+        ReservationResponse response = this.reservationFacade.createReservation(reservation);
+        return ResponseEntity.ok(response);
     }
 }

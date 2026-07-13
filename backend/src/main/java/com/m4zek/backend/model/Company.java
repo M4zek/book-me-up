@@ -21,9 +21,6 @@ public class Company extends BaseEntity{
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Lob
-    private byte[] logo;
-
     private Double averageRating;
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
     private Address address;
@@ -32,8 +29,8 @@ public class Company extends BaseEntity{
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<PortfolioImage> portfolioImages = new ArrayList<>();
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StoredFile> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyHours> companyHoursList = new ArrayList<>();
@@ -46,10 +43,9 @@ public class Company extends BaseEntity{
 
     public Company() {}
 
-    public Company(String name, String description, byte[] logo, Category category, Address address) {
+    public Company(String name, String description, Category category, Address address) {
         this.name = name;
         this.description = description;
-        this.logo = logo;
         this.category = category;
         this.address = address;
         this.averageRating = 0.0;
@@ -59,12 +55,30 @@ public class Company extends BaseEntity{
         this.users.add(companyUserRole);
     }
 
-    public void assignLogo(byte[] logo){
-        this.logo = logo;
+    public void assignLogoFile(StoredFile logo){
+        this.images.add(logo);
+    }
+
+    public void assignImage(StoredFile img){
+        this.images.add(img);
+    }
+
+    public void assignAddress(Address address){
+        this.address = address;
     }
 
     public void assignCompanyHours(List<CompanyHours> companyHours){
         this.companyHoursList = companyHours;
+    }
+
+    public void addCompanyHour(CompanyHours companyHours){
+        this.companyHoursList.add(companyHours);
+    }
+
+    public StoredFile getLogoFile(){
+        return this.images.stream()
+                .filter(img -> img.getType() == FileType.IMG_COMPANY_LOGO)
+                .findFirst().orElse(null);
     }
 
     public void setName(String name) {
@@ -83,9 +97,6 @@ public class Company extends BaseEntity{
         return description;
     }
 
-    public byte[] getLogo() {
-        return logo;
-    }
 
     public Address getAddress() {
         return address;
@@ -107,9 +118,6 @@ public class Company extends BaseEntity{
         return users;
     }
 
-    public int getPortfolioImagesSize() {
-        return portfolioImages.size();
-    }
 
     public void setDescription(String description) {
         this.description = description;

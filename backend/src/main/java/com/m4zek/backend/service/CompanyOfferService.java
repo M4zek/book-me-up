@@ -1,69 +1,49 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.mapper.CompanyOfferMapper;
 import com.m4zek.backend.model.Company;
 import com.m4zek.backend.model.CompanyOffer;
-import com.m4zek.backend.model.dto.read.CompanyOfferResponse;
 import com.m4zek.backend.model.dto.write.CompanyOfferRequest;
 import com.m4zek.backend.repository.CompanyOfferRepository;
-import com.m4zek.backend.repository.CompanyRepository;
 import jakarta.persistence.EntityExistsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CompanyOfferService {
 
+    private final static Logger logger = LoggerFactory.getLogger(CompanyOfferService.class);
+
     private final CompanyOfferRepository companyOfferRepository;
-    private final CompanyRepository companyRepository;
 
-    public CompanyOfferService(CompanyOfferRepository companyOfferRepository, CompanyRepository companyRepository) {
+    public CompanyOfferService(CompanyOfferRepository companyOfferRepository) {
         this.companyOfferRepository = companyOfferRepository;
-        this.companyRepository = companyRepository;
     }
 
-
-    public Page<CompanyOfferResponse> getAllCompanyOffers(int companyId, Pageable pageable) {
-        Company company = getCompanyById(companyId);
-
-        Page<CompanyOffer> companyOffers = companyOfferRepository.findAllByCompany(company, pageable);
-        List<CompanyOfferResponse> companyOfferResponseList = companyOffers.stream()
-                .map(CompanyOfferMapper::companyOfferToCompanyOfferResponse)
-                .toList();
-
-        return new PageImpl<>(companyOfferResponseList, pageable, companyOffers.getTotalElements());
+    public CompanyOffer createAndSave(Company company, CompanyOfferRequest request){
+        CompanyOffer offer = new CompanyOffer(
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getDuration(),
+                company);
+        offer = this.save(offer);
+        return offer;
     }
 
-
-    public CompanyOfferResponse createNewOffer(CompanyOfferRequest companyOfferRequest, int companyId) {
-        Company company = getCompanyById(companyId);
-
-        if(this.companyOfferRepository.existsByCompanyAndName(company, companyOfferRequest.getName())) {
-            throw new EntityExistsException("Company Offer with name " + companyOfferRequest.getName() + " already exists");
-        }
-
-        CompanyOffer newOffer = CompanyOfferMapper.companyOfferRequestToCompanyOffer(companyOfferRequest, company);
-        CompanyOffer savedCompanyOffer = companyOfferRepository.save(newOffer);
-        return CompanyOfferMapper.companyOfferToCompanyOfferResponse(savedCompanyOffer);
+    public CompanyOffer save(CompanyOffer offer){
+        CompanyOffer savedOffer = this.companyOfferRepository.save(offer);
+        logger.info("Company offer [{}] has been saved. Company owner -> [{}]",
+                savedOffer.getId(), savedOffer.getCompany().getId());
+        return savedOffer;
     }
 
-    public Page<CompanyOfferResponse> searchCompanyOfferByName(int companyId, Pageable pageable, String name) {
-        Page<CompanyOffer> offers = this.companyOfferRepository.searchCompanyOffersByCompanyIdAndName(companyId, name, pageable);
-        List<CompanyOfferResponse> responses = offers.stream()
-                .map(CompanyOfferMapper::companyOfferToCompanyOfferResponse)
-                .toList();
-        return new PageImpl<>(responses, pageable, offers.getTotalElements());
-    }
-
-    public CompanyOfferResponse updateOffer(CompanyOfferRequest req, int offerId, int companyId) {
-        CompanyOffer offer = this.companyOfferRepository.findByIdAndCompanyId(offerId, companyId)
-                .orElseThrow(() -> new CompanyNotFoundException("Offer with id " + offerId + " not found"));
+    public CompanyOffer updateOffer(CompanyOfferRequest req, CompanyOffer offer) {
 
         Optional.ofNullable(req.getName()).ifPresent(offer::setName);
         Optional.ofNullable(req.getDescription()).ifPresent(offer::setDescription);
@@ -71,13 +51,32 @@ public class CompanyOfferService {
         Optional.ofNullable(req.getDuration()).filter(d -> d != 0).ifPresent(offer::setDuration);
 
         offer = this.companyOfferRepository.save(offer);
-        return CompanyOfferMapper.companyOfferToCompanyOfferResponse(offer);
+        logger.info("Company offer [{}] has been updated", offer.getId());
+        return offer;
+    }
+
+    public Page<CompanyOffer> searchCompanyOfferByName(String name, int companyId, Pageable pageable){
+        return this.companyOfferRepository.searchCompanyOffersByCompanyIdAndName(companyId, name, pageable);
+    }
+
+    public Optional<CompanyOffer> findCompanyOffer(long companyOfferId){
+        return this.companyOfferRepository.findById(companyOfferId);
     }
 
 
-    // Private method
-    private Company getCompanyById(int companyId) {
-        return companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyNotFoundException("Company with id " + companyId + " not found"));
+    public Page<CompanyOffer> findCompanyOffers(Company company, Pageable pageable){
+        return this.companyOfferRepository.findAllByCompany(company, pageable);
     }
+
+    public CompanyOffer findCompanyOffer(Company company, int offerId){
+        return this.companyOfferRepository.findByIdAndCompany(offerId,company)
+                .orElseThrow(() -> new CompanyNotFoundException("Company offer not found"));
+    }
+
+    public void offerExistsInCompany(Company company, CompanyOfferRequest request){
+        if(this.companyOfferRepository.existsByCompanyAndName(company, request.getName())) {
+            throw new EntityExistsException("Company Offer with name " + request.getName() + " already exists");
+        }
+    }
+
 }

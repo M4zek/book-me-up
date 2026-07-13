@@ -1,81 +1,63 @@
 package com.m4zek.backend.service;
 
 import com.m4zek.backend.exception.CompanyNotFoundException;
-import com.m4zek.backend.exception.PortfolioImageLimitExceededException;
-import com.m4zek.backend.exception.ImageException;
-import com.m4zek.backend.exception.ImageNotFoundException;
-import com.m4zek.backend.mapper.PortfolioImageMapper;
+import com.m4zek.backend.mapper.ImageMapper;
 import com.m4zek.backend.model.Company;
-import com.m4zek.backend.model.PortfolioImage;
-import com.m4zek.backend.model.dto.read.PortfolioImageResponse;
+import com.m4zek.backend.model.StoredFile;
+import com.m4zek.backend.model.dto.read.ImageResponse;
 import com.m4zek.backend.repository.CompanyRepository;
-import com.m4zek.backend.repository.PortfolioImageRepository;
+import com.m4zek.backend.service.facade.FileManagementFacade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PortfolioImagesService {
 
-    private final PortfolioImageRepository portfolioImageRepository;
     private final CompanyRepository companyRepository;
+    private final FileManagementFacade storageService;
+    private final ImageMapper imageMapper;
 
-    public PortfolioImagesService(PortfolioImageRepository portfolioImageRepository, CompanyRepository companyRepository) {
-        this.portfolioImageRepository = portfolioImageRepository;
+    public PortfolioImagesService(CompanyRepository companyRepository, FileManagementFacade fileManagementFacade, ImageMapper imageMapper) {
+        this.storageService = fileManagementFacade;
         this.companyRepository = companyRepository;
+        this.imageMapper = imageMapper;
     }
 
 
-    public List<PortfolioImageResponse> saveImages(int companyId, List<MultipartFile> portfolioImages) {
+    public List<ImageResponse> saveImages(int companyId, List<MultipartFile> portfolioImages) {
         Company company = getCompanyById(companyId);
 
-        if (company.getPortfolioImagesSize() >= 10){
-            throw new PortfolioImageLimitExceededException();
+        List<ImageResponse> imagesResponse = new ArrayList<>();
+
+        for(MultipartFile image: portfolioImages){
+            StoredFile file = this.storageService.saveCompanyPortfolioImage(company, image);
+            imagesResponse.add(imageMapper.toPortfolioImageResponse(file));
         }
 
-         return portfolioImages.stream()
-                .map(image -> {
-                    try {
-                        String filename = image.getOriginalFilename();
-                        byte[] imageBytes = image.getBytes();
-
-                        return PortfolioImageMapper.portfolioImageToPortfolioImageResponse(
-                                portfolioImageRepository.save(
-                                        new PortfolioImage(imageBytes, filename, company)
-                                )
-                        );
-                    } catch (IOException exception){
-                        throw new ImageException(exception.getMessage());
-                    }
-                }).toList();
+        return imagesResponse;
     }
 
-    public Page<PortfolioImageResponse> readImages(int companyId, Pageable pageable) {
+    public Page<ImageResponse> readImages(int companyId, Pageable pageable) {
         Company company = getCompanyById(companyId);
-        Page<PortfolioImage> images = portfolioImageRepository.findAllByCompany(company, pageable);
+        Page<StoredFile> images = this.storageService.getCompanyPortfolioImages((long) company.getId(), pageable);
 
-        List<PortfolioImageResponse> readModels = images.stream()
-                .map(PortfolioImageMapper::portfolioImageToPortfolioImageResponse)
+        List<ImageResponse> readModels = images.stream()
+                .map(imageMapper::toPortfolioImageResponse)
                 .toList();
 
         return new PageImpl<>(readModels, pageable, images.getTotalElements());
     }
 
-    public void deleteImage(int imageId, int companyId) {
-        PortfolioImage portfolioImage = portfolioImageRepository.findByIdAndCompanyId(imageId, companyId)
-                .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"));
-        portfolioImageRepository.delete(portfolioImage);
+    public void deleteImage(int companyId, String objectKey) {
+        this.storageService.deleteFile((long) companyId, objectKey);
     }
 
-    public PortfolioImage getImageById(int imageId) {
-       return portfolioImageRepository.findById(imageId)
-               .orElseThrow(() -> new ImageNotFoundException("Image with id " + imageId + " not found"));
-    }
 
     // Private method
     private Company getCompanyById(int companyId) {

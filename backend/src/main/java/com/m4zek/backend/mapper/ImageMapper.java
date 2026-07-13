@@ -1,13 +1,28 @@
 package com.m4zek.backend.mapper;
 
-import java.util.Base64;
+import com.m4zek.backend.minio.MinioUrlResolver;
+import com.m4zek.backend.model.StoredFile;
+import com.m4zek.backend.model.dto.read.ImageResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ImageMapper {
 
-    private ImageMapper() {}
+    private final MinioUrlResolver resolver;
 
-    public static String byteImageToBase64(byte[] image) {
-        return image != null ? Base64.getEncoder().encodeToString(image) : null;
+    private ImageMapper(MinioUrlResolver resolver) {
+        this.resolver = resolver;
     }
+
+    public ImageResponse toPortfolioImageResponse(StoredFile image){
+        return ImageResponse.builder()
+                .id(image.getId())
+                .filename(image.getOriginalFileName())
+                .key(image.getObjectKey())
+                .imageUrl(resolver.imageUrlMedium(image))
+                .type(image.getType())
+                .build();
+    }
+
 
 }

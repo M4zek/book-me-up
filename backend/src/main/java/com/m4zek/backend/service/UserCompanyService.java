@@ -1,84 +1,86 @@
 package com.m4zek.backend.service;
 
 
-import com.m4zek.backend.exception.UserNotFoundException;
-import com.m4zek.backend.mapper.CompanyMapper;
-import com.m4zek.backend.mapper.UserMapper;
+import com.m4zek.backend.exception.CompanyNotFoundException;
 import com.m4zek.backend.model.Company;
+import com.m4zek.backend.model.CompanyRole;
 import com.m4zek.backend.model.CompanyUserRole;
 import com.m4zek.backend.model.User;
-import com.m4zek.backend.model.dto.read.UserCompanyResponse;
-import com.m4zek.backend.model.dto.read.UserToHiredResponse;
-import com.m4zek.backend.model.projection.MemberProjection;
 import com.m4zek.backend.repository.CompanyUserRoleRepository;
-import com.m4zek.backend.repository.UserRepository;
-import com.m4zek.backend.security.service.MyUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserCompanyService {
 
-    private final UserRepository userRepository;
+    private final static Logger logger = LoggerFactory.getLogger(UserCompanyService.class);
+
     private final CompanyUserRoleRepository companyUserRoleRepository;
+    private final CompanyRoleService roleService;
 
-    public UserCompanyService(UserRepository userRepository, CompanyUserRoleRepository companyUserRoleRepository) {
-        this.userRepository = userRepository;
+    public UserCompanyService(CompanyUserRoleRepository companyUserRoleRepository, CompanyRoleService roleService) {
         this.companyUserRoleRepository = companyUserRoleRepository;
+        this.roleService = roleService;
+    }
+
+    @Transactional
+    public CompanyUserRole createAndSaveRelation(User employee, Company company, CompanyRole emplRole){
+        CompanyUserRole relation =
+                new CompanyUserRole(employee, company, emplRole);
+        return this.save(relation);
+    }
+
+    public CompanyUserRole save(CompanyUserRole companyUserRole){
+        CompanyUserRole relation = this.companyUserRoleRepository.save(companyUserRole);
+        logger.info("New Employee [{}] has been assigned to Company [{}]",
+                relation.getUser().getId(), relation.getCompany().getId());
+        return relation;
     }
 
 
-//    PUBLIC METHODS
-    public List<UserCompanyResponse> findAllUserCompanies() {
-        User loggedUser = this.findLoggedInUser();
-        List<CompanyUserRole> roles = this.companyUserRoleRepository.findAllByUserId(loggedUser.getId());
+    @Transactional
+    public void assignOwner(User owner, Company company){
+        CompanyRole ownerRole = this.roleService.findRoleOwner()
+                .orElseThrow(() -> new CompanyNotFoundException("Company role not found"));
 
-        Map<Company, List<CompanyUserRole>> grouped =   roles.stream().collect(Collectors.groupingBy(CompanyUserRole::getCompany));
-
-        return grouped.entrySet().stream()
-                .map(entry -> {
-                    Company company = entry.getKey();
-                    List<CompanyUserRole> companyUserRoles = entry.getValue();
-
-                    List<String> rolesName = companyUserRoles.stream().map(r -> r.getRole().getName()).toList();
-
-                    return CompanyMapper.companyToUserCompanyResponse(company, rolesName);
-                }).toList();
+        CompanyUserRole relation = this.createAndSaveRelation(owner, company, ownerRole);
+        company.addUserRole(relation);
     }
 
-    // Method to search users to hire based od first name and last name.
-    public Page<UserToHiredResponse> findUsersToHireByFirstNameAndSurname(Pageable pageable, String firstName, String lastName) {
-        Page<User> users = this.userRepository.findAllByFirstNameAndLastname(pageable, firstName, lastName);
-
-        List<UserToHiredResponse> usersToHireList = users.stream()
-                .map(UserMapper::userToUserToHiredResponse)
-                .toList();
-
-        return new PageImpl<>(usersToHireList, pageable, users.getTotalElements());
+    public List<CompanyUserRole> findAllUserRolesInCompanies(User user){
+        return this.companyUserRoleRepository.findAllByUserId(user.getId());
     }
 
-    // Find Users  by first name and last name
-    public Page<MemberProjection> findUsersToChat(Pageable pageable, String firstName, String lastName){
-        Page<User> users = this.userRepository.findAllByFirstNameAndLastname(pageable, firstName, lastName);
+    public Page<CompanyUserRole> findEmployeesByFirstNameAndLastName(int companyId, String firstName, String lastName, Pageable pageable){
+        return this.companyUserRoleRepository.findAllByCompanyId(companyId, firstName,lastName,pageable);
+    }
 
-        List<MemberProjection> softMembers = users.stream()
-                .map(UserMapper::userToMemberProjection)
-                .toList();
+    public Optional<CompanyUserRole> findByUserIdAndCompanyId(int userId, int companyId){
+        return this.companyUserRoleRepository.findByUserIdAndCompanyId(userId, companyId);
+    }
 
-        return new PageImpl<>(softMembers, pageable, users.getTotalElements());
+    public void delete(CompanyUserRole companyUserRole){
+        this.companyUserRoleRepository.delete(companyUserRole);
+    }
+
+    public boolean hasAnyRoleInCompany(Integer company_id, Integer user_id, List<String> roleNames) {
+        return this.companyUserRoleRepository.existsByUserIdAndCompanyIdAndRoleNameIn(user_id, company_id, roleNames);
+    }
+
+    public boolean employeeHiredInCompany(int employeeId, int companyId){
+        return this.companyUserRoleRepository.existsByUserIdAndCompanyId(employeeId, companyId);
     }
 
 
-//    PRIVATE METHODS
-    private User findLoggedInUser() {
-        MyUserDetails myUserDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return this.userRepository.findById(myUserDetails.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+    public Optional<CompanyRole> findCompanyRole(String name){
+        return this.roleService.findByName(name);
     }
+
 }

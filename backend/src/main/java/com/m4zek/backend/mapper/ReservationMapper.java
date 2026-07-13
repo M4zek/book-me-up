@@ -1,53 +1,52 @@
 package com.m4zek.backend.mapper;
 
+import com.m4zek.backend.minio.MinioUrlResolver;
 import com.m4zek.backend.model.Reservation;
 import com.m4zek.backend.model.ReservationStatus;
-import com.m4zek.backend.model.dto.read.*;
+import com.m4zek.backend.model.dto.read.ReservationResponse;
+import com.m4zek.backend.model.dto.read.UserReservationResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReservationMapper {
 
-    private  ReservationMapper() {}
+    private final MinioUrlResolver urlResolver;
+    private final UserMapper userMapper;
+    private final CompanyOfferMapper offerMapper;
+    private final AddressMapper addressMapper;
 
-    public static ReservationResponse reserevationToReservationResponse(Reservation reservation) {
-        EmployeeSummaryResponse preferredEmployee = reservation.getPreferredUser() != null ?
-                UserMapper.toEmployeeSummaryResponse(reservation.getPreferredUser()) : null;
+    private  ReservationMapper(MinioUrlResolver urlResolver, UserMapper userMapper, CompanyOfferMapper offerMapper, AddressMapper addressMapper) {
+        this.urlResolver = urlResolver;
+        this.userMapper = userMapper;
+        this.offerMapper = offerMapper;
+        this.addressMapper = addressMapper;
+    }
 
+    public ReservationResponse reserevationToReservationResponse(
+            Reservation reservation
+    ) {
         return ReservationResponse.builder()
                 .id(reservation.getId())
                 .reservationDate(reservation.getReservationDate())
                 .reservationNumber(reservation.getReservationNumber())
                 .status(reservation.getReservationStatus())
-                .customer(UserResponse.builder()
-                        .id(reservation.getUser().getId())
-                        .firstName(reservation.getUser().getUserData().getFirstName())
-                        .lastName(reservation.getUser().getUserData().getLastName())
-                        .phoneNumber(reservation.getUser().getUserData().getPhoneNumber())
-                        .email(reservation.getUser().getAddressEmail())
-                        .birthdate(reservation.getUser().getUserData().getDateOfBirth().toString())
-                        .avatar(reservation.getUser().getUserData().getPhoto())
-                        .build())
-                .preferredEmployee(preferredEmployee)
-                .companyOffer(CompanyOfferResponse.builder()
-                        .id(reservation.getCompanyOffer().getId())
-                        .name(reservation.getCompanyOffer().getName())
-                        .description(reservation.getCompanyOffer().getDescription())
-                        .price(reservation.getCompanyOffer().getPrice())
-                        .duration(reservation.getCompanyOffer().getDuration())
-                        .build())
+                .customer(this.userMapper.toUserResponse(reservation.getUser()))
+                .preferredEmployee(this.userMapper.toEmployeeSummaryResponse(reservation.getPreferredUser()))
+                .companyOffer(this.offerMapper.companyOfferToCompanyOfferResponse(reservation.getCompanyOffer()))
                 .build();
     }
 
 
-    public static UserReservationResponse reservationToUserReservationResponse(Reservation reservation) {
+    public UserReservationResponse reservationToUserReservationResponse(Reservation reservation) {
         return UserReservationResponse.builder()
                 .id(reservation.getId())
                 .companyName(reservation.getCompanyOffer().getCompany().getName())
                 .reservationNumber(reservation.getReservationNumber())
-                .address(AddressMapper.addressToAddressResponse(reservation.getCompanyOffer().getCompany().getAddress()))
-                .offer(CompanyOfferMapper.companyOfferToCompanyOfferResponse(reservation.getCompanyOffer()))
+                .address(this.addressMapper.addressToAddressResponse(reservation.getCompanyOffer().getCompany().getAddress()))
+                .offer(this.offerMapper.companyOfferToCompanyOfferResponse(reservation.getCompanyOffer()))
                 .status(reservation.getReservationStatus())
                 .reservationDate(reservation.getReservationDate())
-                .companyLogo(ImageMapper.byteImageToBase64(reservation.getCompanyOffer().getCompany().getLogo()))
+                .companyLogo(this.urlResolver.imageUrlMedium(reservation.getCompanyOffer().getCompany().getLogoFile()))
                 .hasUserRatedOffer(
                         //If the reservation has a status other than COMPLETED, the user could not add a rating.
                         // If it is completed, it checks whether the user has added a review.
@@ -57,6 +56,4 @@ public class ReservationMapper {
                 )
                 .build();
     }
-
-
 }

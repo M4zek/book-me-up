@@ -14,6 +14,6 @@ public class UserToHiredResponse {
     private String firstName;
     private String lastName;
     private List<Integer> companyIds;
-    private String avatar;
+    private String avatar_url;
 
 }

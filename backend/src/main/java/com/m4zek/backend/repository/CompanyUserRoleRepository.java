@@ -36,4 +36,6 @@ public interface CompanyUserRoleRepository {
     boolean existsByUserIdAndCompanyIdAndRoleNameIn(int user_id, int company_id, List<String> roles);
 
     void delete(CompanyUserRole companyUserRole);
+
+    boolean existsByUserIdAndCompanyId(int employeeId, int companyId);
 }

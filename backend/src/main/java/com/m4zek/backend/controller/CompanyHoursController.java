@@ -4,7 +4,7 @@ package com.m4zek.backend.controller;
 import com.m4zek.backend.annotations.HasAnyCompanyRole;
 import com.m4zek.backend.model.dto.read.CompanyHoursResponse;
 import com.m4zek.backend.model.dto.write.CompanyHoursRequest;
-import com.m4zek.backend.service.CompanyHoursService;
+import com.m4zek.backend.service.facade.CompanyHoursFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +19,28 @@ import java.util.List;
 @RequestMapping("api/v1/companies")
 public class CompanyHoursController {
 
-    private final CompanyHoursService companyHoursService;
+    private final CompanyHoursFacade companyHoursFacade;
 
-    public CompanyHoursController(CompanyHoursService companyHoursService) {
-        this.companyHoursService = companyHoursService;
+    public CompanyHoursController(CompanyHoursFacade companyHoursFacade) {
+        this.companyHoursFacade = companyHoursFacade;
     }
 
     @PostMapping("/{companyId}/hours")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    public List<CompanyHoursResponse> addCompanyHours(
-            @Positive(message = "Company id must be positive number") @PathVariable Long companyId,
+    public ResponseEntity<List<CompanyHoursResponse>> addCompanyHours(
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
             @RequestBody @Valid List<CompanyHoursRequest> companyHours) {
-        return this.companyHoursService.setCompanyHours(companyId, companyHours);
+
+        List<CompanyHoursResponse> response = this.companyHoursFacade.createCompanyBusinessHours(companyId, companyHours);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{companyId}/hours")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    public List<CompanyHoursResponse> readCompanyHours(@Positive(message = "Company id must be positive number") @PathVariable Long companyId) {
-        return this.companyHoursService.readCompanyHours(companyId);
+    public ResponseEntity<List<CompanyHoursResponse>> readCompanyHours(
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId) {
+        List<CompanyHoursResponse> response = this.companyHoursFacade.readCompanyBusinessHours(companyId);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -44,11 +48,12 @@ public class CompanyHoursController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @HasAnyCompanyRole({"COMPANY_OWNER", "COMPANY_MANAGER"})
     public ResponseEntity<List<CompanyHoursResponse>> updateCompanyHours(
-            @Positive(message = "Company id must be positive number") @PathVariable Long companyId,
+            @Positive(message = "Company id must be positive number") @PathVariable int companyId,
             @RequestBody @Valid List<CompanyHoursRequest> companyHours
     )
     {
-        return ResponseEntity.ok(this.companyHoursService.updateCompanyOpeningHours(companyId, companyHours));
+        List<CompanyHoursResponse> response = this.companyHoursFacade.updateCompanyHours(companyId, companyHours);
+        return ResponseEntity.ok(response);
     }
 
 

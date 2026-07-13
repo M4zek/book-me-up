@@ -28,4 +28,5 @@ public interface CompanyOfferRepository {
         """)
     Page<CompanyOffer> searchCompanyOffersByCompanyIdAndName(int companyId, String name, Pageable pageable);
 
+    Optional<CompanyOffer> findByIdAndCompany(int id, Company company);
 }

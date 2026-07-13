@@ -1,11 +1,10 @@
 package com.m4zek.backend.security.service;
 
-import com.m4zek.backend.mapper.UserMapper;
-import com.m4zek.backend.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
 
 public class MyUserDetails implements UserDetails {
 
@@ -30,9 +29,6 @@ public class MyUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static MyUserDetails build(User user) {
-        return UserMapper.toMyUserDetails(user);
-    }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;

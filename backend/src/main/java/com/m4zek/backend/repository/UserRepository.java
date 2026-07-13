@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -28,4 +29,6 @@ public interface UserRepository {
     Page<User> findAllByFirstNameAndLastname(Pageable pageable,
                                              @Param("firstName") String firstName,
                                              @Param("lastName") String lastName);
+
+    List<User> findAllByIdIn(List<Integer> ids);
 }

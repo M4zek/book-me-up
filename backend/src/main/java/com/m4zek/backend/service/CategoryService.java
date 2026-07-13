@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CategoryService {
 
@@ -30,6 +32,10 @@ public class CategoryService {
         return this.categoryRepository.save(category);
     }
 
+
+    public Optional<Category> findByName(String name){
+        return this.categoryRepository.findByName(name);
+    }
 
     public Page<CategoryResponse> findAllCategories(Pageable pageable) {
         Page<CategoryResponse> pageCategory = categoryRepository.findAllToDTO(pageable);

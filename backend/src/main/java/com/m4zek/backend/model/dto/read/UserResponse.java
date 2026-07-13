@@ -12,5 +12,5 @@ public class UserResponse {
     private String email;
     private String birthdate;
     private String phoneNumber;
-    private byte[] avatar;
+    private String avatar_url;
 }

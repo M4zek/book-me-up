@@ -8,13 +8,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@db:3306/book_me_up # Database URL 
+      - MINIO_URL=minio:9000  # MinIO URL if local(Docker) - minio:9000 else - domain ex.: s3.example.com
+      - MINIO_ACCESS_KEY=minioadmin # Change minio accesskey 
+      - MINIO_SECRET_KEY=minioadmin # Change minio secreat key 
+      - MINIO_SECURE=False
 
-  db:
+
+  db: 
     image: mariadb:latest
     container_name: db
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root # Change
+      MYSQL_ROOT_USERNAME: root # Change
       MYSQL_DATABASE: book_me_up
     ports:
       - "3306:3306"
@@ -27,6 +34,7 @@ services:
       retries: 5
     restart: unless-stopped
     
+    
   backend-api:
     container_name: backend-api
     build:
@@ -36,15 +44,22 @@ services:
       - "8080:8080"
     depends_on:
       - db
+      - minio
     restart:
       on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/book_me_up?serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_USERNAME: root  # Change db username
+      SPRING_DATASOURCE_PASSWORD: root  # Change db password
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MariaDBDialect
       SPRING_JPA_HIBERNATE_NAMING-STRATEGY: org.hibernate.cfg.ImprovedNamingStrategy
+      
+      MINIO_ENDPOINT_URL: http://minio:9000  # Change minio url   
+      MINIO_ACCESS-KEY: minioadmin  # Change minio accesskey 
+      MINIO_SECRET-KEY: minioadmin  # Change minio secreat key 
+      MINIO_BUCKET: app-storage     # App bucket name
+      MINIO_PRESIGNED-URL-EXPIRATION: 900   # 15 min expire presigned url
 
   frontend-app:
     container_name: frontend-app
@@ -55,5 +70,24 @@ services:
       - "4200:80"
     restart: unless-stopped
 
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    depends_on:
+      - db
+    environment:
+      MINIO_ROOT_USER: minioadmin   # Change 
+      MINIO_ROOT_PASSWORD: minioadmin #Change 
+    command: server /data --console-address ":9001" # On Prod dont make admin console public
+    volumes:
+      - 'minio_data:/data' 
+    restart: unless-stopped
+
+
 volumes:
   db_data:
+  minio_data:
