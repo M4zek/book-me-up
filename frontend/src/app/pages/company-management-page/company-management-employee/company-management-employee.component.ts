@@ -9,13 +9,14 @@ import {
 } from "../../../components/modals/company-add-employee-modal/company-add-employee-modal.component";
 import {CompanyContextService} from "../../../service/company-context.service";
 import {CompanyService} from "../../../service/company.service";
-import {CompanyEmployeeDetailsResponse} from "../../../model/http/company.model";
+import {CompanyEmployeeDetailsResponse, FileType} from "../../../model/http/company.model";
 import {DoubleSpinnerComponent} from "../../../components/double-spinner/double-spinner.component";
 import {ConfirmService} from "../../../service/confirm.service";
 import {ToastService} from "../../../service/toast.service";
 import {getUserAvatar} from "../../../utils.functions";
 import {FormsModule} from "@angular/forms";
 import {SearchAndSortBarComponent} from "../../../components/search-bar/search-and-sort-bar.component";
+import {MyImgComponent} from "../../../components/my-img/my-img.component";
 
 
 export interface EmployeeSearchModel{
@@ -33,7 +34,8 @@ export interface EmployeeSearchModel{
         DoubleSpinnerComponent,
         NgIf,
         FormsModule,
-        SearchAndSortBarComponent
+        SearchAndSortBarComponent,
+        MyImgComponent
     ],
   templateUrl: './company-management-employee.component.html',
   styleUrl: './company-management-employee.component.css'
@@ -203,4 +205,6 @@ export class CompanyManagementEmployeeComponent implements OnInit {
           console.error("Ups... Something went wrong!");
       }
   }
+
+    protected readonly FileType = FileType;
 }

@@ -1,6 +1,5 @@
 <div class="appointments-container">
     <app-search-and-sort-bar
-            [class.disabled]="reservationList.length == 0"
             [placeholder]="'Search by offer name... '"
             [showFilter]="true"
             [filterByItems]="filterByItems"
@@ -25,63 +24,83 @@
          *ngIf="!isReservationLoading && reservationList.length > 0">
 
         <div class="appointment-item"
-             [ngClass]="item.status.toLowerCase()"
              *ngFor="let item of this.reservationList">
+            <div class="reservation-card">
 
-            <div class="card-company-info">
-                <img [src]="'images/default_logo_company.png'" alt="logo" *ngIf="!item.companyLogo"/>
-                <img [src]="'data:image/jpeg;base64,' + item.companyLogo"  alt="logo" *ngIf="item.companyLogo"/>
-                <span>{{item.companyName}}</span>
-                <div class="action-buttons">
-                    <div class="button status">
-                        <img [src]="getImage(item.status)"
-                             [class.rotate]="item.status == 'PENDING'"
-                             alt="status"/>
-                        <div class="expand">
-                            <span>{{item.status.substring(0,1).toUpperCase()}}{{item.status.substring(1).toLowerCase()}}</span>
+
+                <div class="reservation-content">
+                    <div class="reservation-bar" (click)="onReservationSelected(item)">
+                        <div class="reservation-logo" [class.large-logo]="item === this.reservationSelected">
+                            <app-my-img [src]="item.companyLogo" [type]="FileType.IMG_COMPANY_LOGO"/>
                         </div>
-                    </div>
-                    <div class="button cancel"
-                         *ngIf="isCancelAvailable(item.status)"
-                         (click)="cancelReservation(item)">
-                        <img [src]="'icons/plus_icon.svg'" alt="cancel"/>
-                        <div class="expand">
-                            <span>Cancel</span>
+
+                        <h2>{{item.offer.name}}</h2>
+
+                        <div class="status-badge"
+                             [ngClass]="item.status.toLowerCase()">
+                            {{item.status}}
                         </div>
                     </div>
 
-                    <div class="button opinion"
-                         (click)="openAddOpinionModal(item)"
-                        *ngIf="item.status.toLowerCase() === 'completed' && !item.hasUserRatedOffer">
-                        <img [src]="'icons/white_stroke_star_icon.svg'" alt="cancel"/>
-                        <div class="expand">
-                            <span>Add opinion</span>
+                    <div class="expand" [class.show]="this.reservationSelected === item">
+                        <div class="reservation-grid">
+                            <div class="item">
+                                <span class="label">Order number</span>
+                                <span class="value">{{item.reservationNumber}}</span>
+                            </div>
+
+                            <div class="item">
+                                <span class="label">Company</span>
+                                <span class="value">{{item.companyName}}</span>
+                            </div>
+
+                            <div class="item">
+                                <span class="label">Address</span>
+                                <span class="value">{{getAddressString(item.address)}}</span>
+                            </div>
+
+                            <div class="item">
+                                <span class="label">Date</span>
+                                <span class="value"> {{item.reservationDate | date: 'YYYY-MM-dd HH:mm'}} {{ countDownS | async}}</span>
+                            </div>
+
+                            <div class="item">
+                                <span class="label">Price</span>
+                                <span class="value price">{{item.offer.price}} PLN</span>
+                            </div>
+
+                            <div class="item">
+                                <span class="label">Duration</span>
+                                <span class="value"> {{item.offer.duration}} min</span>
+                            </div>
                         </div>
+
+                        <div class="reservation-note">
+                            <span>
+                                {{getStatusText(item.status)}}
+                            </span>
+
+                            <div class="actions-btn">
+                                @if (isCancelAvailable(item.status)){
+                                    <div class="button cancel" (click)="cancelReservation(item)">
+                                        <span>Cancel reservation</span>
+                                    </div>
+                                }
+                                @if (item.status.toLowerCase() === 'completed' && !item.hasUserRatedOffer){
+                                    <div class="button opinion" (click)="openAddOpinionModal(item)">
+                                        <span>Add opinion</span>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <div class="appointment-information">
-                <div class="information-item">
-                    <p class="offer-name"> {{item.offer.name}} </p>
-                </div>
-                <div class="information-item">
-                    <span>Order number: </span>
-                    <span> {{item.reservationNumber}}</span>
-                </div>
-                <div class="information-item">
-                    <span>Address: </span>
-                    <span> {{item.address.city}}, {{item.address.street}} {{item.address.buildingNumber}}</span>
-                </div>
-                <div class="information-item">
-                    <span>Date: </span>
-                    <span> {{item.reservationDate | date: 'HH:mm, MM-d-y (EEEE)'}} </span>
-                </div>
-                <div class="information-item">
-                    <span>Price: </span>
-                    <span> {{item.offer.price}} PLN</span>
-                </div>
-            </div>
+
+
         </div>
     </div>
     <app-paginator [pagination]="pagination" (paginatorChanged)="onPaginatorChanged()"/>

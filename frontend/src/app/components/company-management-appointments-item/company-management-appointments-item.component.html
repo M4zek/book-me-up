@@ -4,7 +4,7 @@
     </div>
     <div class="appointments-data">
         <div class="order-user">
-            <img [src]="reservation.customer.avatar? 'data:image/jpeg;base64,' + reservation.customer.avatar : 'images/user_default_avatar.png'" alt="avatar"/>
+            <app-my-img [src]="reservation.customer.avatar_url" [type]="FileType.IMG_USER_AVATAR" [alt]="'img'"/>
             <span>{{reservation.customer.firstName}} {{reservation.customer.lastName}}</span>
         </div>
 
@@ -17,7 +17,7 @@
                 <span> {{ reservation.reservationDate | date:'dd/MM/yyyy (EEEE)' }}</span>
             </div>
             <div>
-                <span> {{reservation.reservationDate | date:'HH:mm' }} - {{reservation.reservationDate + (reservation.companyOffer.duration * 6000) | date: 'HH:mm'}}</span>
+                <span> {{reservation.reservationDate | date:'HH:mm' }} - {{getReservationEndDate(reservation) | date: 'HH:mm'}}</span>
             </div>
             <div>
                 <span> {{reservation.companyOffer.price}} PLN</span>

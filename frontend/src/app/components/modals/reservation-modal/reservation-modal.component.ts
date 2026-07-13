@@ -7,7 +7,7 @@ import {
 } from "../../date-reservation-picker/date-reservation-picker.component";
 import {DropDownListComponent, DropDownListItem} from "../../drop-down-list/drop-down-list.component";
 import {FormsModule} from "@angular/forms";
-import {CompanyOffersResponse, EmployeeSummaryResponse} from "../../../model/http/company.model";
+import {CompanyOffersResponse, EmployeeSummaryResponse, FileType} from "../../../model/http/company.model";
 import {UserResponse} from "../../../model/http/user.model";
 import {UserContextService} from "../../../service/user-context.service";
 import {ReservationService} from "../../../service/reservation.service";
@@ -19,6 +19,7 @@ import {
 } from "../../../model/http/reservation.model";
 import {ToastService} from "../../../service/toast.service";
 import {ReservationAvailability} from "../../../model/gui/gui.model";
+import {MyImgComponent} from "../../my-img/my-img.component";
 
 
 @Component({
@@ -27,7 +28,8 @@ import {ReservationAvailability} from "../../../model/gui/gui.model";
         NgIf,
         DateReservationPickerComponent,
         DropDownListComponent,
-        FormsModule
+        FormsModule,
+        MyImgComponent
     ],
     templateUrl: './reservation-modal.component.html',
     styleUrl: './reservation-modal.component.css'
@@ -269,4 +271,5 @@ export class ReservationModalComponent implements OnChanges, OnDestroy {
       return d;
   }
 
+    protected readonly FileType = FileType;
 }

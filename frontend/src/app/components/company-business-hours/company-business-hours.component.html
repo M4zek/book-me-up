@@ -1,17 +1,47 @@
 <div class="company-business-hours">
     <h2>Opening hours</h2>
     <div class="parent">
+
+        @let day = findDayOfWeek();
+
+        @if (day) {
+            <div class="content margin"
+                 [ngClass]="this.isOpen(day) ? 'today': 'closed'"
+            >
+                <div class="day">
+                    <p class="day-paragraph">Today - {{day?.dayOfWeek}}</p>
+                </div>
+
+                <div class="hours">
+                    <p class="hour-from-paragraph" *ngIf="!this.isOpen(day)">{{textWhyClosed(day)}}</p>
+                    <p class="hour-from-paragraph" *ngIf="this.isOpen(day)">{{day?.openTime}} - {{day?.closeTime}}</p>
+                </div>
+
+
+                @if(isOpen(day)){
+                    @let percentage = calculateProgressToTimeEnd(day);
+                    <div class="progress-bar"
+                         [style.left.%]="percentage"
+                    >
+                        <span [style.left.px]="getCurrentTimePosition(percentage)">
+                            {{getCurrentTime()}}
+                        </span>
+                    </div>
+                }
+
+            </div>
+        }
+
         <div class="content"
              *ngFor="let item of openingHours"
-             [class.today]="isToday(item.dayOfWeek)"
              [ngClass]="item.open? 'open': 'closed'">
             <div class="day">
                 <p class="day-paragraph">{{item.dayOfWeek}}</p>
             </div>
+
             <div class="hours">
                 <p class="hour-from-paragraph" *ngIf="!item.open">Closed</p>
-                <p class="hour-from-paragraph" *ngIf="item.open">{{item.openTime}}</p>
-                <p class="hour-to-paragraph" *ngIf="item.open">{{item.closeTime}}</p>
+                <p class="hour-from-paragraph" *ngIf="item.open">{{item.openTime}} - {{item.closeTime}}</p>
             </div>
         </div>
     </div>

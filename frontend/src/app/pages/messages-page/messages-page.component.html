@@ -42,9 +42,10 @@
                      [class.selected]="room == selectedRoom"
                      *ngIf="room.roomType == RoomType.GROUP" (click)="selectRoom(room)">
                     <div class="room-member-list" >
-                        <img *ngFor="let member of room.memberProjections | slice:0:5"
-                             class="member-avatar"
-                             [src]="getUserAvatar(member)" alt="img"/>
+                        <app-my-img *ngFor="let member of room.memberProjections | slice:0:5"
+                             [src]="member.avatar"
+                                    [alt]="'av'"
+                             [type]="FileType.IMG_USER_AVATAR"/>
 
                     </div>
                     <div class="room-information">
@@ -63,7 +64,7 @@
                      [class.selected]="room == selectedRoom"
                      *ngIf="room.roomType == RoomType.PRIVATE" (click)="selectRoom(room)">
                     <div class="room-member-list" *ngIf="findChatPartner(room.memberProjections) as mem">
-                        <img class="member-avatar" [src]="getUserAvatar(mem)" alt="img"/>
+                        <app-my-img [src]="mem.avatar" [type]="FileType.IMG_USER_AVATAR" alt="img"/>
                     </div>
                     <div class="room-information" *ngIf="findChatPartner(room.memberProjections) as mem">
                         <span class="room-name">{{mem.firstName}} {{mem.lastName}}</span>
@@ -89,9 +90,10 @@
             <div class="room" *ngIf="this.selectedRoom.roomType == RoomType.GROUP">
                 <div class="cont">
                     <div class="images">
-                        <img *ngFor="let member of this.selectedRoom.memberProjections | slice:0:10"
-                             [src]="getUserAvatar(member)"
-                             alt="img"/>
+                        <app-my-img *ngFor="let member of this.selectedRoom.memberProjections | slice:0:10"
+                             [src]="member.avatar"
+                             [type]="FileType.IMG_USER_AVATAR"
+                             [alt]="'img'"/>
                     </div>
                     <span>{{this.selectedRoom.name}}</span>
                 </div>
@@ -101,7 +103,7 @@
             <div class="room" *ngIf="this.selectedRoom.roomType == RoomType.PRIVATE">
                 <div class="cont" *ngIf="findChatPartner(this.selectedRoom.memberProjections) as mem">
                     <div class="images">
-                        <img [src]="getUserAvatar(mem)" alt="img"/>
+                        <app-my-img [src]="mem.avatar" [type]="FileType.IMG_USER_AVATAR" [alt]="'img'"/>
                     </div>
                     <span>{{mem.firstName}} {{mem.lastName}}</span>
                 </div>
@@ -122,7 +124,10 @@
 
                     <div class="message-bg">
                         <div class="img-wrapper">
-                            <img [src]="getUserAvatar(message.sender)" *ngIf="showSenderAvatar(message)" alt="img"/>
+                            <app-my-img
+                                    [type]="FileType.IMG_USER_AVATAR"
+                                    [src]="message.sender.avatar"
+                                        *ngIf="showSenderAvatar(message)" alt="img"/>
                         </div>
                         <div class="message-item">
                             <span>
@@ -137,8 +142,8 @@
                     </div>
 
                     <div class="read-by-container" *ngIf="message.readBy.length > 0">
-                        <img *ngFor="let memberWhoRead of getMembersWhoReadTheMessageWithoutLoggedUser(message)"
-                             [src]="getUserAvatar(memberWhoRead)" alt="img"
+                        <app-my-img *ngFor="let memberWhoRead of getMembersWhoReadTheMessageWithoutLoggedUser(message)"
+                                    [type]="FileType.IMG_USER_AVATAR" [src]="memberWhoRead.avatar" [alt]="'img'"
                         />
                     </div>
                 </div>

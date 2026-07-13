@@ -1,6 +1,8 @@
 import {Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {MyImgComponent} from "../my-img/my-img.component";
+import {FileType} from "../../model/http/company.model";
 
 export interface DropDownListItem {
   id?: number,
@@ -11,12 +13,13 @@ export interface DropDownListItem {
 
 @Component({
   selector: 'app-drop-down-list',
-  imports: [
-    NgClass,
-    NgIf,
-    NgForOf,
-    FormsModule
-  ],
+    imports: [
+        NgClass,
+        NgIf,
+        NgForOf,
+        FormsModule,
+        MyImgComponent
+    ],
   templateUrl: './drop-down-list.component.html',
   styleUrl: './drop-down-list.component.css'
 })
@@ -57,7 +60,6 @@ export class DropDownListComponent implements OnChanges, OnDestroy {
 
 
   ngOnDestroy() {
-      console.log("DESTROY")
   }
 
 
@@ -95,4 +97,6 @@ export class DropDownListComponent implements OnChanges, OnDestroy {
       }
       return false;
   }
+
+    protected readonly FileType = FileType;
 }

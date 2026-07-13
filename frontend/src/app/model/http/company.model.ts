@@ -50,7 +50,7 @@ export interface EmployeeDetailsResponse{
     phone: string,
     email: string,
     role_in_company: string,
-    avatar: string | null,
+    avatar: string,
 }
 
 export interface CompanyDetailsResponse {
@@ -62,7 +62,7 @@ export interface CompanyDetailsResponse {
     companyHours: CompanyHours[],
     owner: EmployeeSummaryResponse,
     employees: EmployeeSummaryResponse[],
-    logo: string,
+    logo_url: string,
 }
 
 
@@ -83,7 +83,6 @@ export interface CompanyOfferRequest{
 
 export interface CompanyRequest{
     owner_id: number,
-    logo: string | null;
     name: string;
     description: string;
     category: {
@@ -96,8 +95,9 @@ export interface CompanyRequest{
 export interface CompanyPortfolioResponse{
     id: number,
     filename: string,
-    downloadUrl: string,
-    image: string,
+    imageUrl: string,
+    key: string,
+    type: FileType
 }
 
 export interface UserCompanyResponse{
@@ -115,4 +115,10 @@ export interface CompanyEmployeeDetailsResponse{
     phone: string,
     role_in_company: string,
     avatar: string,
+}
+
+export enum FileType{
+    IMG_USER_AVATAR = "IMG_USER_AVATAR",
+    IMG_COMPANY_LOGO = "IMG_COMPANY_LOGO",
+    IMG_COMPANY_PORTFOLIO = "IMG_COMPANY_PORTFOLIO",
 }

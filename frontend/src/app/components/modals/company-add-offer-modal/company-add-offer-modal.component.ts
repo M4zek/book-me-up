@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {CompanyOfferRequest} from "../../../model/http/company.model";
+import {CompanyOfferRequest, CompanyOffersResponse} from "../../../model/http/company.model";
 import {CompanyService} from "../../../service/company.service";
 import {CompanyContextService} from "../../../service/company-context.service";
 import {ToastService} from "../../../service/toast.service";
@@ -18,6 +18,7 @@ import {ToastService} from "../../../service/toast.service";
 export class CompanyAddOfferModalComponent {
   @Input() isVisible: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
+  @Output() onOfferAdd: EventEmitter<CompanyOffersResponse | null> = new EventEmitter<CompanyOffersResponse | null>();
 
   offerData: CompanyOfferRequest = {
     name: '',
@@ -50,6 +51,7 @@ export class CompanyAddOfferModalComponent {
               this.companyService.createNewCompanyOffer(this.offerData, company_id).subscribe(response => {
                   if(response.status === 200){
                       this.toast.show("Offer successfully created");
+                      this.onOfferAdd.emit(response.body);
                       this.close();
                   } else {
                       this.toast.show("Can't create offer",'error');

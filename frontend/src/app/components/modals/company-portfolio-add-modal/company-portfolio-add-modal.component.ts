@@ -61,7 +61,7 @@ export class CompanyPortfolioAddModalComponent{
                             this.portfolioList.push({
                                 id: img.id,
                                 name: img.filename,
-                                photo: img.image
+                                photo: img.imageUrl
                             })
                         })
 

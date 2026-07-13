@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {RatingStarsComponent} from "../../company-opinions/rating-stars/rating-stars.component";
-import {CompanyOffersResponse} from "../../../model/http/company.model";
+import {CompanyOffersResponse, FileType} from "../../../model/http/company.model";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {UserContextService} from "../../../service/user-context.service";
 import {take} from "rxjs";
@@ -9,6 +9,7 @@ import {UserResponse} from "../../../model/http/user.model";
 import {ReviewOfferRequest} from "../../../model/http/review.model";
 import {ReviewService} from "../../../service/review.service";
 import {ToastService} from "../../../service/toast.service";
+import {MyImgComponent} from "../../my-img/my-img.component";
 
 export interface OpinionModalInput {
     offerToReview: CompanyOffersResponse,
@@ -22,7 +23,8 @@ export interface OpinionModalInput {
         NgIf,
         RatingStarsComponent,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MyImgComponent
     ],
   templateUrl: './add-opinion-modal.component.html',
   styleUrl: './add-opinion-modal.component.css'
@@ -88,4 +90,6 @@ export class AddOpinionModalComponent implements OnChanges {
     }
 
   }
+
+    protected readonly FileType = FileType;
 }

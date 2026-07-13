@@ -29,9 +29,11 @@
     border-radius: 50%;
 }
 
-.user-information-container img{
+.user-information-container app-my-img{
     width: 30px;
     height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .user-information > .name{
@@ -125,14 +127,14 @@
 }
 
 .offer-name{
-    font: bold 1rem "Roboto", sans-serif;
+    font: bold .9rem "Roboto", sans-serif;
     color: var(--white);
     margin: 0;
     padding: 0;
 }
 
 .opinion-message{
-    font: 1rem "Times New Roman", sans-serif;
+    font: .9rem "Times New Roman", sans-serif;
     color: var(--white-75);
     margin: 0;
     padding: 0;

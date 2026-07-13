@@ -51,16 +51,6 @@ export class CompanyPortfolioListComponent {
   }
 
     getImgUrl(index: number){
-        let img = this.images[index].photo;
-
-        if (!img) {
-            return 'images/no_results_found.png';
-        }
-
-        if (img.startsWith('data:image')) {
-            return img;
-        }
-
-        return `data:image/jpeg;base64,${img}`;
+        return this.images[index].photo;
     }
 }

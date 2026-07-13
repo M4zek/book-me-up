@@ -10,7 +10,12 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spinner.component";
 import {Address} from "../../model/gui/gui.model";
-import {CompanyDetailsResponse, CompanyOffersResponse, CompanyPortfolioResponse} from "../../model/http/company.model";
+import {
+    CompanyDetailsResponse,
+    CompanyOffersResponse,
+    CompanyPortfolioResponse,
+    FileType
+} from "../../model/http/company.model";
 import {Pagination} from "../../model/search/search.model";
 import {PaginatorComponent} from "../../components/paginator/paginator.component";
 import {forkJoin} from "rxjs";
@@ -65,7 +70,7 @@ export class CompanyViewComponent implements OnInit {
           id: 0, firstName: '', lastName: '', avatar: ''
       },
       employees: [],
-      logo: ''
+      logo_url: ''
   };
 
   isDataLoading = false;
@@ -100,12 +105,13 @@ export class CompanyViewComponent implements OnInit {
                   }
 
                   if(portfolio.body && portfolio.status === 200){
-                      if(this.company.logo && this.company.logo != ''){
+                      if(this.company.logo_url && this.company.logo_url != ''){
                           const logo = {
                               id: -1,
                               filename: 'logo',
-                              image: this.company.logo,
-                              downloadUrl: ''
+                              imageUrl: this.company.logo_url,
+                              key: '',
+                              type: FileType.IMG_COMPANY_LOGO,
                           }
                           this.portfolioItems.push(logo);
                       }

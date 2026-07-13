@@ -7,7 +7,7 @@ export interface UserResponse {
     email: string;
     birthdate: string;
     phoneNumber: string;
-    avatar: string | null;
+    avatar_url: string;
 }
 
 export interface UserHireDetails {
@@ -15,5 +15,5 @@ export interface UserHireDetails {
     firstName: string;
     lastName: string;
     companyIds: number[];
-    avatar: string | null;
+    avatar_url: string;
 }

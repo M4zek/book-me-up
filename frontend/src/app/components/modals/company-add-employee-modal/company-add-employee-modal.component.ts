@@ -8,7 +8,8 @@ import {CompanyService} from "../../../service/company.service";
 import {UserService} from "../../../service/user.service";
 import {UserHireDetails} from "../../../model/http/user.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
-import {EmployeeDetailsResponse} from "../../../model/http/company.model";
+import {EmployeeDetailsResponse, FileType} from "../../../model/http/company.model";
+import {MyImgComponent} from "../../my-img/my-img.component";
 
 
 @Component({
@@ -18,7 +19,8 @@ import {EmployeeDetailsResponse} from "../../../model/http/company.model";
         FormsModule,
         PaginatorComponent,
         NgForOf,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        MyImgComponent
     ],
   templateUrl: './company-add-employee-modal.component.html',
   styleUrl: './company-add-employee-modal.component.css'
@@ -156,4 +158,6 @@ export class CompanyAddEmployeeModalComponent {
         this.selectedEmployee = [];
         this.searchEmployeeList = [];
     }
+
+    protected readonly FileType = FileType;
 }

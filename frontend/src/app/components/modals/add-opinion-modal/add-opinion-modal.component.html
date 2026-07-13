@@ -1,8 +1,7 @@
 <div class="modal-backdrop" *ngIf="isVisible" (click)="close()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="top">
-            <img [src]="'data:image/jpeg;base64,' + inputData?.companyLogo" alt="logo" *ngIf="inputData?.companyLogo"/>
-            <img [src]="'images/default_logo_company.png'" alt="logo" *ngIf="!inputData?.companyLogo"/>
+            <app-my-img [src]="inputData?.companyLogo" [type]="FileType.IMG_COMPANY_LOGO" [alt]="'logo'"/>
             <div class="name-cont">
                 <span>{{ inputData?.companyNameToReview }}</span>
                 <span>{{ inputData?.offerToReview?.name }}</span>

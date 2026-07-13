@@ -10,6 +10,8 @@ import {UserContextService} from "../../../service/user-context.service";
 import {RoomRequest, RoomType} from "../../../model/http/chat.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {ChatService} from "../../../service/chat.service";
+import {MyImgComponent} from "../../my-img/my-img.component";
+import {FileType} from "../../../model/http/company.model";
 
 
 @Component({
@@ -20,7 +22,8 @@ import {ChatService} from "../../../service/chat.service";
         NgForOf,
         FormsModule,
         NgClass,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        MyImgComponent
     ],
   templateUrl: './create-chat-room-modal.component.html',
   styleUrl: './create-chat-room-modal.component.css'
@@ -188,7 +191,7 @@ export class CreateChatRoomModalComponent implements OnChanges {
                           this.resultUserList.push({
                               id: user.id,
                               name: `${user.firstName} ${user.lastName}`,
-                              avatar: user.avatar != null ? `data:image/jpeg;base64,${user.avatar}` : 'images/user_default_avatar.png',
+                              avatar: user.avatar,
                           })
                       })
                       this.paginator.currentPage = response.body.page.number;
@@ -225,5 +228,7 @@ export class CreateChatRoomModalComponent implements OnChanges {
   protected onPaginatorChanged($event: void) {
       this.callSearchUserFromService();
   }
+
+    protected readonly FileType = FileType;
 }
 

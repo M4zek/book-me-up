@@ -7,7 +7,8 @@ import {
     CompanyDetailsResponse,
     CompanyHours,
     CompanyRequest,
-    EmployeeSummaryResponse
+    EmployeeSummaryResponse,
+    FileType
 } from "../../../model/http/company.model";
 import {MapComponent} from "../../map/map.component";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
@@ -18,9 +19,13 @@ import {CompanyService} from "../../../service/company.service";
 import {CategoryService} from "../../../service/category.service";
 import {UserContextService} from "../../../service/user-context.service";
 import {HttpResponse} from "@angular/common/http";
+import {MyImgComponent} from "../../my-img/my-img.component";
 
 export interface Details {
-  avatar: string;
+  avatar: {
+      file: File | null,
+      prevURL: string,
+  };
   name: string;
   description: string;
   category: {name: string, isCorrect: boolean, isTouched: boolean};
@@ -42,7 +47,8 @@ export interface Step{
         DropDownListComponent,
         MapComponent,
         DoubleSpinnerComponent,
-        DecimalPipe
+        DecimalPipe,
+        MyImgComponent
     ],
   templateUrl: './company-management-add-company-modal.component.html',
   styleUrl: './company-management-add-company-modal.component.css'
@@ -58,7 +64,11 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
     @Output() companyCreated = new EventEmitter<CompanyDetailsResponse>();
 
     details: Details = {
-        avatar: '', description: '', name: '', category: {
+        avatar: {
+            file: null,
+            prevURL: '',
+        },
+        description: '', name: '', category: {
             name: '',
             isCorrect: false,
             isTouched: false,
@@ -107,7 +117,11 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
         this.isCompanyCreating = false;
         this.currentStep = 0;
         this.details = {
-            avatar: '', description: '', name: '', category: {
+            avatar:{
+                file: null,
+                prevURL: ''
+            }
+            , description: '', name: '', category: {
                 name: '',
                 isCorrect: false,
                 isTouched: false,
@@ -135,7 +149,7 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
                     id: data.id,
                     firstName: data.firstName,
                     lastName: data.lastName,
-                    avatar: data.avatar ? data.avatar : '',
+                    avatar: data.avatar_url ? data.avatar_url : '',
                 }
             }
         })
@@ -164,6 +178,10 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
         if(this.currentStep > 1 && this.steps.length - 1) {
             this.currentStep++;
             return;
+        }
+
+        if(this.currentStep === 4){
+            console.log(this.details.avatar);
         }
 
         if(!form) return;
@@ -256,9 +274,11 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
             return;
         }
 
+        this.details.avatar.file = file;
+
         const reader = new FileReader();
         reader.onload = () => {
-            this.details.avatar = reader.result as string;
+            this.details.avatar.prevURL = reader.result as string;
         };
 
         reader.readAsDataURL(file);
@@ -280,13 +300,12 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
                 category: {
                     name: this.details.category.name,
                 },
-                logo: this.details.avatar ? this.details.avatar.replace('data:image/jpeg;base64,', '') : null,
                 address: this.address,
                 openingHours: this.hours
             }
 
             this.isCompanyCreating = true;
-            this.companyService.createCompany(companyRequest).subscribe({
+            this.companyService.createCompany(companyRequest, this.details.avatar.file).subscribe({
                 next: result => {
                     if(result.status === 201 && result.body as CompanyDetailsResponse) {
                         this.companyResponse = result
@@ -310,4 +329,6 @@ export class CompanyManagementAddCompanyModalComponent implements OnInit, AfterV
         }
         this.close()
     }
+
+    protected readonly FileType = FileType;
 }

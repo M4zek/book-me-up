@@ -94,6 +94,7 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
                 next: response => {
                     if(response.status === 200 && response.body){
                         this.offer = response.body;
+                        this.changesOffer = {...this.offer};
                     } else {
                         this.changesOffer = {...this.offer};
                         this.toast.show(`Ups. Something went wrong. [${response.status}]`, 'warning');
@@ -122,10 +123,10 @@ export class CompanyManagementOfferItemComponent implements OnChanges {
   }
 
 
-    protected onSubmit(offerForm: NgForm) {
-        if(offerForm.invalid){
-            offerForm.control.markAllAsTouched();
-            return;
-        }
-    }
+  protected onSubmit(offerForm: NgForm) {
+      if(offerForm.invalid){
+          offerForm.control.markAllAsTouched();
+          return;
+      }
+  }
 }

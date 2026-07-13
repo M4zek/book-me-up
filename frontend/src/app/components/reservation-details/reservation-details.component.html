@@ -44,7 +44,7 @@
 
     <div class="content">
         <div class="customer">
-            <img class="customer-avatar" [src]="getUserAvatar(reservation!.customer.avatar)" alt="av"/>
+            <app-my-img class="customer-avatar" [src]="reservation?.customer?.avatar_url" [alt]="'av'" [type]="FileType.IMG_USER_AVATAR"/>
             <div class="customer-data">
                 <span>{{reservation!.customer.firstName}} {{reservation!.customer.lastName}}</span>
                 <span>{{reservation!.customer.email}}</span>

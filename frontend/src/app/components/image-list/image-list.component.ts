@@ -1,18 +1,22 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
-import {CompanyPortfolioResponse} from "../../model/http/company.model";
-import {getCompanyLogo} from "../../utils.functions";
+import {CompanyPortfolioResponse, FileType} from "../../model/http/company.model";
+import {MyImgComponent} from "../my-img/my-img.component";
 
 @Component({
   selector: 'app-image-list',
   imports: [
     NgForOf,
-    NgClass
+    NgClass,
+    MyImgComponent
   ],
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css'
 })
 export class ImageListComponent implements OnInit {
+
+  protected readonly FileType = FileType;
+
   @Input() imageList: CompanyPortfolioResponse[] = []
   currentIndex: number = 0;
   timeoutId?: number;
@@ -55,6 +59,7 @@ export class ImageListComponent implements OnInit {
   }
 
   getImage() {
-    return getCompanyLogo(this.imageList.at(this.currentIndex)?.image);
+    return this.imageList.at(this.currentIndex)?.imageUrl;
   }
+
 }

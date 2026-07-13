@@ -138,7 +138,7 @@ export class CompanyManagementNavigationComponent implements OnInit{
             const drop_item = {
                 id: $event.id,
                 content: $event.name,
-                image: $event.logo,
+                image: $event.logo_url,
             }
 
             this.dropDownCompanyItemList = [...this.dropDownCompanyItemList, drop_item];
@@ -147,7 +147,7 @@ export class CompanyManagementNavigationComponent implements OnInit{
             this.user_companies.push({
                 id: $event.id,
                 name: $event.name,
-                logo: $event.logo,
+                logo: $event.logo_url,
                 role: ['COMPANY_OWNER']
             })
         }

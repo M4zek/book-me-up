@@ -59,10 +59,11 @@
                          [style.width.%]="(e.width * (100/days.length))"
                          [style.top.px]="getTop(e.start)"
                          [style.background]="idToColor(e.employee.id)"
-                         [style.height.px]="getHeight(e.start,e.end)">
+                         [style.height.px]="getHeight(e.start,e.end)"
+                    >
 
                         <div class="inside-event">
-                            <img [src]="getUserAvatar(e.employee.avatar)" alt="av"/>
+                                <app-my-img [src]="e.employee.avatar" [type]="FileType.IMG_USER_AVATAR" [alt]="'av'"/>
                             <div>
                                 <span>{{e.employee.firstName}} {{e.employee.lastName}}</span>
                             </div>
@@ -93,9 +94,12 @@
     <div class="user-color" *ngFor="let e of employees"
         [style.border-bottom]="'2px solid ' + idToColor(e.id)"
         [style.opacity]="countReservationsForEmployee(e) != 0 ? 1 : 0.35">
-        <img [src]="getUserAvatar(e.avatar)"
+
+        <app-my-img [src]="e.avatar"
              [style.border]="'3px solid ' + idToColor(e.id)"
-             alt="avatar">
+             [alt]="'avatar'"
+             [type]="FileType.IMG_USER_AVATAR"/>
+
         <span> {{ countReservationsForEmployee(e) != 0 ? "[" + countReservationsForEmployee(e) + "]" : ''}} </span>
         <span>{{e.firstName}} {{e.lastName}} </span>
     </div>

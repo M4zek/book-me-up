@@ -6,20 +6,24 @@ import {UserResponse} from "../../../model/http/user.model";
 import {getUserAvatar} from "../../../utils.functions";
 import {EditOpinionModalComponent} from "../../modals/edit-opinion-modal/edit-opinion-modal.component";
 import {ConfirmService} from "../../../service/confirm.service";
+import {MyImgComponent} from "../../my-img/my-img.component";
+import {FileType} from "../../../model/http/company.model";
 
 
 @Component({
   selector: 'app-user-opinions-list',
     imports: [
         NgForOf,
-        DatePipe,
         NgIf,
-        EditOpinionModalComponent
+        EditOpinionModalComponent,
+        MyImgComponent,
+        DatePipe
     ],
   templateUrl: './user-opinions-list.component.html',
   styleUrl: './user-opinions-list.component.css'
 })
 export class UserOpinionsListComponent {
+    protected readonly FileType = FileType;
 
   @Input() opinions: ReviewUserDetailsResponse[] = []
 
@@ -67,4 +71,30 @@ export class UserOpinionsListComponent {
   protected onReportOpinion() {
       // TODO OPEN Report opinion modal
   }
+
+
+    getTimeAgo(input: string): string {
+
+        const [time, date] = input.split(' ');
+        const [hours, minutes] = time.split(':').map(Number);
+        const [day, month, year] = date.split('.').map(Number);
+
+        const parsedDate = new Date(year, month - 1, day, hours, minutes);
+        const now = new Date();
+
+        const diffMs = now.getTime() - parsedDate.getTime();
+
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffDays / 365);
+
+        if (diffMinutes < 1) return 'just now';
+        if (diffMinutes < 60) return `${diffMinutes} min ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 30) return `${diffDays} days ago`;
+        if (diffMonths < 12) return `${diffMonths} month${diffMonths === 1 ? '' : 's'} ago`;
+        return `${diffYears} year${diffYears === 1 ? '' : 's'} ago`;
+    }
 }

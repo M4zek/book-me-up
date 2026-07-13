@@ -2,19 +2,21 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 import {ReservationResponse, ReservationUpdateModel} from "../../model/http/reservation.model";
 import {getUserAvatar} from "../../utils.functions";
 import {DropDownListComponent, DropDownListItem} from "../drop-down-list/drop-down-list.component";
-import {EmployeeSummaryResponse} from "../../model/http/company.model";
+import {EmployeeSummaryResponse, FileType} from "../../model/http/company.model";
 import {ReservationService} from "../../service/reservation.service";
 import {NgIf} from "@angular/common";
 import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component";
 import {ToastService} from "../../service/toast.service";
 import {ConfirmService} from "../../service/confirm.service";
+import {MyImgComponent} from "../my-img/my-img.component";
 
 @Component({
   selector: 'app-reservation-details',
     imports: [
         DropDownListComponent,
         NgIf,
-        DoubleSpinnerComponent
+        DoubleSpinnerComponent,
+        MyImgComponent
     ],
   templateUrl: './reservation-details.component.html',
   styleUrl: './reservation-details.component.css'
@@ -172,4 +174,6 @@ export class ReservationDetailsComponent implements OnChanges {
             }
         }
     }
+
+    protected readonly FileType = FileType;
 }

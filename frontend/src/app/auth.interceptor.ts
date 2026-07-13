@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     if(err instanceof HttpErrorResponse){
                         switch (err.status) {
                             case 401:
-                                console.log(`401 :::: ${err.error.message}`);
+                                // console.log(`401 :::: ${err.error.message}`);
                                 if(String(err.error.message).includes("JWT has expired at")){
                                     return this.refreshTokenAndRetryRequest(request, next);
                                 }

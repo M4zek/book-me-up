@@ -1,5 +1,9 @@
 <div class="main-container gradient-background-hover">
-    <img src="{{'data:image/jpeg;base64,' + company.logo}}" class="company-logo" alt="logo" draggable="false">
+    <app-my-img
+            [src]="company.logo"
+            [type]="FileType.IMG_COMPANY_LOGO"
+            [alt]="'Logo'"
+            class="company-logo" alt="logo" draggable="false"/>
     <div class="company-data">
         <div class="name-address-data-container">
             <p class="company-name-paragraph">{{company.name}}</p>

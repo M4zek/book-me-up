@@ -1,0 +1,47 @@
+.img-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+
+.img-container img{
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    position: sticky !important;
+    aspect-ratio: 16/9;
+}
+
+.img-container img.avatar{
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.loading-shimmer{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    z-index: 2;
+
+    background: linear-gradient(
+            90deg,
+            #eceff1 25%,
+            #f5f7f8 50%,
+            #eceff1 75%
+    );
+
+    background-size: 200% 100%;
+    animation: shimmerEffect 1.5s infinite linear;
+}
+
+.loading-shimmer.radius-50{
+    border-radius: 50%;
+}
+
+@keyframes shimmerEffect {
+    0%{ background-position: 200% 0; }
+    100%{ background-position: -200% 0; }
+}

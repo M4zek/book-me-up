@@ -29,7 +29,7 @@
                     <div class="horizontal-panel">
                         <div class="left-panel">
                             <div class="logo-container">
-                                <img [src]="getCompanyLogo(details.avatar)" alt="logo"/>
+                                <app-my-img [src]="details.avatar.prevURL" [alt]="'logo'" [type]="FileType.IMG_COMPANY_LOGO"/>
                                 <input
                                         type="file"
                                         #fileInput
@@ -241,7 +241,7 @@
                                      <span>Owner</span>
                                  </div>
                                  <div class="content-box">
-                                     <img class="avatar" [src]="getUserAvatar(owner.avatar)" alt="av"/>
+                                     <app-my-img class="avatar" [src]="owner.avatar" [alt]="'av'" [type]="FileType.IMG_USER_AVATAR"/>
                                      <span>{{owner.firstName}} {{owner.lastName}}</span>
                                  </div>
                              </div>
@@ -266,7 +266,7 @@
                                      <span>Logo</span>
                                  </div>
                                  <div class="content-box">
-                                     <img class="logo" [src]="getCompanyLogo(details.avatar)" alt="logo">
+                                     <img class="logo" [src]="getCompanyLogo(details.avatar.prevURL)" alt="logo">
                                  </div>
                              </div>
                              <div class="summary-box">
