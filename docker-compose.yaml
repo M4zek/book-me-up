@@ -1,19 +1,19 @@
 services:
 
-  # db-seed:
-  #   profiles: ["tools"]
-  #   build: ./db-seed
-  #   container_name: db-initializer
-  #   restart: "no"
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   environment:
-  #     - DATABASE_URL=mysql+pymysql://root:root@db:3306/book_me_up # Database URL 
-  #     - MINIO_URL=minio:9000  # MinIO URL if local(Docker) - minio:9000 else - domain ex.: s3.example.com
-  #     - MINIO_ACCESS_KEY=minioadmin # Change minio accesskey 
-  #     - MINIO_SECRET_KEY=minioadmin # Change minio secreat key 
-  #     - MINIO_SECURE=False
+  db-seed:
+    profiles: ["tools"]
+    build: ./db-seed
+    container_name: db-initializer
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@db:3306/book_me_up # Database URL 
+      - MINIO_URL=minio:9000  # MinIO URL if local(Docker) - minio:9000 else - domain ex.: s3.example.com
+      - MINIO_ACCESS_KEY=minioadmin # Change minio accesskey 
+      - MINIO_SECRET_KEY=minioadmin # Change minio secreat key 
+      - MINIO_SECURE=False
 
 
   db: 
@@ -61,14 +61,14 @@ services:
       MINIO_BUCKET: app-storage     # App bucket name
       MINIO_PRESIGNED-URL-EXPIRATION: 900   # 15 min expire presigned url
 
-  # frontend-app:
-  #   container_name: frontend-app
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4200:80"
-  #   restart: unless-stopped
+  frontend-app:
+    container_name: frontend-app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: unless-stopped
 
 
   minio:
