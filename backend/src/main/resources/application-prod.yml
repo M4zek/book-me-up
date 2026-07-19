@@ -20,8 +20,8 @@ spring:
 # JSON Web Encryption token information
 jwe:
   token:
-    expirationSec: 600         # 600 = 10 min
-    refreshExpirationSec: 1800    # 1800 = 30 min
+    expirationSec: 3600         # 1 hour
+    refreshExpirationSec: 604800    #  = 7 days
     header: Authorization
     prefix: Bearer
 

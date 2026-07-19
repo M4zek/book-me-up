@@ -81,25 +81,6 @@ public class ChatFacade {
 
         this.senderService.sendRoomNotification(room, sender);
 
-//        Map<User, RoomResponse> userRoomResponseMap = room.getRoles()
-//                .stream()
-//                .filter(r -> !r.getUser().equals(sender))
-//                .collect(
-//                        Collectors.toMap(
-//                                RoomUser::getUser,
-//                                r -> {
-//                                    long unreadMessageCount = r.getLastReadMessage() != null ?
-//                                            r.getRoom().getMessages().stream()
-//                                                    .filter(m -> m.getId() > r.getLastReadMessage().getId())
-//                                                    .count() : r.getRoom().getMessages().size();
-//
-//                                    return this.roomMessageMapper.roomToRoomResponse(room, unreadMessageCount);
-//                                }
-//
-//                        )
-//                );
-
-//        this.senderService.sendRoomNotification(userRoomResponseMap);
     }
 
     // Method to mark last read message by user in room

@@ -32,7 +32,7 @@ public class MessageSenderService {
 
     public void sendRoomNotification(Room room, User sender){
         room.getRoles().stream()
-                .filter(r -> r.getUser().equals(sender))
+                .filter(r -> !r.getUser().equals(sender))
                 .forEach(r -> {
                     long undearMessageCount = r.getLastReadMessage() != null ?
                             r.getRoom().getMessages().stream()
