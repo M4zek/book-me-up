@@ -140,4 +140,9 @@ export class UserContextService {
             }))
         );
     }
+
+    public isUserLoggedIn(): boolean{
+        return this.currentUser$.getValue().loggedIn;
+    }
+
 }

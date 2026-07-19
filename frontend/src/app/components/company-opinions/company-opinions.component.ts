@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {RatingStarsComponent} from "./rating-stars/rating-stars.component";
-import {DecimalPipe, KeyValuePipe, NgForOf, NgIf} from "@angular/common";
+import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {UserOpinionsListComponent} from "./user-opinions-list/user-opinions-list.component";
 import {RatingBarComponent} from "./rating-bar/rating-bar.component";
 import {CompanyReviewStatistics} from "../../model/http/company.model";
@@ -17,7 +17,6 @@ import {DoubleSpinnerComponent} from "../double-spinner/double-spinner.component
         UserOpinionsListComponent,
         DecimalPipe,
         NgForOf,
-        KeyValuePipe,
         RatingBarComponent,
         FormsModule,
         NgIf,
@@ -106,9 +105,9 @@ export class CompanyOpinionsComponent {
   }
 
 
-  protected selectRating(rating_str: string) {
-      if(this.selected_rating != Number(rating_str)) {
-          this.selected_rating = Number(rating_str);
+  protected selectRating(rating: number) {
+      if(this.selected_rating != rating) {
+          this.selected_rating = rating;
           this.showUserOpinionsList = true;
       } else {
           this.selected_rating = null;

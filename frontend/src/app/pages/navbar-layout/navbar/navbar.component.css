@@ -62,6 +62,31 @@
 }
 
 
+.nav-item{
+    position: relative;
+}
+
+
+.badge-item{
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--gold);
+    top: 5px;
+    font: bold 12px/1.5 "Roboto", sans-serif;
+    opacity: 0;
+    transition: all .3s ease;
+}
+
+
+.badge-item.show{
+    opacity: 1;
+}
 
 .nav-item > a > img{
     width: 20px;

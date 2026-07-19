@@ -86,14 +86,10 @@ export class CategoryListComponent implements OnInit {
 
         this.searchOption.category = name;
 
-        this.userContextService.isLoggedIn().subscribe(userLogged => {
-            if (userLogged) {
-                this.router.navigate(['/app/home/search'], {queryParams: this.searchOption})
-                    .then(r => console.log("Redirect to APP/home/search: ",r));
-            } else {
-                this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption})
-                    .then(r => console.log("Redirect to GUEST/home/search:: ",r));
-            }
-        })
+        if(this.userContextService.isUserLoggedIn()){
+            this.router.navigate(['/app/home/search'], {queryParams: this.searchOption});
+        } else{
+            this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption});
+        }
     }
 }

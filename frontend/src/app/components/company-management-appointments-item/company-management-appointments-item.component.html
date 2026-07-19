@@ -31,6 +31,7 @@
                     [disabled]="!isEditable"
                     (valueChanged)="onPreferredEmployeeChanged($event)"
                     [selectedOption]="selectedEmployee"
+                    [noneValue]="false"
                     [options]="toDropDownList()"
                     [placeholder]="'Preferred employee'">
             </app-drop-down-list>

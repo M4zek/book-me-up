@@ -172,4 +172,6 @@
 </div>
 
 
-<app-create-chat-room-modal [isVisible]="isCreateModalVisible" (closeModal)="onCreateModalClose()"/>
+<app-create-chat-room-modal [isVisible]="isCreateModalVisible"
+                            (onRoomCreate)="addUserRoom($event)"
+                            (closeModal)="onCreateModalClose()"/>

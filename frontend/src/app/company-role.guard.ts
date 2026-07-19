@@ -32,8 +32,6 @@ export class CompanyRoleGuard implements CanActivate, CanActivateChild {
 
         const userRoles: string[] = company.role ?? [];
 
-        console.log(userRoles);
-
         const hasAccess = requiredRoles.some(role =>
             userRoles.includes(role)
         );

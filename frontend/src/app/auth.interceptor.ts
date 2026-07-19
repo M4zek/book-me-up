@@ -32,18 +32,20 @@ export class AuthInterceptor implements HttpInterceptor {
                     if(err instanceof HttpErrorResponse){
                         switch (err.status) {
                             case 401:
-                                // console.log(`401 :::: ${err.error.message}`);
-                                if(String(err.error.message).includes("JWT has expired at")){
+                                console.log(`401 :::: ${err.error.message}`);
+                                if(String(err.error.message).includes("JWT has expired at")
+                                    ||
+                                    String(err.error.message).includes("Wrong token format")
+                                ){
                                     return this.refreshTokenAndRetryRequest(request, next);
                                 }
-                                if(String(err.error.message).includes("Wrong token format")){
-                                    this.userContextService.deleteUserFromStorage();
-                                    this.toast.show("Ups somethings went wrong. Pleas login again...", "warning")
-                                }
+                                // if(String(err.error.message).includes("Wrong token format")){
+                                //     this.userContextService.deleteUserFromStorage();
+                                //     this.toast.show("Ups somethings went wrong. Pleas login again...", "warning")
+                                // }
                                 break;
 
                             case 403:
-                                console.log(`403 :::: ${err.error.message}`);
                                 if(
                                     String(err.error.message).includes('Session has expired, please log in again!')
                                     ||

@@ -7,11 +7,12 @@ import {ToastService} from "../../../service/toast.service";
 import {Pagination} from "../../../model/search/search.model";
 import {UserService} from "../../../service/user.service";
 import {UserContextService} from "../../../service/user-context.service";
-import {RoomRequest, RoomType} from "../../../model/http/chat.model";
+import {RoomRequest, RoomResponse, RoomType} from "../../../model/http/chat.model";
 import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.component";
 import {ChatService} from "../../../service/chat.service";
 import {MyImgComponent} from "../../my-img/my-img.component";
 import {FileType} from "../../../model/http/company.model";
+import {HttpResponse} from "@angular/common/http";
 
 
 @Component({
@@ -57,6 +58,7 @@ export class CreateChatRoomModalComponent implements OnChanges {
 
   @Input() isVisible: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
+  @Output() onRoomCreate = new EventEmitter<RoomResponse>();
 
   constructor(
       private userService: UserService,
@@ -208,14 +210,23 @@ export class CreateChatRoomModalComponent implements OnChanges {
 
   protected callCreateRoom(room: RoomRequest){
       this.chatService.createRoom(room).subscribe({
-          next: response => {
+          next: (response: HttpResponse<RoomResponse>) => {
               if(response.status === 200 && response.body){
                   this.toast.show("You have successfully created!", "info");
-                  this.resetModal();
+                  this.onRoomCreate.emit(response.body);
+                  this.close();
               }
           }, error: error => {
-              console.log(error);
-              this.toast.show(`Ups... Something wrong ${error.status}`, "error");
+              console.error(error);
+              switch (error.status) {
+                  case 409:
+                      this.toast.show(`You already chatting with this user!`, "warning");
+                      break;
+                  default:
+                      this.toast.show(`Ups... Something wrong ${error.status}`, "error");
+                      break;
+              }
+
           }
       })
   }

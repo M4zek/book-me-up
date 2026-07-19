@@ -6,7 +6,7 @@
             (click)="toastService.startRemove(toast.id)"
     >
         <img class="toast-icon" [src]="getIcon(toast.type)" alt="Icon"/>
-        <span class="toast-text">{{ toast.text }}</span>
+        <span class="toast-text" [innerHTML]="toast.text" ></span>
         <div class="progress-bar"></div>
     </div>
 </div>

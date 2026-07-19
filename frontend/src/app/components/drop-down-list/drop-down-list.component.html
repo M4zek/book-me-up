@@ -2,7 +2,9 @@
      [class.disabled]="disabled">
 
     <app-my-img [src]="selectedOption.image"
-         [alt]="'img'" *ngIf="selectedOption.image" class="icon" />
+                [alt]="'img'"
+                [type]="FileType.IMG_USER_AVATAR"
+                *ngIf="selectedOption.image" class="icon" />
 
     <input
        class="selected-input"
@@ -20,7 +22,9 @@
         (click)="select(item)">
 
         <app-my-img [src]="item.image"
-             [alt]="'img_cmp'" *ngIf="item.image"
+             [alt]="'img_cmp'"
+                    *ngIf="item.image"
+                    [type]="FileType.IMG_USER_AVATAR"
                     class="icon"/>
 
         <p class="item-text"

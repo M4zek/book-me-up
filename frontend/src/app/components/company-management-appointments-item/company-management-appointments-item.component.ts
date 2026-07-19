@@ -39,7 +39,7 @@ export class CompanyManagementAppointmentsItemComponent implements OnChanges {
     }, {
       content: 'Rejected', image: 'icons/reject_icon.svg'
     }, {
-      content: 'Realized', image: 'icons/realized_icon.svg'
+      content: 'Completed', image: 'icons/realized_icon.svg'
     }, {
       content: 'Cancelled', image: 'icons/canceled_icon.svg'
     },

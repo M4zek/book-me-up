@@ -23,6 +23,9 @@ export class ToastService {
     const toast: ToastMessage = { text, type, id };
 
     const current = this.toastsSubject.value;
+    const currentToast = current[current.length-1];
+    if (this.toastEquals(currentToast, toast)) { return }
+
     this.toastsSubject.next([...current, toast]);
 
     setTimeout(() => {
@@ -48,5 +51,10 @@ export class ToastService {
 
   remove(id: number) {
     this.toastsSubject.next(this.toastsSubject.value.filter(t => t.id !== id));
+  }
+  
+  private toastEquals(current: ToastMessage, next: ToastMessage) {
+    if(!current || !next) { return  false }
+    return current.text === next.text && current.type === next.type;
   }
 }

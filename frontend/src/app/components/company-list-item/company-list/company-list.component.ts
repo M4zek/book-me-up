@@ -5,7 +5,6 @@ import {DoubleSpinnerComponent} from "../../double-spinner/double-spinner.compon
 import {Router} from "@angular/router";
 import {CompanySummaryResponse} from "../../../model/http/company.model";
 import {UserContextService} from "../../../service/user-context.service";
-import {take} from "rxjs";
 
 @Component({
   selector: 'app-company-list',
@@ -81,17 +80,11 @@ export class CompanyListComponent {
 
 
     onItemCLick(company: CompanySummaryResponse) {
-        this.userContextService.isLoggedIn()
-            .pipe(take(1))
-            .subscribe(isLoggedIn => {
-                if (isLoggedIn) {
-                    this.router.navigate(['app/company', company.id])
-                        .then(r => console.log("Redirect to APP/company: ",r));
-                } else {
-                    this.router.navigate(['guest/company', company.id])
-                        .then(r => console.log("Redirect to GUEST/company/: ",r));
-                }
-            })
+        if(this.userContextService.isUserLoggedIn()){
+            this.router.navigate(['app/company', company.id]);
+        } else {
+            this.router.navigate(['guest/company', company.id]);
+        }
     }
 
 

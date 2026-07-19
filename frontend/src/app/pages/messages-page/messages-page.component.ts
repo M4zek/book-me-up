@@ -22,7 +22,6 @@ import {DoubleSpinnerComponent} from "../../components/double-spinner/double-spi
 import {WebsocketService} from "../../service/websocket.service";
 import {filter} from "rxjs";
 import {FormsModule} from "@angular/forms";
-import {ToastService} from "../../service/toast.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 import {MyImgComponent} from "../../components/my-img/my-img.component";
 import {FileType} from "../../model/http/company.model";
@@ -46,6 +45,7 @@ import {FileType} from "../../model/http/company.model";
 })
 export class MessagesPageComponent implements OnInit {
   @ViewChild('htmlMessageList') htmlMessageList!: ElementRef;
+  protected readonly FileType = FileType;
 
   RoomType = RoomType;
   isCreateModalVisible = false;
@@ -77,10 +77,10 @@ export class MessagesPageComponent implements OnInit {
 
   messageModel: string = '';
 
-  constructor(private webSocket: WebsocketService,
-      private toast: ToastService,
-      private chatService: ChatService, private ucs: UserContextService) {
-  }
+  constructor(
+      private webSocket: WebsocketService,
+      private chatService: ChatService,
+      private ucs: UserContextService) {}
 
   ngOnDestroy() {
       if(this.selectedRoom) {
@@ -137,8 +137,6 @@ export class MessagesPageComponent implements OnInit {
                           }
                   });
 
-                  if(this.selectedRoom?.id !== room_data.id)
-                      this.toast.show(`You have received a new message.`, "info");
                   break;
           }
       })
@@ -269,20 +267,6 @@ export class MessagesPageComponent implements OnInit {
     }
 
 
-  protected getUserAvatar(member: Member): string {
-      let avatar = member.avatar;
-
-      if (!avatar) {
-          return 'images/user_default_avatar.png'
-      }
-
-      if(!avatar.includes('data:image/jpeg;base64,')){
-          return `data:image/jpeg;base64,${avatar}`;
-      }
-
-      return avatar;
-  }
-
   formatMessageDate(msg_date: string): string {
       const date = new Date(msg_date.replace(' ', 'T'));
       const now = new Date();
@@ -406,5 +390,8 @@ export class MessagesPageComponent implements OnInit {
         }
     }
 
-    protected readonly FileType = FileType;
+
+    protected addUserRoom($event: RoomResponse) {
+        this.userRooms.push($event);
+    }
 }

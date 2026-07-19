@@ -52,8 +52,6 @@ export class AddOpinionModalComponent implements OnChanges {
             })
 
         this.reviewForm.controls['company_offer_id'].setValue(this.inputData?.offerToReview.id);
-    } else {
-        console.error("Unable to open Opinion Modal");
     }
   }
 

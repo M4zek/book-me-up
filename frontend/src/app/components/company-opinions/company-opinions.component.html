@@ -10,20 +10,25 @@
         </div>
         <div class="detailed-opinions">
             <div class="bar"
-                 [class.selected]="+rating.key == this.selected_rating"
-                 *ngFor="let rating of this.opinionsDetails.ratingCounts | keyvalue"
-                 (click)="selectRating(rating.key)"
+                 [class.selected]="rating == this.selected_rating"
+                 *ngFor="let rating of [5,4,3,2,1]"
+                 [class.disabled]="opinionsDetails.ratingCounts[rating] == undefined"
+                 (click)="selectRating(rating)"
             >
-                    <app-rating-bar [rating]="+rating.key" [count]="rating.value" [total]="opinionsDetails.totalReviews"/>
+                    <app-rating-bar     [rating]="rating"
+                                        [count]="opinionsDetails.ratingCounts[rating] == undefined ? 0 : opinionsDetails.ratingCounts[rating]"
+                                        [total]="opinionsDetails.totalReviews"/>
             </div>
         </div>
     </div>
+
     <div class="checkbox-wrapper" *ngIf="opinionsDetails.totalReviews != 0">
         <input type="checkbox" class="sc-gJwTLC ikxBAC"
                [(ngModel)]="showUserOpinionsList"
                (change)="onShowUserOpinionsListChange($event)">
         <p>Show user opinions</p>
     </div>
+
     <div class="container-list" #scrollContainer
          *ngIf="opinionsDetails.totalReviews != 0"
         [class.show]="showUserOpinionsList">

@@ -35,22 +35,24 @@ export class HomePage implements OnInit {
     }
 
     onSearch() {
+        let isSearchData = false;
+
         Object.keys(this.searchOption).forEach((key) => {
             const value = this.searchOption[key as keyof SearchCompanyOptions];
             if (value === '') {
                 this.searchOption[key as keyof SearchCompanyOptions] = null;
+            } else {
+                isSearchData = true;
             }
         });
 
-        this.userContextService.isLoggedIn().subscribe(isLoggedIn => {
-            if (isLoggedIn) {
-                this.router.navigate(['/app/home/search'], {queryParams: this.searchOption})
-                    .then(r => console.log("Redirect to APP/home/search: ",r));
-            } else {
-                this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption})
-                    .then(r => console.log("Redirect to GUEST/home/search:: ",r));
-            }
-        })
+        if(!isSearchData) { return }
+
+        if (this.userContextService.isUserLoggedIn()) {
+            this.router.navigate(['/app/home/search'], {queryParams: this.searchOption})
+        } else {
+            this.router.navigate(['/guest/home/search'],  {queryParams: this.searchOption})
+        }
     }
 
     changeCategory($event: DropDownListItem) {

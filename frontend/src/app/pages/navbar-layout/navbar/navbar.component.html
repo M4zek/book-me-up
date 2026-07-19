@@ -12,6 +12,13 @@
                 [ngClass]="router.url.includes(nav.path) ? 'active' : ''"
             >
                 <a [routerLink]="nav.path" *appRoleChecker="nav.role">
+
+                    @if (nav.path.includes('/app/messages')){
+                        <div class="badge-item"
+                        [class.show]="messageReceivedCount != 0"
+                        >{{messageReceivedCount < 99 ? messageReceivedCount : 99}}</div>
+                    }
+
                     <img [src]="nav.icon" alt="icon"/>
                     <div class="nav-name">
                         <span>{{nav.name}}</span>
