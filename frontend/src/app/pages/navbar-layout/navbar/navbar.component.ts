@@ -55,7 +55,7 @@ export class NavbarComponent {
         }, {
             name: 'Chat', icon: 'icons/message_icon.svg', path: '/app/messages', role: [Role.ROLE_USER]
         }, {
-            name: 'Admin', icon: 'icons/user_admin_icon.svg', path: '/admin/panel', role: [Role.ROLE_ADMIN]
+            name: 'Admin', icon: 'icons/user_admin_icon.svg', path: '/app/admin-panel', role: [Role.ROLE_ADMIN]
         }, {
             name: 'Settings', icon: 'icons/settings_icon.svg', path: '/app/settings', role: [Role.ROLE_USER]
         }

@@ -218,7 +218,7 @@ export class MessagesPageComponent implements OnInit {
       setTimeout(() => {
           const el = this.htmlMessageList.nativeElement;
           el.scrollTop = el.scrollHeight;
-      }, 100);
+      }, 200);
 
   }
 

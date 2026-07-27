@@ -31,7 +31,7 @@
 
                 <h3>{{ employee.firstName }} {{employee.lastName}}</h3>
                 <app-drop-down-list
-                        [disabled]="!isDataEditable"
+                        [disabled]="!isDataEditable || employee.role_in_company.includes('COMPANY_OWNER')"
                         [noneValue]="false"
                         [options]="roles"
                         [selectedOption]="getEmployeeRole(employee.role_in_company)"

@@ -52,50 +52,53 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: {roles: [Role.ROLE_ADMIN, Role.ROLE_USER]},
         children: [
-            { path: '', redirectTo: "home", pathMatch: 'full' },
-            { path: 'home', component: HomePage,
+            {path: '', redirectTo: "home", pathMatch: 'full'},
+            {
+                path: 'home', component: HomePage,
                 children: [
-                    { path: '', redirectTo: "welcome", pathMatch: 'full'},
-                    { path: 'welcome', component: WelcomeComponent},
-                    { path: 'search', component: SearchResultComponent},
-                    { path: '**', component: PageNotFoundComponent },
-                ]},
-            { path: 'company/:id', component: CompanyViewComponent},
+                    {path: '', redirectTo: "welcome", pathMatch: 'full'},
+                    {path: 'welcome', component: WelcomeComponent},
+                    {path: 'search', component: SearchResultComponent},
+                    {path: '**', component: PageNotFoundComponent},
+                ]
+            },
+            {path: 'company/:id', component: CompanyViewComponent},
             {
                 path: 'company-management',
                 component: CompanyManagementPageComponent,
                 canActivateChild: [CompanyRoleGuard],
                 children: [
-                    { path: '', redirectTo: "home", pathMatch: 'full'},
-                    { path: 'home', component: CompanyManagementHomeComponent},
-                    { path: 'employee', component: CompanyManagementEmployeeComponent,
+                    {path: '', redirectTo: "home", pathMatch: 'full'},
+                    {path: 'home', component: CompanyManagementHomeComponent},
+                    {
+                        path: 'employee', component: CompanyManagementEmployeeComponent,
                         data: {companyRoles: [COMPANY_ROLE.ROLE_OWNER, COMPANY_ROLE.ROLE_MANAGER]}
                     },
-                    { path: 'offers', component: CompanyManagementOfferComponent,
+                    {
+                        path: 'offers', component: CompanyManagementOfferComponent,
                         data: {companyRoles: [COMPANY_ROLE.ROLE_OWNER, COMPANY_ROLE.ROLE_MANAGER]}
                     },
-                    { path: 'appointments', component: CompanyManagementAppointmentsComponent},
-                    { path: 'calendar', component: CompanyManagementBookingsCalendarComponent},
+                    {path: 'appointments', component: CompanyManagementAppointmentsComponent},
+                    {path: 'calendar', component: CompanyManagementBookingsCalendarComponent},
                     {path: 'forbidden', component: ForbiddenPageComponent},
-                    { path: '**', component: PageNotFoundComponent },
-                ]},
-            { path: 'messages', component: MessagesPageComponent},
-            { path: 'appointments', component: UserAppointmentsPageComponent},
-            { path: '**', component: PageNotFoundComponent }
+                    {path: '**', component: PageNotFoundComponent},
+                ]
+            },
+            {path: 'messages', component: MessagesPageComponent},
+            {path: 'appointments', component: UserAppointmentsPageComponent},
+
+            {
+                path: 'admin-panel', component: AdminPanelComponent,
+                canActivate: [AuthGuard],
+                data: {roles: [Role.ROLE_ADMIN]},
+                children: [
+                    {path: '', redirectTo: "dashboard", pathMatch: 'full'},
+                    {path: '**', component: PageNotFoundComponent},
+                ]
+            },
+
+            {path: '**', component: PageNotFoundComponent}
         ]
-    },
-    {
-      path: 'admin',
-      component: NavbarLayoutComponent,
-      canActivate: [AuthGuard],
-      data: {roles: [Role.ROLE_ADMIN]},
-      children: [
-          { path: '', redirectTo: "panel", pathMatch: 'full' },
-          { path: 'panel', component: AdminPanelComponent,
-          children: [
-              { path: '**', component: PageNotFoundComponent },
-          ]}
-      ]
     },
     { path:'server-error', component: ServerErrorPageComponent },
     { path: '**', component: PageNotFoundComponent },
