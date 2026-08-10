@@ -2,6 +2,7 @@ package com.m4zek.backend.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,10 @@ public class User extends BaseEntity {
     private Boolean isBlock;
     private Boolean isEnable;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    private LocalDateTime suspended_to;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userDataId")
@@ -45,6 +50,8 @@ public class User extends BaseEntity {
     )
     private List<CompanyUserRole> companyUserRoles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SystemAuditLog> auditLogs = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<RoomUser> rooms;
@@ -88,6 +95,14 @@ public class User extends BaseEntity {
         return reviews;
     }
 
+    public UserStatus getStatus(){
+        return status;
+    }
+
+    public LocalDateTime getSuspendedTo() {
+        return this.suspended_to;
+    }
+
     public List<Reservation> getReservations() {
         return reservations;
     }
@@ -121,4 +136,6 @@ public class User extends BaseEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }

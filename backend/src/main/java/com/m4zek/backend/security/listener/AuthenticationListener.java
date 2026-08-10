@@ -57,6 +57,7 @@ public class AuthenticationListener {
         String ipAddress = getAddressIp();
         String userAgent = getUserAgent();
 
+
         LoginHistory loginHistory = LoginHistory.builder()
                 .email(email)
                 .success(false)

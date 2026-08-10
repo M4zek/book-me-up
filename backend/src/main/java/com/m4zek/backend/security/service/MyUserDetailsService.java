@@ -38,9 +38,8 @@ public class MyUserDetailsService implements UserDetailsService {
                 user.getId(),
                 user.getAddressEmail(),
                 user.getPassword(),
-                user.getBlock(),
-                user.getEnable(),
-                user.getUserData().getId(),
+                user.getStatus(),
+                user.getSuspendedTo(),
                 grantedAuthorities
         );
     }

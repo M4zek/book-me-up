@@ -1,8 +1,10 @@
 package com.m4zek.backend.security.service;
 
+import com.m4zek.backend.model.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 
@@ -11,21 +13,18 @@ public class MyUserDetails implements UserDetails {
     private int id;
     private String addressEmail;
     private String password;
-    private Boolean isBlock;
-    private Boolean isEnable;
-    private int userDataId;
+    private UserStatus status;
+    private LocalDateTime suspendedTo;
     private Collection<? extends GrantedAuthority> authorities;
 
     public MyUserDetails(int id, String addressEmail,
-                         String password, Boolean isBlock,
-                         Boolean isEnable, int userDataId,
+                         String password, UserStatus status, LocalDateTime suspendedTo,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.addressEmail = addressEmail;
         this.password = password;
-        this.isBlock = isBlock;
-        this.isEnable = isEnable;
-        this.userDataId = userDataId;
+        this.status = status;
+        this.suspendedTo = suspendedTo;
         this.authorities = authorities;
     }
 
@@ -42,6 +41,14 @@ public class MyUserDetails implements UserDetails {
         return addressEmail;
     }
 
+    public UserStatus getStatus(){
+        return this.status;
+    }
+
+    public LocalDateTime getSuspendedTo(){
+        return this.suspendedTo;
+    }
+
     @Override
     public String getPassword() {
         return this.password;
@@ -52,24 +59,20 @@ public class MyUserDetails implements UserDetails {
         return null;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.isBlock;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+        return switch (status) {
+            case BLOCK -> false;
+            case SUSPENDED -> suspendedTo != null &&
+                            !LocalDateTime.now().isBefore(suspendedTo);
+            default -> true;
+        };
     }
 
     @Override
     public boolean isEnabled() {
-        return this.isEnable;
+        return this.status != UserStatus.NOT_ACTIVE;
     }
 
 }

@@ -3,16 +3,19 @@ package com.m4zek.backend.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @AllArgsConstructor
-@Entity
-@Table(name = "login_history")
+@Getter
+@Setter
+@Entity(name = "login_history")
 public class LoginHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private Integer userId;
 

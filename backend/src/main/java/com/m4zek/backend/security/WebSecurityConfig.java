@@ -2,6 +2,7 @@ package com.m4zek.backend.security;
 
 import com.m4zek.backend.security.jwt.AuthenticationTokenFilter;
 import com.m4zek.backend.security.jwt.JwtAuthEntryPoint;
+import com.m4zek.backend.security.service.CustomPreAuthenticationChecks;
 import com.m4zek.backend.security.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,11 +39,13 @@ public class WebSecurityConfig {
     private final MyUserDetailsService myUserDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final AuthenticationTokenFilter authenticationTokenFilter;
+    private final CustomPreAuthenticationChecks customPreAuthenticationChecks;
 
-    public WebSecurityConfig(MyUserDetailsService myUserDetailsService, JwtAuthEntryPoint jwtAuthEntryPoint, AuthenticationTokenFilter authenticationTokenFilter) {
+    public WebSecurityConfig(MyUserDetailsService myUserDetailsService, JwtAuthEntryPoint jwtAuthEntryPoint, AuthenticationTokenFilter authenticationTokenFilter, CustomPreAuthenticationChecks customPreAuthenticationChecks) {
         this.myUserDetailsService = myUserDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.authenticationTokenFilter = authenticationTokenFilter;
+        this.customPreAuthenticationChecks = customPreAuthenticationChecks;
     }
 
     @Bean
@@ -55,6 +58,7 @@ public class WebSecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(myUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPreAuthenticationChecks(customPreAuthenticationChecks);
         return authProvider;
     }
 

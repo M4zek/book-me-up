@@ -7,6 +7,8 @@ import com.m4zek.backend.exception.UserNotFoundException;
 import com.m4zek.backend.model.*;
 import com.m4zek.backend.model.dto.write.ReservationPatchRequest;
 import com.m4zek.backend.model.dto.write.ReservationRequest;
+import com.m4zek.backend.model.projection.DailyCountProjection;
+import com.m4zek.backend.model.projection.DailyRevenueProjection;
 import com.m4zek.backend.repository.ReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -218,6 +226,83 @@ public class ReservationService {
     }
 
 
+
+    public long getTodayReservationCount(){
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        LocalDate today = LocalDate.now(zone);
+
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        return this.reservationRepository.countDayReservations(startOfDay, endOfDay);
+    }
+
+
+    public Map<LocalDate, Long> getLast7DaysReservationCountGroupByDay(){
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+
+        LocalDate today = LocalDate.now(zone);
+        LocalDateTime sevenDaysAgo = LocalDateTime.now(zone).minusDays(6);
+
+        Map<LocalDate, Long> dbReservationCountMap = reservationRepository.countReservationsGroupedByDay(sevenDaysAgo)
+                .stream()
+                .collect(Collectors.toMap(
+                        DailyCountProjection::getDate,
+                        DailyCountProjection::getCount
+                ));
+
+        Map<LocalDate, Long> result = new LinkedHashMap<>();
+
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            Long count = dbReservationCountMap.getOrDefault(date, 0L);
+            result.put(date, count);
+        }
+
+        return result;
+    }
+
+    public BigDecimal getTodayRevenue() {
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        LocalDate today = LocalDate.now(zone);
+
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        return BigDecimal.valueOf(reservationRepository.countTodayRevenue(startOfDay, endOfDay));
+    }
+
+    public Map<LocalDate, BigDecimal> getLast7DaysRevenueFromReservationsGroupByDay() {
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+
+        LocalDate today= LocalDate.now(zone);
+        LocalDate sevenDaysAgo = LocalDate.now(zone).minusDays(6);
+
+        LocalDateTime startPeriod = sevenDaysAgo.atStartOfDay();
+
+        Map<LocalDate, BigDecimal> dbRevenueMap = this.reservationRepository.countRevenueGroupedByDay(startPeriod)
+                .stream()
+                .collect(Collectors.toMap(
+                        DailyRevenueProjection::getDate,
+                        DailyRevenueProjection::getRevenue
+                ));
+
+        Map<LocalDate, BigDecimal> result = new LinkedHashMap<>();
+
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            BigDecimal revenue = dbRevenueMap.getOrDefault(date, BigDecimal.ZERO);
+            result.put(date, revenue);
+        }
+
+        return result;
+    }
+
+
+    /*
+    ********** PRIVATE METHODS *************
+    */
+
     // Method to generate order number / reservation number
     private String createReservationNumber(LocalDateTime reservationDate, long companyOfferId, int userId) {
         String orderNumberPrefix = "ON";
@@ -239,5 +324,4 @@ public class ReservationService {
                 userId,
                 companyOfferId);
     }
-
 }

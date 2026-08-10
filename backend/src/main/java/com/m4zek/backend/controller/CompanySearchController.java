@@ -8,9 +8,11 @@ import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 @RequestMapping("/api/public/companies")
 public class CompanySearchController {
 
@@ -31,8 +33,8 @@ public class CompanySearchController {
     @GetMapping("/recommended")
     public ResponseEntity<Page<CompanySummaryResponse>> recommendedCompanies(
             Pageable pageable,
-            @RequestParam(required = false) @Size(min = 2, message = "City name cannot be empty (Min 2 chars)") String city,
-            @RequestParam(required = false) @Size(min = 2, message = "Category name cannot be empty (Min 2 chars)") String category
+            @RequestParam(required = false) @Size(min = 1, max = 50, message = "City name cannot be empty (1-50 chars)") String city,
+            @RequestParam(required = false) @Size(min = 1, max = 100, message = "Category name cannot be empty (1-100 chars)") String category
     ) {
         Page<CompanySummaryResponse> response = this.companySearchFacade.searchRecommendedCompanies(
                 pageable, city, category
@@ -45,9 +47,9 @@ public class CompanySearchController {
     @GetMapping("/search")
     public ResponseEntity<Page<CompanySummaryResponse>> searchCompanies(
             Pageable pageable,
-            @RequestParam(required = false) @Size(min = 1, message = "Company name cannot be empty") String companyName,
-            @RequestParam(required = false) @Size(min = 1, message = "City name cannot be empty") String city,
-            @RequestParam(required = false) @Size(min = 1, message = "Category name cannot be empty") String category
+            @RequestParam(required = false) @Size(min = 1, max = 100, message = "Company name cannot be empty (1-100 chars)") String companyName,
+            @RequestParam(required = false) @Size(min = 1, max = 50, message = "City name cannot be empty (1-50 chars)") String city,
+            @RequestParam(required = false) @Size(min = 1, max = 100, message = "Category name cannot be empty (1-100 chars)") String category
     ) {
         Page<CompanySummaryResponse> response = this.companySearchFacade.searchCompanies(
                 pageable, companyName, city, category

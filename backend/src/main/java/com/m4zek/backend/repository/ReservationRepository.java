@@ -2,6 +2,8 @@ package com.m4zek.backend.repository;
 
 import com.m4zek.backend.model.Reservation;
 import com.m4zek.backend.model.ReservationStatus;
+import com.m4zek.backend.model.projection.DailyCountProjection;
+import com.m4zek.backend.model.projection.DailyRevenueProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -71,4 +73,45 @@ public interface ReservationRepository {
     Optional<Reservation> findByIdAndCompanyId(
             @Param("reservationId") int reservationId,
             @Param("companyId") int companyId);
+
+
+//  ********************  STATS *****************
+
+    @Query("""
+        SELECT COUNT(r) FROM reservations r
+        WHERE r.createdDate >= :from 
+          AND r.createdDate <= :to
+    """)
+    long countDayReservations(LocalDateTime from, LocalDateTime to);
+
+    @Query(value = """
+        SELECT DATE(r.created_date) AS date, COUNT(*) AS count
+        FROM reservations r
+        WHERE r.created_date >= :from
+        GROUP BY DATE(r.created_date)
+        ORDER BY DATE(r.created_date) ASC
+    """, nativeQuery = true)
+    List<DailyCountProjection> countReservationsGroupedByDay(LocalDateTime from);
+
+
+    @Query("""
+        SELECT COALESCE(SUM(o.price), 0.0)
+                FROM reservations r
+                    JOIN company_offers  o ON r.companyOffer.id = o.id
+                            WHERE r.createdDate >= :from
+                            AND r.createdDate <= :to
+        """)
+    double countTodayRevenue(LocalDateTime from, LocalDateTime to);
+
+
+    @Query("""
+        SELECT FUNCTION('DATE', r.createdDate) AS date, COALESCE(SUM(o.price), 0.0) AS revenue
+            FROM reservations r
+            JOIN r.companyOffer o
+            WHERE r.createdDate IS NOT NULL
+              AND r.createdDate >= :from
+        GROUP BY FUNCTION('DATE', r.createdDate)
+    """)
+    List<DailyRevenueProjection> countRevenueGroupedByDay(LocalDateTime from);
+
 }

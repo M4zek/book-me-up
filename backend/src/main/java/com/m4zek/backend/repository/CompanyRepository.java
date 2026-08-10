@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CompanyRepository {
@@ -102,4 +103,37 @@ public interface CompanyRepository {
         """, nativeQuery = true)
     Page<Company> findByCityAndCategory(String city, String category, Pageable pageable);
 
+
+
+/*
+    ************* STATS ***********
+ */
+
+    @Query("""
+            SELECT COUNT(c) FROM companies c
+    """)
+    long countAllCompanies();
+
+
+
+    @Query("""
+        SELECT COUNT(c) FROM companies c
+            WHERE c.createdDate >= :startDate
+                AND c.createdDate < :endDate
+    """)
+    long countCompaniesCreatedBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+
+    @Query(
+            value = """
+            SELECT c
+            FROM companies c
+            LEFT JOIN c.companyOffers co
+            LEFT JOIN reservations r ON r.companyOffer = co
+            GROUP BY c.id
+            ORDER BY COUNT(r) DESC
+        """,
+            countQuery = "SELECT COUNT(c) FROM companies c"
+    )
+    Page<Company> findCompaniesAndSortByReservationCount(Pageable pageable);
 }

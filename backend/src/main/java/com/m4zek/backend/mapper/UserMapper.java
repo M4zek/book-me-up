@@ -1,7 +1,11 @@
 package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.minio.MinioUrlResolver;
+import com.m4zek.backend.model.LoginHistory;
+import com.m4zek.backend.model.Role;
 import com.m4zek.backend.model.User;
+import com.m4zek.backend.model.dto.admin.AccountListItemResponse;
+import com.m4zek.backend.model.dto.admin.AccountSummaryResponse;
 import com.m4zek.backend.model.dto.read.EmployeeDetailsResponse;
 import com.m4zek.backend.model.dto.read.EmployeeSummaryResponse;
 import com.m4zek.backend.model.dto.read.UserResponse;
@@ -79,6 +83,37 @@ public class UserMapper {
                 .avatar(this.resolver.imageUrlSmall(user.getUserData().getAvatar()))
                 .role(null)
                 .build();
+    }
+
+    public AccountSummaryResponse toAccountSummaryResponse(User user){
+        return new AccountSummaryResponse(
+                user.getId(),
+                this.resolver.imageUrlSmall(user.getUserData().getAvatar()),
+                user.getUserData().getFirstName() + " " + user.getUserData().getLastName(),
+                user.getCreatedDate()
+        );
+    }
+
+    public AccountSummaryResponse toAccountSummaryResponse(LoginHistory history, User user){
+        return new AccountSummaryResponse(
+                user.getId(),
+                this.resolver.imageUrlSmall(user.getUserData().getAvatar()),
+                user.getUserData().getFirstName() + " " + user.getUserData().getLastName(),
+                history.getCreatedDate()
+        );
+    }
+
+    public AccountListItemResponse toAccountListItemResponse(User user){
+        return new AccountListItemResponse(
+                user.getId(),
+                this.resolver.imageUrlSmall(user.getUserData().getAvatar()),
+                user.getUserData().getFirstName() + " " + user.getUserData().getLastName(),
+                user.getAddressEmail(),
+                new AccountListItemResponse.StatusExtends(user),
+                user.getRoles().stream().map(Role::getName).toList(),
+                user.getCreatedDate(),
+                user.getModifiedDate()
+                );
     }
 
 }

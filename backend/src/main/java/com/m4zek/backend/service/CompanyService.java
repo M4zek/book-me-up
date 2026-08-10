@@ -8,8 +8,12 @@ import com.m4zek.backend.model.dto.write.CompanyRequest;
 import com.m4zek.backend.repository.CompanyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -63,6 +67,34 @@ public class CompanyService {
             logger.info("Company [{}] description was changed: {}", company.getId(), company.getDescription());
         }
         return company;
+    }
+
+    public long getTotalCompaniesCount() {
+        return this.companyRepository.countAllCompanies();
+    }
+
+    public double getCompanyGrowthPercentage() {
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        LocalDateTime now = LocalDateTime.now(zone);
+        LocalDateTime thirtyDaysAgo = now.minusDays(30);
+        LocalDateTime sixtyDaysAgo = now.minusDays(60);
+
+        long periodA = companyRepository.countCompaniesCreatedBetween(thirtyDaysAgo, now);
+        long periodB = companyRepository.countCompaniesCreatedBetween(sixtyDaysAgo, thirtyDaysAgo);
+
+
+        if (periodB == 0) {
+            return periodA > 0 ? 100.0 : 0.0;
+        }
+
+        double growth = ((double) periodA - periodB) / periodB * 100.0;
+
+        return Math.round(growth * 10.0) / 10.0;
+    }
+
+
+    public Page<Company> findTopCompaniesByReservation(Pageable pageable){
+        return this.companyRepository.findCompaniesAndSortByReservationCount(pageable);
     }
 
 }

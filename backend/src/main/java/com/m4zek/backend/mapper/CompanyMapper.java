@@ -2,6 +2,7 @@ package com.m4zek.backend.mapper;
 
 import com.m4zek.backend.minio.MinioUrlResolver;
 import com.m4zek.backend.model.Company;
+import com.m4zek.backend.model.dto.admin.CompanyRankingResponse;
 import com.m4zek.backend.model.dto.read.*;
 import com.m4zek.backend.model.projection.ReviewStatisticsProjection;
 import org.springframework.stereotype.Component;
@@ -62,6 +63,16 @@ public class CompanyMapper {
                 .role(roles)
                 .build();
     }
+
+    public CompanyRankingResponse companyToCompanyRankingResponse(Company company, Long reservationCount){
+        return new CompanyRankingResponse(
+                company.getId(),
+                this.urlResolver.imageUrlSmall(company.getLogoFile()),
+                company.getName(),
+                reservationCount
+        );
+    }
+
 
     private List<EmployeeSummaryResponse> getCompanyEmployees(Company company){
         return company.getUsers().stream()
