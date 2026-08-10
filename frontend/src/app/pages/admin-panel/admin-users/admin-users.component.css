@@ -1,0 +1,143 @@
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+
+    color: var(--white);
+    gap: 2px;
+    padding: 8px;
+
+    height: 90vh;
+
+    grid-template-rows: auto auto auto 20px 1fr;
+}
+
+.collapsible-wrapper {
+    grid-column: span 6;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.div1 {
+    grid-column: span 6 / span 6;
+
+    display: flex;
+    width: 100%;
+    gap: 8px;
+}
+
+.div1 > app-stat-card{
+    flex: 1;
+    width: 100%;
+}
+
+::ng-deep .div1 > app-stat-card > .stat-card{
+    min-height: 125px;
+}
+
+.div2 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-row-start: 2;
+}
+
+.div3 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 2;
+}
+
+.div4 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 5;
+    grid-row-start: 2;
+}
+
+.div2, .div3 , .div4, .div5 {
+    padding: 8px;
+    background-color: var(--white-5);
+    border-radius: 4px;
+}
+
+.div2 > span, .div3 > span , .div4 > span {
+    color: var(--white-75);
+    font: bold 14px/1.5 "Roboto", sans-serif;
+}
+
+
+.div5 {
+    grid-column: span 6 / span 6;
+    grid-row: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 5;
+    margin-top: 3px;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    gap: 8px;
+}
+
+
+::ng-deep .div5 > app-admin-user-toolbar {
+    flex: 0 0 auto;
+}
+
+::ng-deep .div5 > app-user-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.div6 {
+    grid-column: span 2 / span 2;
+    grid-row-start: 4;
+    grid-column-start: 3;
+
+    border-radius: 8px;
+
+    background-color: var(--white-5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: all .5s ease-in-out;
+}
+
+.div6 > .arrow{
+    font: bold 14px/1.5 "Roboto", sans-serif;
+    transition: all .3s ease;
+}
+
+.div6 > span{
+    font: bold 12px/1.5 "Roboto", sans-serif;
+}
+
+.div6 > .arrow:first-child.rotated {
+    transition: all .5s ease;
+    transform: rotate(180deg);
+}
+
+.div6 > .arrow:last-child.rotated {
+    transition: all .5s ease;
+    transform: rotate(-180deg);
+}
+
+.div6:hover {
+    background-color: var(--white-10);
+}
+
+
+@media (max-width: 768px) {
+    .parent, .collapsible-wrapper, .div1, .div2, .div3, .div4, .div5
+    {
+        display: flex;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,199 @@
+.chart-container {
+    width:100%;
+    height:100%;
+    position:relative;
+    display:flex;
+    box-sizing:border-box;
+}
+
+/* ================= */
+/* Y AXIS */
+/* ================= */
+
+
+.y-axis {
+    width:auto;
+    position:relative;
+    bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+
+.y-axis-line {
+    position:absolute;
+    right:0;
+    top:0;
+    bottom: 0;
+    width:1px;
+    background:var(--white-25)
+}
+
+
+.y-label {
+    color:var(--white-50);
+    font: normal 11px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+
+.y-item{
+    left:0;
+    right:0;
+    padding-right: 5px;
+    gap:8px;
+}
+
+.y-tick{
+    width:100%;
+    height:1px;
+    position: absolute;
+    background: var(--white-25);
+    opacity:.5;
+}
+
+
+/* ================= */
+/* MAIN */
+/* ================= */
+
+
+.main-chart-area {
+    flex:1;
+    position:relative;
+}
+
+
+
+.chart-bar {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom: 15px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:8px;
+}
+
+/* ================= */
+/* BARS */
+/* ================= */
+
+.bar {
+    flex:1;
+    border-radius:2px 2px 0 0;
+    background:var(--white);
+    transition:
+            height .3s ease,
+            opacity .2s;
+
+    display:flex;
+    justify-content:center;
+    opacity: .8;
+}
+
+
+.bar.pink {
+    opacity:.6;
+    background:
+            linear-gradient(
+                    0deg,
+                    var(--pink_5) 0%,
+                    var(--pink_75) 100%
+            );
+}
+
+.bar:hover {
+    opacity:1;
+}
+
+.bar > .value {
+    position:relative;
+    top:-20px;
+    color:white;
+    font: bold 11px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* ================= */
+/* X AXIS */
+/* ================= */
+.x-axis-line {
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom: 0;
+
+    height: 1px;
+
+    z-index: 2;
+    background:var(--white-5)
+}
+
+
+.x-axis {
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    height: auto;
+    gap:8px;
+}
+
+.x-label {
+    color:var(--white-50);
+    font: normal 11px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-align:center;
+    width: 100%;
+    white-space:nowrap;
+}
+
+
+/* ================= */
+/* SKELETON */
+/* ================= */
+
+
+.skeleton-bar {
+    background:
+            linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.05) 25%,
+                    rgba(255,255,255,.15) 37%,
+                    rgba(255,255,255,.05) 63%
+            );
+    background-size:400% 100%;
+    animation:skeleton-shimmer 1.4s ease infinite;
+}
+
+
+
+.skeleton-text {
+    height:12px;
+    width:15px;
+    border-radius:3px;
+    background:
+            linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.05) 25%,
+                    rgba(255,255,255,.15) 37%,
+                    rgba(255,255,255,.05) 63%
+            );
+    background-size:400% 100%;
+    animation:skeleton-shimmer 1.4s ease infinite;
+}
+
+
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position:100% 50%;
+    }
+    100% {
+        background-position:0 50%;
+    }
+}

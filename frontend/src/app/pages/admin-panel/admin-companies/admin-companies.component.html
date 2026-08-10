@@ -1,0 +1,60 @@
+<div class="parent-companies">
+    <div class="div1">
+        <app-stat-card
+                [title]="'Total Companies'"
+                [icon]="'icons/company_icon.svg'"
+                [content]="'0'"
+                [grown_up_progress]="13"
+                [stats_text]="'from last month'"
+        />
+
+        <app-stat-card
+                [title]="'Today new companies'"
+                [icon]="'icons/company_icon.svg'"
+                [content]="'0'"
+                [grown_up_progress]="13"
+                [stats_text]="'from last day'"
+        />
+
+        <app-stat-card
+                [title]="'Today reservations'"
+                [icon]="'icons/calendar_stroke_icon.svg'"
+                [content]="'0'"
+                [grown_up_progress]="13"
+                [stats_text]="'from last month'"
+        />
+        <app-stat-card
+                [title]="'Total Reservations'"
+                [icon]="'icons/calendar_stroke_icon.svg'"
+                [content]="'0'"
+                [grown_up_progress]="13"
+                [stats_text]="'from last month'"
+        />
+    </div>
+
+    <div class="div2">
+        <span>New companies</span>
+        <app-activity-card/>
+    </div>
+
+    <div class="div3">
+        <span>Last reservations</span>
+        <app-activity-card/>
+    </div>
+    <div class="div4">
+        <span>Populars</span>
+        <app-activity-card/>
+    </div>
+
+    <div class="div5">
+        <app-admin-companies-toolbar
+
+        />
+
+        <app-company-management-list
+
+        />
+
+        <app-paginator/>
+    </div>
+</div>

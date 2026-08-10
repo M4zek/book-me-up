@@ -1,15 +1,16 @@
 <div class="sidebar">
 
     <button class="toggle-btn" (click)="toggle.emit()">
-        ☰
+        <div class="btn-txt"
+            [class.rotated]="collapsed"
+        > {{ collapsed ? '☰' : 'X'}}</div>
     </button>
 
     <ul class="nav-list">
         <li *ngFor="let nav of NAVIGATION">
             <a [routerLink]="nav.path"
-            [class.active]="router.url == nav.path">
-                <div class="img-con"
-                [class.collapsed]="collapsed">
+                [class.active]="router.url == nav.path">
+                <div class="img-con">
                     <img class="icon" [src]="nav.icon" alt="img"/>
                 </div>
                 <div class="nav-text" [class.hidden]="collapsed">
@@ -20,5 +21,4 @@
             </a>
         </li>
     </ul>
-
 </div>

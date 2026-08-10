@@ -1,0 +1,161 @@
+<div class="table-wrapper">
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th># ID</th>
+            <th>Status</th>
+            <th>Type</th>
+            <th>Reporter</th>
+            <th>Admin</th>
+            <th>Created at</th>
+            <th>Last update</th>
+        </tr>
+        </thead>
+        <tbody>
+            @if (isLoading()) {
+                @for (row of skeletonRows; track $index) {
+                    <tr class="table-row">
+                        <td class="col-id">
+                            <div class="skeleton sk-id"></div>
+                        </td>
+
+                        <td class="col-status">
+                            <div class="status-cell">
+                                <div class="status-text-container">
+                                    <div class="skeleton sk-status-title"></div>
+                                    <div class="skeleton sk-status-subtitle"></div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="col-type">
+                            <div class="skeleton sk-type"></div>
+                        </td>
+
+                        <td class="col-reporter">
+                            <div class="user-name-cell">
+                                <div class="skeleton sk-avatar"></div>
+                                <div class="skeleton sk-name"></div>
+                            </div>
+                        </td>
+
+                        <td class="col-admin">
+                            <div class="user-name-cell">
+                                <div class="skeleton sk-avatar"></div>
+                                <div class="skeleton sk-name"></div>
+                            </div>
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <div class="skeleton sk-date"></div>
+                                <div class="skeleton sk-time"></div>
+                            </div>
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <div class="skeleton sk-date"></div>
+                                <div class="skeleton sk-time"></div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            @else {
+                @for (ticket of tickets(); track ticket.id) {
+                    <tr class="table-row">
+                        <td class="col-id cell-id">
+                            {{ ticket.id }}
+                        </td>
+
+                        <td class="col-status">
+                            <div class="status-cell">
+
+                                <div class="status-text-container">
+                            <span class="status-title">
+                                {{ getStatusLabel(ticket.status) }}
+                            </span>
+
+                                    @if (ticket.statusSubtext) {
+                                        <span class="status-subtext">
+                                    {{ ticket.statusSubtext }}
+                                </span>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="col-type">
+                            {{ getTypeLabel(ticket.type) }}
+                        </td>
+
+                        <td class="col-reporter">
+                            <div class="user-name-cell">
+                                @if (ticket.reporter.avatar) {
+                                    <img
+                                            [src]="ticket.reporter.avatar"
+                                            [alt]="ticket.reporter.firstName"
+                                            class="avatar-img"
+                                    />
+                                } @else {
+                                    <div class="avatar-placeholder">
+                                        {{ getInitials(ticket.reporter.firstName + " " + ticket.reporter.lastName) }}
+                                    </div>
+                                }
+
+                                <span class="user-name">
+                            {{ ticket.reporter.firstName }} {{ticket.reporter.lastName}}
+                        </span>
+                            </div>
+                        </td>
+
+                        <td class="col-admin">
+                            @if (ticket.admin) {
+                                <div class="user-name-cell">
+                                    @if (ticket.admin.avatar) {
+                                        <img
+                                                [src]="ticket.admin.avatar"
+                                                [alt]="ticket.admin.firstName"
+                                                class="avatar-img"
+                                        />
+                                    } @else {
+                                        <div class="avatar-placeholder">
+                                            {{ getInitials(ticket.admin.firstName + " " + ticket.admin.lastName) }}
+                                        </div>
+                                    }
+
+                                    <span class="user-name">
+                                        {{ ticket.admin.firstName }} {{ticket.admin.lastName}}
+                                    </span>
+                                </div>
+                            } @else {
+                                <span class="text-muted">Unassigned</span>
+                            }
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <span class="date-val">{{ ticket.createdAt | date: 'yyyy-MM-dd'}}</span>
+                                <span class="time-val">{{ ticket.createdAt | date: 'HH:mm' }}</span>
+                            </div>
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <span class="date-val">{{ ticket.updatedAt | date: 'yyyy-MM-dd'}}</span>
+                                <span class="time-val">{{ ticket.updatedAt | date: 'HH:mm' }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                } @empty {
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            No tickets
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

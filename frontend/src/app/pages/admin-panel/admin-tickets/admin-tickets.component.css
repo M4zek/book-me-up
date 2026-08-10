@@ -1,0 +1,66 @@
+.parent-ticket {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+
+    color: var(--white);
+    gap: 8px;
+    padding: 8px;
+
+    height: 90vh;
+
+    grid-template-rows: 125px 1fr 1fr;
+}
+
+.div-1 {
+    grid-column: span 6 / span 6;
+
+    display: flex;
+    width: 100%;
+    gap: 8px;
+}
+
+.div-1 > app-stat-card{
+    flex: 1;
+    width: 100%;
+}
+
+::ng-deep .div-1 > app-stat-card > .stat-card{
+    max-height: 125px;
+    min-height: 125px;
+}
+
+
+.div-2, .div-3{
+    grid-column: span 6 / span 6;
+
+    background-color: var(--white-5);
+    padding: 8px;
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    gap: 8px;
+}
+
+::ng-deep .div-2 > app-ticket-list,
+::ng-deep .div-3 > app-ticket-list{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.div-2 > .title-container > .title,
+.div-3 > .title-container > .title {
+    font: bold 16px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: var(--white-75);
+}
+
+
+.title-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

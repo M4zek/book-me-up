@@ -1,0 +1,129 @@
+.stat-card {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    min-height: 200px;
+    background-color: var(--white-5);
+
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+
+    position: relative;
+}
+
+.stat-card > .horizontal {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 8px;
+    display: flex;
+    box-sizing: border-box;
+}
+
+.stat-card > .horizontal > img {
+    width: 22px;
+    height: 22px;
+}
+
+.stat-card > .horizontal .title {
+    display: flex;
+
+    color: var(--white-75);
+    font: bold 18px/1.5 "Tuffy", sans-serif;
+}
+
+.stat-card > .content {
+    padding: 0 8px;
+    font: bold 2.5rem "Tuffy", sans-serif;
+    color: var(--white);
+}
+
+.stat-card > .stats {
+    position: absolute;
+    left: 8px;
+    bottom: 10px;
+    color: var(--white-75);
+    font: bold 14px/1.5 "Tuffy", sans-serif;
+}
+
+.stat-card > .stats > .positive { color: var(--lime_750); font-size: 1.05rem; }
+.stat-card > .stats > .negative { color: var(--pink_75); font-size: 1.05rem; }
+.stat-card > .stats > .neutral { color: var(--gold-75); font-size: 1.05rem; }
+
+::ng-deep .stat-card > app-bar-chart > .chart-container {
+    position: absolute;
+    bottom: 25px;
+    padding: 0 10px;
+}
+
+::ng-deep .stat-card > app-line-chart > .line-chart {
+    position: absolute;
+    bottom: 40px;
+    height: 60px;
+    padding: 0 10px;
+}
+
+/* ========================================== */
+/* SKELETON LOADING ANIMATION & STYLES        */
+/* ========================================== */
+
+
+/* Dopasowanie wielkości szkieletu do prawdziwych elementów */
+.skeleton-title {
+    width: 60%;
+    height: 20px;
+}
+
+.skeleton-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+}
+
+.skeleton-content {
+    margin: 4px 8px;
+    width: 40%;
+    height: 40px;
+}
+
+.skeleton-chart-bar {
+    position: absolute;
+    bottom: 40px;
+    left: 8px;
+    right: 8px;
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.skeleton-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+}
+
+.skeleton-chart-line {
+    position: absolute;
+    bottom: 40px;
+    left: 8px;
+    right: 8px;
+    height: 60px;
+}
+
+.skeleton-line-wave {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}
+
+.skeleton-stats {
+    position: absolute;
+    left: 8px;
+    bottom: 10px;
+    width: 50%;
+    height: 16px;
+}

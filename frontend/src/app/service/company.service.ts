@@ -19,6 +19,7 @@ import {Address} from "../model/gui/gui.model";
 import {
     EmployeeSearchModel
 } from "../pages/company-management-page/company-management-employee/company-management-employee.component";
+import {CompanyRankingItem} from "../model/gui/admin.gui.model";
 
 @Injectable({
   providedIn: 'root'
@@ -252,4 +253,28 @@ export class CompanyService {
 
       return this.http.post<CompanyPortfolioResponse[]>(url, formData, {observe: 'response'});
   }
+
+
+
+
+
+//   ADMIN Methods to get popular companies
+    getPopularCompanies(page: Pagination | null){
+        const popular_companies_url = '/api/v1/admin/companies/popular';
+
+        let httpParams = new HttpParams();
+        if(page){
+            httpParams = new HttpParams()
+                .set('page', page.currentPage)
+                .set('size', page.itemsPerPage)
+        } else {
+            httpParams = new HttpParams()
+                .set('page', 0)
+                .set('size', 5)
+        }
+
+        return this.http.get<Page<CompanyRankingItem>>(popular_companies_url, { params: httpParams, observe: 'response'});
+    }
+
+
 }

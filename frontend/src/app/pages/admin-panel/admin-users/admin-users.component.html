@@ -1,0 +1,84 @@
+
+<div class="parent">
+    <div class="collapsible-wrapper" [@collapseContent]="isExpanded ? 'expanded' : 'collapsed'">
+        <div class="div1">
+            <app-stat-card
+                    [title]="'Total Account'"
+                    [icon]="'icons/user_icon.svg'"
+                    [content]="this.stats()?.totalAccount?.value ?? 0"
+                    [grown_up_progress]="this.stats()?.totalAccount?.changePercentage ?? 0"
+                    [stats_text]="'from last month'"
+                    [isLoading]="isStatsLoading()"
+            />
+
+            <app-stat-card
+                    [title]="'Today new account'"
+                    [icon]="'icons/user_icon.svg'"
+                    [content]="this.stats()?.todayAccount?.value ?? 0"
+                    [grown_up_progress]="this.stats()?.todayAccount?.changePercentage ?? 0"
+                    [stats_text]="'from last day'"
+                    [isLoading]="isStatsLoading()"
+            />
+
+            <app-stat-card
+                    [title]="'Logged-in last month'"
+                    [icon]="'icons/user_icon.svg'"
+                    [content]="this.stats()?.lastMonthLogin?.value ?? 0"
+                    [grown_up_progress]="this.stats()?.lastMonthLogin?.changePercentage ?? 0"
+                    [stats_text]="'from last month'"
+                    [isLoading]="isStatsLoading()"
+            />
+            <app-stat-card
+                    [title]="'Logged-in Today'"
+                    [icon]="'icons/user_icon.svg'"
+                    [content]="this.stats()?.lastMonthLogin?.value ?? 0"
+                    [grown_up_progress]="this.stats()?.lastMonthLogin?.changePercentage ?? 0"
+                    [stats_text]="'from last day'"
+                    [isLoading]="isStatsLoading()"
+            />
+        </div>
+
+
+        <div class="div2">
+            <span>New accounts</span>
+            <app-activity-card
+                [users]="newAccounts()"
+                [isLoading]="isNewAccountsLoading()"
+            />
+        </div>
+
+        <div class="div3">
+            <span>Logged-in</span>
+            <app-activity-card
+                    [users]="lastLoggedIn()"
+                [isLoading]="isLastLoggedInLoading()"
+            />
+        </div>
+        <div class="div4">
+            <span>Administrators</span>
+            <app-activity-card
+                    [users]="lastActiveAdmins()"
+                [isLoading]="isAdminActiveHistoryLoading()"
+            />
+        </div>
+    </div>
+
+    <div class="div6" (click)="toggleExpand()" [class.collapsed]="!isExpanded">
+        <span class="arrow" [class.rotated]="isExpanded">▼</span>
+        <span>{{!isExpanded ? 'Show' : 'Hide'}}</span>
+        <span class="arrow" [class.rotated]="isExpanded">▼</span>
+    </div>
+
+    <div class="div5">
+        <app-admin-user-toolbar
+                (filtersChange)="onFilterChanged($event)"
+        />
+
+        <app-user-list
+            [users]="users()"
+            [isLoading]="isUsersLoading()"
+        />
+        <app-paginator [pagination]="paginator" (paginatorChanged)="onPaginatorChanged($event)"/>
+    </div>
+</div>
+    

@@ -1,0 +1,118 @@
+<div class="table-wrapper">
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th>Created at</th>
+            <th>Modified at</th>
+        </tr>
+        </thead>
+        <tbody>
+            @if (isLoading()) {
+                @for (row of skeletonRows; track $index) {
+                    <tr class="table-row">
+                        <td class="col-id">
+                            <div class="skeleton sk-id"></div>
+                        </td>
+
+                        <td class="col-name">
+                            <div class="user-name-cell">
+                                <div class="skeleton sk-avatar"></div>
+                                <div class="skeleton sk-name"></div>
+                            </div>
+                        </td>
+
+                        <td class="col-email">
+                            <div class="skeleton sk-email"></div>
+                        </td>
+
+                        <td class="col-status">
+                            <div class="status-cell">
+                                <div class="skeleton sk-dot"></div>
+
+                                <div class="status-text-container">
+                                    <div class="skeleton sk-status-title"></div>
+                                    <div class="skeleton sk-status-subtitle"></div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="cell-role">
+                            <div class="skeleton sk-role"></div>
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <div class="skeleton sk-date"></div>
+                                <div class="skeleton sk-time"></div>
+                            </div>
+                        </td>
+
+                        <td class="col-date">
+                            <div class="date-cell">
+                                <div class="skeleton sk-date"></div>
+                                <div class="skeleton sk-time"></div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        @else {
+            @for (user of users?.content; track user.id) {
+                <tr class="table-row">
+                    <td class="col-id cell-id">{{ user.id }}</td>
+                    <td class="col-name">
+                        <div class="user-name-cell">
+                            @if (user.avatarUrl) {
+                                <img [src]="user.avatarUrl" [alt]="user.name" class="avatar-img" />
+                            } @else {
+                                <div class="avatar-placeholder">{{ getInitials(user.name) }}</div>
+                            }
+                            <span class="user-name">{{ user.name }}</span>
+                        </div>
+                    </td>
+                    <td class="col-email">
+                        {{ user.email }}
+                    </td>
+                    <td class="col-status">
+                        <div class="status-cell">
+                            <span class="status-dot" [ngClass]="'dot-' + getTest(user.status.value).toLowerCase()"></span>
+                            <div class="status-text-container">
+                                <span class="status-title">{{ getTest(user.status.value) }}</span>
+                                @if (user.status.extendedText) {
+                                    <span class="status-subtext"> {{ user.status.extendedText }}</span>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-roles cell-role">
+                            @for (role of user.roles; track role; let id = $index){
+                                <span [style.color]="idToColor(id + 10)">{{getRoleLabel(role)}}</span>
+                            }
+                    </td>
+                    <td class="col-date">
+                        <div class="date-cell">
+                            <span class="date-val">{{ user.createdAt | date: 'yyyy-MM-dd'}}</span>
+                            <span class="time-val">{{ user.createdAt | date: 'HH:mm'}}</span>
+                        </div>
+                    </td>
+                    <td class="col-date">
+                        <div class="date-cell">
+                            <span class="date-val">{{ user.updatedAt | date: 'yyyy-MM-dd'}}</span>
+                            <span class="time-val">{{ user.updatedAt | date: 'HH:mm'}}</span>
+                        </div>
+                    </td>
+                </tr>
+            } @empty {
+                <tr>
+                    <td colspan="8" class="empty-state">No users found.</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

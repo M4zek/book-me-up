@@ -1,0 +1,87 @@
+<div class="vertical">
+
+    @if(requestStatus  === 0){
+        <form class="form"
+              [class.disabled]="isLoading"
+              #categoryForm="ngForm">
+            <div class="input-container" [class.error]="categoryCTRL.invalid && categoryCTRL.touched">
+                <input type="text"
+                       placeholder="Name"
+                       class="input-field"
+                       required
+                       minlength="3"
+                       name="category"
+                       [(ngModel)]="categories.category"
+                       (ngModelChange)="onCategoryChanged($event)"
+                       #categoryCTRL="ngModel"
+                >
+                <div *ngIf="categoryCTRL.invalid && categoryCTRL.touched">
+                    <span *ngIf="categoryCTRL.errors?.['required']">Category name is required</span>
+                    <span *ngIf="categoryCTRL.errors?.['minlength']">Category name must be at least 3 characters</span>
+                </div>
+            </div>
+
+
+            <div class="input-container" [class.error]="categoryConfirmCTRL.invalid && categoryConfirmCTRL.touched">
+                <input type="text"
+                       placeholder="Confirm name"
+                       class="input-field"
+                       required
+                       minlength="3"
+                       name="categoryConfirm"
+                       (ngModelChange)="onCategoryConfirm($event)"
+                       [(ngModel)]="categories.categoryConfirm"
+                       #categoryConfirmCTRL="ngModel"
+                >
+                <div *ngIf="categories.category != '' && categories.categoryConfirm != '' && categories.category != categories.categoryConfirm">
+                <span>
+                    Categories must be the same!
+                </span>
+                </div>
+                <div *ngIf="categoryConfirmCTRL.invalid && categoryConfirmCTRL.touched">
+                    <span *ngIf="categoryConfirmCTRL.errors?.['required']">Confirm name is required</span>
+                    <span *ngIf="categoryConfirmCTRL.errors?.['minlength']">Confirm name must be at least 3 characters</span>
+                </div>
+            </div>
+
+            <span class="reset-text" [class.show]="countdown != 0"
+            >Reset in: {{countdown}}</span>
+
+
+            <div class="btn-confirm"
+                 [class.disabled]="categoryForm.invalid || (categories.category != '' && categories.categoryConfirm != '' && categories.category != categories.categoryConfirm)"
+                 (click)="createCategory(categoryForm)">
+                <span>Confirm</span>
+            </div>
+        </form>
+    }
+
+    @if (isLoading){
+        <app-double-spinner/>
+    }
+
+
+    @if (!isLoading && requestStatus != 0){
+        <div class="request-status"
+             [class.error]="requestStatus != 200 "
+        >
+            @if (requestStatus == 200){
+                <span class="req-title">{{'Category Created!'}}</span>
+                <img [src]="'icons/confirm_icon.svg'" alt="img"/>
+                <span class="req-details">{{'Here category name'}}</span>
+
+                <div class="btn-container" (click)="onOkClick()">
+                    <span>Ok</span>
+                </div>
+            } @else {
+                <span class="req-title error">{{'Error'}}</span>
+                <img [src]="'icons/reject_icon.svg'" alt="img"/>
+                <span class="req-details error">{{'Here error status'}}</span>
+
+                <div class="btn-container error" (click)="onResetClick()">
+                    <span>Reset</span>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -3,12 +3,20 @@ import {ErrorMessage} from "./error.model";
 export enum Role {
     ROLE_ADMIN = "ROLE_ADMIN",
     ROLE_USER = "ROLE_USER",
+    ROLE_ADMIN_VIEWER = "ROLE_ADMIN_VIEWER",
 }
 
 export enum COMPANY_ROLE {
     ROLE_OWNER = "COMPANY_OWNER",
     ROLE_EMPLOYEE = "COMPANY_EMPLOYEE",
     ROLE_MANAGER = "COMPANY_MANAGER",
+}
+
+export enum UserStatus {
+    ACTIVE = "ACTIVE",
+    NOT_ACTIVE = "NOT_ACTIVE",
+    BLOCK = "BLOCK",
+    SUSPENDED = "SUSPENDED",
 }
 
 export interface LoginWrapper {

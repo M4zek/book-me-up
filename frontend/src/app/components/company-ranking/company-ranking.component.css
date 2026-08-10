@@ -1,0 +1,111 @@
+.table-wrapper {
+    width: 100%;
+    height: calc(100% - 65px);
+    overflow: auto;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.table-header,
+.table-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 10px;
+}
+
+.table-row:hover {
+    transition: all .3s ease;
+    background-color: var(--lime_5);
+    cursor: pointer;
+}
+
+.table-header {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #8c919d;
+    border-bottom: 1px solid #1f2228;
+    padding-bottom: 12px;
+}
+
+.col-rank {
+    width: 50px;
+    color: var(--white);
+    font: bold 13px/1.5 "Roboto", sans-serif;
+    text-align: center;
+}
+
+.col-rank.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.col-company {
+    width: calc(100% - 150px);
+    color: var(--white);
+    font: bold 13px/1.5 "Roboto", sans-serif;
+}
+
+.col-reservation {
+    width: 100px;
+    text-align: right;
+    color: var(--white);
+    font: bold 13px/1.5 "Roboto", sans-serif;
+}
+
+.rank-number {
+    color: var(--white-75);
+    font: bold 12px/1.5 "Roboto", sans-serif;
+    text-align: center;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.company-name {
+    color: var(--white-75);
+    font: bold 12px/1.5 "Roboto", sans-serif;
+}
+
+.reservation-count {
+    color: #ffffff;
+    font: bold 12px/1.5 "Roboto", sans-serif;
+}
+
+/* ==========================================
+   SKELETON LOADING STYLES
+   ========================================== */
+
+.skeleton-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-text {
+    height: 20px;
+}
+
+.skeleton-text.short {
+    width: 15px;
+}
+
+.skeleton-text.medium {
+    width: 150px;
+}

@@ -1,0 +1,73 @@
+<div class="card">
+
+    <div class="metrics-banner">
+        @if (isLoading) {
+            <!-- Skeleton dla statystyk -->
+            <div class="metric-item">
+                <div class="skeleton skeleton-number"></div>
+                <div class="skeleton skeleton-label"></div>
+            </div>
+            <div class="metric-item">
+                <div class="skeleton skeleton-number"></div>
+                <div class="skeleton skeleton-label"></div>
+            </div>
+            <div class="metric-item">
+                <div class="skeleton skeleton-number"></div>
+                <div class="skeleton skeleton-label"></div>
+            </div>
+        } @else {
+            <!-- Właściwe statystyki -->
+            <div class="metric-item">
+                <span class="metric-value">{{ summary?.todayTickets }}</span>
+                <span class="metric-label">Today Tickets</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-value">{{ summary?.openTickets }}</span>
+                <span class="metric-label">Open Tickets</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-value">{{ summary?.solvedTickets }}</span>
+                <span class="metric-label">Solved Tickets</span>
+            </div>
+        }
+    </div>
+
+    <div class="table-header">
+        <span class="col-rank">Rank</span>
+        <span class="col-username">User</span>
+        <span class="col-type">Type</span>
+        <span class="col-date">Date</span>
+    </div>
+
+    @if (isLoading) {
+        <div class="table-body">
+            @for (item of skeletonRows; track $index) {
+                <div class="table-row">
+                    <div class="col-rank">
+                        <div class="skeleton skeleton-text short"></div>
+                    </div>
+                    <div class="col-username">
+                        <div class="skeleton skeleton-text large"></div>
+                    </div>
+                    <div class="col-type">
+                        <div class="skeleton skeleton-text short right"></div>
+                    </div>
+                    <div class="col-date">
+                        <div class="skeleton skeleton-text medium right"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="table-body">
+            @for (ticket of tickets; track ticket.rank) {
+                <div class="table-row">
+                    <span class="col-rank rank-number">{{ ticket.rank }}</span>
+                    <span class="col-username username">{{ ticket.user }}</span>
+                    <span class="col-type type">{{ ticket.type }}</span>
+                    <span class="col-date date">{{ ticket.date }}</span>
+                </div>
+            }
+        </div>
+    }
+</div>

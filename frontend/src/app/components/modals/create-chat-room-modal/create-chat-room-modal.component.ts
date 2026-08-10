@@ -212,7 +212,7 @@ export class CreateChatRoomModalComponent implements OnChanges {
       this.chatService.createRoom(room).subscribe({
           next: (response: HttpResponse<RoomResponse>) => {
               if(response.status === 200 && response.body){
-                  this.toast.show("You have successfully created!", "info");
+                  this.toast.show("Room successfully created!", "info");
                   this.onRoomCreate.emit(response.body);
                   this.close();
               }

@@ -1,0 +1,71 @@
+<div class="parent-ticket">
+
+    <div class="div-1">
+        <app-stat-card
+            [title]="'Total tickets'"
+            [icon]="'icons/ticket_icon.svg'"
+            [content]="'3 213 312'"
+            [grown_up_progress]="10"
+            [stats_text]="'Last 7 days'"
+        />
+
+        <app-stat-card
+                [title]="'Today tickets'"
+                [icon]="'icons/ticket_icon.svg'"
+                [content]="'121'"
+                [grown_up_progress]="1"
+                [stats_text]="'Last Day'"
+        />
+
+        <app-stat-card
+                [title]="'Assigned to me'"
+                [icon]="'icons/ticket_icon.svg'"
+                [content]="'10'"
+                [grown_up_progress]="10"
+                [stats_text]="'Last Day'"
+        />
+
+        <app-stat-card
+                [title]="'Resolved Today'"
+                [icon]="'icons/ticket_icon.svg'"
+                [content]="'310'"
+                [grown_up_progress]="10"
+                [stats_text]="'Last Day'"
+        />
+
+    </div>
+
+    <div class="div-2">
+        <div class="title-container">
+            <span class="title">Assigned</span>
+            <app-admin-ticket-toolbar
+                    [initialStatuses]="['open', 'in_progress']"
+                    (filtersChange)="onAssignedFilterChanged($event)"
+            />
+        </div>
+
+        <app-ticket-list
+            [isLoading]="this.isMyTicketLoading"
+            [tickets]="myTickets"
+        />
+
+        <app-paginator [pagination]="myPaginator"/>
+    </div>
+
+    <div class="div-3">
+        <div class="title-container">
+            <span class="title">Tickets</span>
+            <app-admin-ticket-toolbar
+                    [initialStatuses]="['open']"
+                    (filtersChange)="onTicketFilterChanged($event)"
+            />
+        </div>
+
+        <app-ticket-list
+            [isLoading]="this.isMyTicketLoading"
+            [tickets]="myTickets"
+        />
+
+        <app-paginator [pagination]="assignPaginator"/>
+    </div>
+</div>

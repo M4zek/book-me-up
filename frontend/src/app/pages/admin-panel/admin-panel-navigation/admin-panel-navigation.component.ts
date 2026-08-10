@@ -21,7 +21,7 @@ export interface AdminPanelNavigation{
 })
 export class AdminPanelNavigationComponent {
 
-    @Input() collapsed = false;
+    @Input() collapsed = true;
     @Output() toggle = new EventEmitter<void>();
 
     NAVIGATION: AdminPanelNavigation[] = [

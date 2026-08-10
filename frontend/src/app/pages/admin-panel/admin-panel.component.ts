@@ -13,7 +13,7 @@ import {RouterOutlet} from "@angular/router";
 })
 export class AdminPanelComponent {
 
-    isCollapsed = false;
+    isCollapsed = true;
 
     toggleSidebar() {
         this.isCollapsed = !this.isCollapsed;

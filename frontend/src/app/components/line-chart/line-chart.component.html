@@ -1,0 +1,105 @@
+
+@if (isLoading){
+    <div class="skeleton-chart-line">
+        <div class="skeleton skeleton-line-wave"></div>
+    </div>
+} @else {
+    <div class="line-chart">
+        @if(showLabels){
+            <!-- Oś Y -->
+            <div class="y-axis">
+                <div class="y-axis-line"></div>
+                @for(label of getYLabels(); track label){
+                    <div
+                            class="y-item"
+                            [style.bottom.%]="getYPercent(label)">
+                        <div class="y-label">
+                            {{label}}
+                        </div>
+                        <div class="y-tick"></div>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="chart-wrapper">
+            @if(showLabels){
+                <!-- Oś X -->
+                <div class="x-axis-line"></div>
+                <div class="x-axis">
+                    @for(item of data; track item.name; let i = $index){
+                        <div
+                                class="x-label"
+                                [style.left.%]="getXPercent(i)">
+                            {{item.name}}
+                        </div>
+                    }
+                </div>
+            }
+
+            <svg
+                    class="line-svg"
+                    [attr.viewBox]="'0 0 ' + width + ' ' + height"
+                    [class.with-labels]="showLabels"
+                    preserveAspectRatio="none">
+
+                <defs>
+                    @if (whiteGradient){
+                        <linearGradient
+                                id="{{gradient_id}}"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                [attr.y2]="height"
+                                gradientUnits="userSpaceOnUse">
+
+                            <stop
+                                    offset="25%"
+                                    stop-color="white"
+                                    stop-opacity="0.25"/>
+
+                            <stop
+                                    offset="100%"
+                                    stop-color="var(--white)"
+                                    stop-opacity="0"/>
+
+                        </linearGradient>
+                    } @else {
+                        <linearGradient
+                                id="{{gradient_id}}"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                [attr.y2]="height"
+                                gradientUnits="userSpaceOnUse">
+
+                            <stop
+                                    offset="25%"
+                                    stop-color="var(--pink)"
+                                    stop-opacity="0.25"/>
+
+                            <stop
+                                    offset="100%"
+                                    stop-color="var(--pink)"
+                                    stop-opacity="0"/>
+
+                        </linearGradient>
+
+                    }
+
+                </defs>
+                <path
+                        class="area"
+                        [attr.fill]="'url(#' + gradient_id + ')'"
+                        [attr.d]="getAreaPath()">
+                </path>
+
+                <path
+                        class="line"
+                        [attr.stroke]="whiteGradient ? 'var(--white)' : 'var(--pink)'"
+                        [attr.d]="getLinePath()">
+                </path>
+            </svg>
+        </div>
+    </div>
+}

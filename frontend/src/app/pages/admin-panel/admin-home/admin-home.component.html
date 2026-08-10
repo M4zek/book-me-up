@@ -1,0 +1,75 @@
+<div class="admin-home-container">
+    <div class="div1">
+        <app-stat-card
+            [title]="'Total User'"
+            [icon]="'icons/user_icon.svg'"
+            [content]="this.stats()?.totalUsers?.value ?? 0"
+            [grown_up_progress]="this.stats()?.totalUsers?.changePercentage ?? 0"
+            [isLoading]="isStatsLoading()"
+            [stats_text]="'from last month'"
+        />
+
+        <app-stat-card
+                [title]="'Total Companies'"
+                [icon]="'icons/company_icon.svg'"
+                [content]="this.stats()?.totalCompanies?.value ?? 0"
+                [grown_up_progress]="this.stats()?.totalCompanies?.changePercentage ?? 0"
+                [stats_text]="'from last month'"
+                [isLoading]="isStatsLoading()"
+        />
+
+        <app-stat-card
+                [title]="'Today`s Reservations'"
+                [icon]="'icons/calendar_stroke_icon.svg'"
+                [content]="this.stats()?.todaysReservations?.value ?? 0"
+                [chart_type]="'bar'"
+                [chart_input]="this.stats()?.todaysReservations?.last7Days ?? {}"
+                [stats_text]="'Last 7 days'"
+                [isLoading]="isStatsLoading()"
+        />
+
+        <app-stat-card
+                [title]="'Today`s Revenue'"
+                [icon]="'icons/money.svg'"
+                [content]="'$ ' + (stats()?.todaysRevenue?.value ?? 0)"
+                [chart_type]="'line'"
+                [chart_input]="this.stats()?.todaysRevenue?.last7Days ?? {}"
+                [stats_text]="'Last 7 days'"
+                [isLoading]="isStatsLoading()"
+        />
+
+    </div>
+
+    <div class="div2">
+        <span class="div-title">User Growth Trend</span>
+        <app-line-chart [whiteGradient]="false"
+                        [data]="growthDataTrend"
+                        [isLoading]="isUserGrowthTrendLoading()"
+                        [showLabels]="true"/>
+    </div>
+
+
+    <div class="div3">
+        <span class="div-title">Users Login Trend</span>
+        <app-bar-chart [showLabels]="true"
+                       [data]="loginDataTrend"
+                       [isLoading]="isUserLoginTrendLoading()"
+        />
+
+    </div>
+
+    <div class="div4">
+        <span class="div-title">Popular Companies (By reservation)</span>
+        <app-company-ranking
+                (paginatorChanged)="onCompaniesPaginatorChanged($event)"
+                [companies]="companies"
+                [isLoading]="isPopularCompaniesLoading()"/>
+    </div>
+
+
+    <div class="div5 disabled">
+        <span class="div-title">Ticket & Reports - In the future</span>
+        <app-ticket-summary/>
+    </div>
+
+</div>

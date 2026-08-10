@@ -1,0 +1,55 @@
+<div class="stat-card">
+    @if (isLoading) {
+        <div class="horizontal">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-icon"></div>
+        </div>
+
+        <div class="skeleton skeleton-content"></div>
+
+        @if (chart_type === 'line') {
+            <div class="skeleton-chart-line">
+                <div class="skeleton skeleton-line-wave"></div>
+            </div>
+        } @else if (chart_type === 'bar') {
+            <div class="skeleton-chart-bar">
+                <div class="skeleton skeleton-bar" style="height: 40%"></div>
+                <div class="skeleton skeleton-bar" style="height: 70%"></div>
+                <div class="skeleton skeleton-bar" style="height: 50%"></div>
+                <div class="skeleton skeleton-bar" style="height: 90%"></div>
+                <div class="skeleton skeleton-bar" style="height: 60%"></div>
+                <div class="skeleton skeleton-bar" style="height: 80%"></div>
+                <div class="skeleton skeleton-bar" style="height: 45%"></div>
+            </div>
+        }
+        <div class="skeleton skeleton-stats"></div>
+    } @else {
+        <div class="horizontal">
+            <span class="title">{{ title }}</span>
+            <img [src]="icon" alt="stat_icon" />
+        </div>
+
+        <span class="content">{{ content }}</span>
+
+        @if (chart_type === 'line') {
+            <app-line-chart [showLabels]="false" [isLoading]="false" [data]="chartData"/>
+        } @else if (chart_type === 'bar') {
+            <app-bar-chart [showLabels]="false" [isLoading]="false" [data]="chartData"/>
+        }
+
+        @if (stats_text != ''){
+            <span class="stats">
+            @if (grown_up_progress !== undefined) {
+                <span
+                        [class.neutral]="grown_up_progress >= -1 && grown_up_progress <= 1"
+                        [class.positive]="grown_up_progress > 1"
+                        [class.negative]="grown_up_progress < -1"
+                >
+                {{ grown_up_progress }}%
+              </span>
+            }
+                {{ stats_text }}
+            </span>
+        }
+    }
+</div>

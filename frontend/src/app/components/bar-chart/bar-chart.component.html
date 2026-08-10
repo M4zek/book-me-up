@@ -1,0 +1,88 @@
+
+<div class="chart-container"
+     #barChart
+     id="{{object_id}}"
+     [class.is-loading]="isLoading">
+
+    @if(showLabels){
+        <div class="y-axis">
+            <div class="y-axis-line"></div>
+            @if(isLoading){
+                <div class="y-item" style="bottom:100%">
+                    <span class="bar skeleton-text"></span>
+                </div>
+
+                <div class="y-item" style="bottom:50%">
+                    <span class=" bar skeleton-text"></span>
+                </div>
+
+                <div class="y-item" style="bottom:0 ">
+                    <span class="bar skeleton-text"></span>
+                </div>
+            } @else {
+                @for(yVal of yAxisLabels; track yVal){
+                    <div class="y-item">
+                        <span class="y-label">
+                            {{yVal}}
+                        </span>
+                        <div class="y-tick"></div>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    <div class="main-chart-area">
+        <div class="chart-bar">
+            @if (isLoading) {
+                <!-- SKELETON BARS -->
+                @for (sk of skeletonItems; track sk){
+                    @if(showLabels){
+                        <div class="x-axis-line"></div>
+                        <div class="bar skeleton-bar"
+                             [style.height.%]="getRandomRange(1,100)"
+                        ></div>
+                    } @else {
+                        <div class="bar skeleton-bar"
+                             [style.height.px]="getRandomRange(1,max_height)"
+                        ></div>
+                    }
+                }
+
+            } @else {
+                @for (d of data; track $index) {
+                    @if (showLabels){
+                        <div class="x-axis-line"></div>
+                        <div
+                                class="bar pink"
+                                [style.height.%]="calculateHeightPercent(d)"
+                                [attr.title]="d.name + ' : ' + d.value">
+                            <span class="value"> {{d.value}} </span>
+                        </div>
+                    } @else {
+                        <div
+                                class="bar"
+                                [style.height.px]="calculateHeight(d)"
+                                [attr.title]="d.name + ': ' + d.value">
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+
+        @if(showLabels){
+            <div class="x-axis">
+                @if(isLoading){
+                    @for(item of skeletonItems; track $index){
+                        <div class="skeleton-text"></div>
+                    }
+                } @else {
+                    @for(d of data; track d.name){
+                        <div class="x-label"> {{d.name}} </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>

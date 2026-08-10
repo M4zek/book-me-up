@@ -1,0 +1,48 @@
+<div class="table-wrapper">
+    <div class="table">
+        <div class="table-header">
+            <span class="col-rank">Rank</span>
+            <span class="col-company">Company</span>
+            <span class="col-reservation">Reservation</span>
+        </div>
+
+        @if (isLoading()) {
+            @for (item of skeletonItems; track $index) {
+                <div class="table-row skeleton-row">
+                    <div class="col-rank center">
+                        <div class="skeleton skeleton-text short"></div>
+                        <span class="skeleton skeleton-text"></span>
+                    </div>
+                    <div class="col-company company-info">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div class="skeleton skeleton-text medium"></div>
+                    </div>
+                    <div class="col-reservation">
+                        <div class="skeleton skeleton-text"></div>
+                    </div>
+                </div>
+            }
+        }
+        @else {
+            @for (company of companies?.content; track company.id; let i = $index) {
+                <div class="table-row">
+                    <span class="col-rank rank-number">
+                        {{ (paginator.currentPage * paginator.itemsPerPage) + i + 1 }}
+                    </span>
+
+                <div class="col-company company-info">
+                    <img [src]="company.avatarUrl" [alt]="company.companyName" class="avatar" />
+                    <span class="company-name">{{ company.companyName }}</span>
+                </div>
+
+                <span class="col-reservation reservation-count"> {{ company.reservationCount | number:'1.0-0' }}</span>
+                </div>
+            } @empty {
+                <div class="table-row">
+                    <span>No content</span>
+                </div>
+            }
+        }
+    </div>
+</div>
+<app-paginator [pagination]="paginator" (paginatorChanged)="onPaginatorChanged($event)"/>

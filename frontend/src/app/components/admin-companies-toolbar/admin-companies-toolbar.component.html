@@ -1,0 +1,86 @@
+<div class="toolbar-container" (appClickOutside)="closeAllDropdowns()">
+    <div class="filters-wrapper">
+
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+                #searchInput
+                type="text"
+                class="search-input"
+                placeholder="Search by name..."
+                [value]="searchQuery()"
+                (input)="onSearchInput(searchInput.value)"
+            />
+        </div>
+
+        <div class="multiselect-container" [class.is-open]="isStatusOpen()">
+            <div class="multiselect-trigger" (click)="toggleStatusDropdown()">
+                <span>{{ statusLabel() }}</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+
+            @if (isStatusOpen()) {
+                <div class="multiselect-dropdown">
+                    @for (opt of statusOptions; track opt.value) {
+                        <label class="checkbox-label">
+                            <input
+                                    type="checkbox"
+                                    [value]="opt.value"
+                                    [checked]="selectedStatuses().includes(opt.value)"
+                                    (change)="onStatusChange(opt.value, $event)"
+                            />
+                            <span>{{ opt.label }}</span>
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (isCategoriesLoading()){
+            <div class="multiselect-container">
+                <div class="multiselect-trigger">
+                    <span class="skeleton sk-label"></span>
+                    <span class="skeleton sk-icon"></span>
+                </div>
+            </div>
+        } @else {
+            <div class="multiselect-container" [class.is-open]="isCategoriesOpen()">
+                @if (categoriesOptions().length > 0){
+                    <div class="multiselect-trigger" (click)="toggleCategoriesDropdown()">
+                        <span>{{ categoryLabel() }}</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+
+                    @if (isCategoriesOpen()) {
+                        <div class="multiselect-dropdown">
+                            @for (opt of categoriesOptions(); track opt) {
+                                <label class="checkbox-label">
+                                    <input
+                                            type="checkbox"
+                                            [value]="opt"
+                                            [checked]="selectedCategories().includes(opt)"
+                                            (change)="onCategoriesChanged(opt, $event)"
+                                    />
+                                    <span>{{ opt }}</span>
+                                </label>
+                            }
+                        </div>
+                    }
+                } @else {
+                    <div class="multiselect-container">
+                        <div class="multiselect-trigger">
+                            <span>No categories</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

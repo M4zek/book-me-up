@@ -29,6 +29,11 @@ import {
 import {CompanyRoleGuard} from "./company-role.guard";
 import {ForbiddenPageComponent} from "./pages/forbidden-page/forbidden-page.component";
 import {ServerErrorPageComponent} from "./pages/server-error-page/server-error-page.component";
+import {AdminHomeComponent} from "./pages/admin-panel/admin-home/admin-home.component";
+import {AdminUsersComponent} from "./pages/admin-panel/admin-users/admin-users.component";
+import {AdminTicketsComponent} from "./pages/admin-panel/admin-tickets/admin-tickets.component";
+import {AdminCategoriesComponent} from "./pages/admin-panel/admin-categories/admin-categories.component";
+import {AdminCompaniesComponent} from "./pages/admin-panel/admin-companies/admin-companies.component";
 
 export const routes: Routes = [
     {path: '', redirectTo: "guest", pathMatch: 'full'},
@@ -93,6 +98,11 @@ export const routes: Routes = [
                 data: {roles: [Role.ROLE_ADMIN]},
                 children: [
                     {path: '', redirectTo: "dashboard", pathMatch: 'full'},
+                    {path: 'dashboard', component: AdminHomeComponent},
+                    {path: 'users', component: AdminUsersComponent},
+                    {path: 'tickets', component: AdminTicketsComponent},
+                    {path: 'categories', component: AdminCategoriesComponent},
+                    {path: 'companies', component: AdminCompaniesComponent},
                     {path: '**', component: PageNotFoundComponent},
                 ]
             },

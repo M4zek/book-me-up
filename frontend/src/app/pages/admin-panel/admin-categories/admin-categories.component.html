@@ -1,0 +1,34 @@
+<div class="parent-categories">
+
+    <div class="div-1">
+        <app-stat-card
+                [title]="'Total categories'"
+                [icon]="'icons/clipboard_icon.svg'"
+                [content]="'21'"
+        />
+
+        <app-stat-card
+                [title]="'Last category'"
+                [icon]="'icons/clipboard_icon.svg'"
+                [content]="'Barber'"
+                [stats_text]="'2026-10-10 20:33'"
+        />
+    </div>
+
+    <div class="div-2">
+        <app-bar-chart [showLabels]="true"/>
+    </div>
+
+    <div class="div-3">
+        <span class="title">Create category</span>
+        <app-new-category-form/>
+    </div>
+
+    <div class="div-4">
+        <span class="title">Categories</span>
+        <app-category-management-list />
+        <app-paginator/>
+    </div>
+
+
+</div>

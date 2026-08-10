@@ -1,0 +1,75 @@
+.user-card {
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 5px 0;
+}
+
+.table-scroll-container {
+    max-height: 176px;
+    /*overflow-y: auto;*/
+    overflow: hidden;
+    padding-right: 5px;
+}
+
+.table-scroll-container:hover {
+    overflow-y: auto;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+.user-table tbody{
+    width: 100%;
+}
+
+.user-table td {
+    padding: 8px 0;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.col-name{
+    font: normal 11px/1.5 "Roboto", sans-serif;
+}
+
+.col-date {
+    text-align: right;
+    font: normal 11px/1.5 "Roboto", sans-serif;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.skeleton-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-text {
+    height: 12px;
+}
+
+.skeleton-name {
+    width: 90px;
+}
+
+.skeleton-date {
+    width: 55px;
+    margin-left: auto;
+}
+
