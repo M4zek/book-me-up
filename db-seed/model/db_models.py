@@ -13,6 +13,11 @@ class FileType(PyEnum):
     IMG_COMPANY_LOGO = "IMG_COMPANY_LOGO",
     IMG_COMPANY_PORTFOLIO = "IMG_COMPANY_PORTFOLIO"
 
+class UserStatus(PyEnum):
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+    BLOCK = "BLOCK"
+
 
 class Base(DeclarativeBase):
     pass
@@ -123,8 +128,9 @@ class User(Base):
     address_email: Mapped[str] = mapped_column(String(255), unique=True)
     password: Mapped[str] = mapped_column(String(255))
     user_data_id: Mapped[int] = mapped_column(ForeignKey("users_data.id", ondelete="CASCADE"))
-    is_block: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_enable: Mapped[bool] = mapped_column(Boolean, default=True)
+    status: Mapped[Optional[str]] = mapped_column(Enum(UserStatus))
+    created_date: Mapped[datetime] = mapped_column(server_default=func.now())
+    suspended_to: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=True)
 
     user_data: Mapped["UserData"] = relationship(back_populates="user")
     roles: Mapped[List["Role"]] = relationship(secondary="user_roles", back_populates="users")

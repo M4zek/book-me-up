@@ -5,8 +5,10 @@ from datetime import datetime, timedelta
 
 from faker import Faker
 from faker.decode import unidecode
+from minio.replicationconfig import Status
 
-from model.db_models import UserData, User, Company, CompanyHour, CompanyOffer, Review, CompanyUserRole, Address, StoredFile, FileType
+from model.db_models import UserData, User, Company, CompanyHour, CompanyOffer, Review, CompanyUserRole, Address, \
+    StoredFile, FileType, UserStatus
 
 fake = Faker("pl_PL")
 
@@ -92,6 +94,43 @@ def create_user_data():
     )
     return user_data
 
+def get_random_status() -> UserStatus:
+    ranges = [
+        (UserStatus.ACTIVE, 98),
+        (UserStatus.SUSPENDED, 1),
+        (UserStatus.BLOCK,1)
+    ]
+
+    return random.choices(
+        ranges,
+        weights=[r[1] for r in ranges],
+        k=1
+    )[0][0]
+
+def random_date_in_future() -> datetime:
+    random_days = random.randint(300, 400)
+
+    return datetime.now() + timedelta(days=random_days)
+
+def random_created_date() -> datetime:
+    ranges = [
+        (0, 30, 0.25),
+        (31, 90, 0.25),
+        (91, 180, 0.45),
+        (181, 365, 0.5),
+    ]
+
+    selected_range = random.choices(
+        ranges,
+        weights=[r[2] for r in ranges],
+        k=1
+    )[0]
+
+    min_days, max_days, _ = selected_range
+
+    random_days = random.randint(min_days, max_days)
+
+    return datetime.now() - timedelta(days=random_days)
 
 def create_user():
     user_data = create_user_data()
@@ -99,13 +138,17 @@ def create_user():
     email = generate_email(first_name=user_data.first_name, last_name=user_data.last_name)
     password = "$2a$10$PVkQ4ffxidufAlppUz8nAOXje8.OkgUSgStuLL/HRy2jnb41ZnLum" # Default -> Password1!
 
+    user_status = get_random_status()
+    suspended_to = random_date_in_future() if user_status == UserStatus.SUSPENDED else None
     user = User(
         address_email=email,
         password=password,
+        status=user_status,
+        suspended_to=suspended_to,
         user_data=user_data,
+        created_date=random_created_date()
     )
 
-    user.is_block = True
     return user
 
 def create_stored_file_cmp_portfolio(company_id):
