@@ -241,6 +241,7 @@ flowchart LR
   | :--- | :--- | :--- | :--- |
   | **Client A** | `client.john@example.com` | `Password123!` | Test booking services and sending chat messages |
   | **Business/Provider** | `service.alice@example.com` | `Password123!` | Test receiving bookings and replying to messages |
+  | **Admin Page Viewer** | `admin.viewer@example.com` | `Password1!` | Test displaying admin page |
 
   ***Tip 1:** Open two different browser windows (e.g., standard and incognito) to log into both accounts simultaneously and test the real-time WebSocket chat between them!*
 
@@ -250,7 +251,7 @@ flowchart LR
 
 ## 👨‍💻 Author 
 
-  - Created with passion by **[M4zek](https://github.com/M4zek)**
+  - Created by **[M4zek](https://github.com/M4zek)**
 
 ## 📄 License
 
